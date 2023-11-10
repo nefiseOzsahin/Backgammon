@@ -1,0 +1,60 @@
+﻿@model List<AppUser>
+
+@{
+    ViewData["Title"] = "GetUserList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    th, td {
+        text-align: center;
+    }
+</style>
+
+<h1>GetUserList</h1>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>İsim</th>
+            <th>Şehir</th>
+            <th>Kulüp</th>
+            <th>Kayıt Tarihi</th>
+            <th>Durum</th>
+            <th>İşlem</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.Name @item.SurName</td>
+                <td>@item.City</td>
+                <td>@item.Club</td>
+                <td>@item.CreateDate</td>
+
+                @if (@item.IsActive)
+                {
+                    <td>
+                        Aktif
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        Pasif
+                    </td>
+
+                }
+
+                <td>  <a asp-action="UpdateUser" asp-route-userId="@item.Id">Güncelle</a>   <a asp-action="DeleteUser" asp-route-userId="@item.Id">Sil</a></td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+

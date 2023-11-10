@@ -1,0 +1,121 @@
+﻿@model ToursVM
+@{
+    ViewData["Title"] = "Tours";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (Model.PairVMs != null)
+{
+    <ul class="nav nav-tabs">
+        @foreach (var item in Model.Tournament.Tours.OrderBy(x=>x.Id))
+        {
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="@item.Name-tab" data-bs-toggle="tab" data-bs-target="#@item.Name-pane" role="tab" aria-controls="@item.Name-pane" aria-selected="true">@item.Name</a>
+            </li>
+        }
+        <li class="nav-item" role="presentation">
+            <a class="nav-link active bg-warning" id="LastTab-tab" data-bs-toggle="tab" data-bs-target="#LastTab-pane" role="tab" aria-controls="LastTab-pane" aria-selected="true">Tur @Model.Tournament.Tours.Count()</a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        @foreach (var p in Model.Tournament.Tours)
+        {
+            <div class="tab-pane fade" id="@p.Name-pane" role="tabpanel" aria-labelledby="@p.Name-tab" tabindex="0">
+                @foreach (var item in p.Pairs)
+                {
+                    if (item.TourId == p.Id) // Assuming there's a property like TourId in your pair model
+                    {
+                        <div>
+                            @item.User1Score - @item.User2Score
+                        </div>
+                    }
+                }
+            </div>
+        }
+        <!-- Last Tab Content -->
+        <div class="tab-pane  show active" id="LastTab-pane" role="tabpanel" aria-labelledby="LastTab-tab" tabindex="0">
+            <form asp-action="SaveScores" method="post">
+                <h3>Tur#@Model.Tournament.Tours.Count()</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Oyuncu 1</th>
+                            <th>Skor 1</th>
+                            <th>Skor 2</th>
+                            <th>Oyuncu 2</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.PairVMs.Count; i++)
+                        {
+                            <tr>
+                                <input type="hidden" name="Scores[@i].PairId" value="@Model.Scores[i].PairId" />
+                                <input type="hidden" name="Scores[@i].TournamentId" value="@Model.Tournament.Id" />
+                                <td>@Model.PairVMs[i].User1.Name @Model.PairVMs[i].User1.SurName</td>
+                                @if (Model.PairVMs[i].User2 != null)
+                                {
+                                    <td>
+                                        <input type="number" name="Scores[@i].User1Score" />
+                                    </td>
+                                    <td>
+                                        <input type="number" name="Scores[@i].User2Score" />
+                                    </td>
+                                    <td>@Model.PairVMs[i].User2.Name @Model.PairVMs[i].User2.SurName</td>
+                                }
+                                else
+                                {
+                                    <td><span>Bye</span></td>
+                                    <td></td> <!-- Empty cell for Skor 1 -->
+                                    <td></td> <!-- Empty cell for Skor 2 -->
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <button type="submit" class="btn btn-primary">Save Scores</button>
+            </form>
+        </div>
+    </div>
+
+}
+else
+{
+    <ul class="nav nav-tabs ">
+        @foreach (var item in Model.Tournament.Tours)
+        {
+
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="@item.Name-tab" data-bs-toggle="tab" data-bs-target="#@item.Name-pane" role="tab" aria-controls="@item.Name-pane" aria-selected="true">@item.Name</a>
+            </li>
+        }
+    </ul>
+
+    <div class="tab-content">
+
+        @foreach (var p in Model.Tournament.Tours)
+        {
+            <div class="tab-pane fade" id="@p.Name-pane" role="tabpanel" aria-labelledby="@p.Name-tab" tabindex="0">
+                @foreach (var item in p.Pairs)
+                {
+                    if (item.TourId == p.Id) // Assuming there's a property like TourId in your pair model
+                    {
+                        <div>
+                            @item.User1Score - @item.User2Score
+                        </div>
+                    }
+                }
+            </div>
+        }
+    </div>
+
+    <form asp-action="DrawLot" method="post">
+        <input type="hidden" value="@Model.Tournament.Id" name="Id" />
+        <button type="submit" class="btn btn-danger">Tur#@(Model.Tournament.Tours.Count() + 1) Kura Çek </button>
+    </form>
+
+}
+
+
+
+

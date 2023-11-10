@@ -1,0 +1,23 @@
+﻿@model AdminCreateViewModel
+@{
+    ViewData["Title"] = "CreateAdmin";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form asp-action="CreateAdmin" method="post" class="p-4 w-75 mx-auto shadow">
+
+    <div class="mb-3">
+        <label>İsim:</label>
+        <span class="text-danger" asp-validation-for="@Model.Username"></span>
+        <input asp-for="@Model.Username" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label>Parola:</label>
+        <span class="text-danger" asp-validation-for="@Model.Password"></span>
+        <input asp-for="@Model.Password" class="form-control" type="password" />
+    </div>    
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+    <div class="text-danger mt-2" asp-validation-summary="ModelOnly">
+    </div>
+</form>
+

@@ -1,0 +1,107 @@
+﻿@model Tournament
+@{
+    ViewData["Title"] = "UpdateT";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>UpdateT</h1>
+<form method="post" asp-action="UpdateT">
+    <input asp-for="@Model.Id" type="hidden" />
+    <div class="mb-3">
+        <label>Turnuva İsmi:</label>
+        <span class="text-danger" asp-validation-for="@Model.Name"></span>
+        <input asp-for="@Model.Name" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label>Turnuva Konumu:</label>
+        <span class="text-danger" asp-validation-for="@Model.Place"></span>
+        <input asp-for="@Model.Place" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Turnuva Sistemi:</label>
+        <span class="text-danger" asp-validation-for="@Model.System"></span>
+
+        <select class="form-control" asp-for="@Model.System">
+            <option>Seçiniz</option>
+            <option>BG System</option>
+            <option>Bracket</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Turnuva Tipi:</label>
+        <span class="text-danger" asp-validation-for="@Model.Type"></span>
+
+        <select class="form-control" asp-for="@Model.Type">
+            <option>Seçiniz</option>
+            <option>Kazananlar Eşleşir</option>
+            <option>Kaybedenler Eşleşir</option>
+            <option>Aynı Haklılar Eşleşir</option>
+            <option>Rastgele</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Oynama Hakkı:</label>
+        <span class="text-danger" asp-validation-for="@Model.PlayLife"></span>
+
+        <select class="form-control" asp-for="@Model.PlayLife">
+            <option>Seçiniz</option>
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+            <option>6</option>
+            <option>7</option>
+            <option>8</option>
+            <option>9</option>
+            <option>10</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label>Başlama Zamanı:</label>
+        <span class="text-danger" asp-validation-for="@Model.StartDate"></span>
+        <div class="input-group date" id="datepicker" data-target-input="nearest">
+            <input class="form-control datetimepicker-input" data-target="#datepicker" asp-for="@Model.StartDate" />
+            <div class="input-group-append" data-target="#datepicker" data-toggle="datetimepicker">
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Bye Tipi:</label>
+        <span class="text-danger" asp-validation-for="@Model.ByeType"></span>
+
+        <select class="form-control" asp-for="@Model.ByeType">
+            <option>Seçiniz</option>
+            <option>En Az Kaybedenler</option>
+            <option>En Az Kazananlar</option>
+            <option>Rastgele</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label>Masa Başlangıç:</label>
+        <span class="text-danger" asp-validation-for="@Model.TableStart"></span>
+        <input asp-for="@Model.TableStart" class="form-control" value="@(string.IsNullOrEmpty(Model.TableStart.ToString()) ? "1" : Model.TableStart)" />
+    </div>
+    <button type="submit" class="btn btn-success">Güncelle</button>
+    <div class="text-danger mt-2" asp-validation-summary="ModelOnly"></div>
+
+
+</form>
+@section Script{
+
+    <script>
+        $(document).ready(function () {
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+                    toastr.success('@TempData["SuccessMessage"]');
+                setTimeout(function () {
+                    window.location.href = '@Url.Action("GetListT", "Tournament")';
+                }, 1000);
+            </text>
+
+        }
+     });
+    </script>
+}
+

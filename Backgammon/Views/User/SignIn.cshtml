@@ -1,0 +1,23 @@
+﻿@model AdminSignInModel
+@{
+    ViewData["Title"] = "SignIn";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form asp-action="SignIn" method="post" class="p-4 w-75 mx-auto shadow">
+
+    <div class="mb-3">
+        <label>İsim:</label>
+        <span class="text-danger" asp-validation-for="@Model.UserName"></span>
+        <input asp-for="@Model.UserName" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label>Parola:</label>
+        <span class="text-danger" asp-validation-for="@Model.Password"></span>
+        <input asp-for="@Model.Password" class="form-control" type="password" />
+    </div>
+    <button type="submit" class="btn btn-primary">Giriş</button>
+    <div class="text-danger mt-2" asp-validation-summary="ModelOnly">
+    </div>
+</form>
+

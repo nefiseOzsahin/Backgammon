@@ -1,0 +1,80 @@
+﻿@model List<Tournament>
+@{
+    ViewData["Title"] = "GetListT";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>GetListT</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Turnuva İsmi</th>
+            <th>Şampiyon</th>
+            <th>Oyuncu</th>
+            <th>Tarih</th>
+            <th>İşlem</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model)
+        {
+
+            @*modal starts*@
+            <div class="modal" id="myModal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Modal Title</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                           @item.Name turnuvası silinecek. Onaylıyor musunuz?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                            <a  class="btn btn-primary" asp-action="DeleteT" asp-route-tournamentId="@item.Id">Sil</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @*modal ends*@
+
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.Name</td>
+                <td></td>
+                <td>@item.Users.Count()</td>
+                <td>@item.StartDate</td>
+                <td>
+                    <a asp-action="Tours" asp-route-tournamentId="@item.Id">Turlar</a>
+                    <a asp-action="TUserList" asp-route-tournamentId="@item.Id">Oyuncular</a>
+                    <a asp-action="UpdateT" asp-route-tournamentId="@item.Id">Güncelle</a>
+                @*    <a asp-action="DeleteT" asp-route-tournamentId="@item.Id">Sil</a>*@
+
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
+                        Sil
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@section Script{
+
+    <script>
+        $(document).ready(function () {
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+                    toastr.success('@TempData["SuccessMessage"]');
+                setTimeout(function () {
+                    window.location.href = '@Url.Action("GetListT", "Tournament")';
+                }, 1000);
+            </text>
+
+        }
+             });
+    </script>
+}

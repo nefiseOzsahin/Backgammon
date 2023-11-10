@@ -1,0 +1,139 @@
+﻿@model AppUser
+
+@{
+    ViewData["Title"] = "UpdateUserAsync";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>UpdateUserAsync</h1>
+
+<div class="container shadow p-2">
+
+    <h4>Kullanıcı Güncelle</h4>
+    <form asp-action="UpdateUser" method="post" class="p-3  w-75">
+        <input type="hidden" asp-for="@Model.Id" />
+
+        <div class="form-group">
+            <label>İsim:</label>
+            <span class="text-danger" asp-validation-for="@Model.Name"></span>
+            <input asp-for="@Model.Name" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label>Soyisim:</label>
+            <span class="text-danger" asp-validation-for="@Model.SurName"></span>
+            <input asp-for="@Model.SurName" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label>Email:</label>
+            <span class="text-danger" asp-validation-for="@Model.Email"></span>
+            <input asp-for="@Model.Email" type="email" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label>Telefon:</label>
+            <span class="text-danger" asp-validation-for="@Model.PhoneNumber"></span>
+            <input asp-for="@Model.PhoneNumber" type="tel" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label>Cinsiyet:</label>
+            <span class="text-danger" asp-validation-for="@Model.Gender"></span>
+
+            <select class="form-control" asp-for="@Model.Gender">
+                <option>Seçiniz</option>
+                <option>Erkek</option>
+                <option>Kadın</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Fotoğraf:</label>
+            <input class="form-control" type="file" asp-for="@Model.ImagePath">
+        </div>
+
+        <div class="mb-3">
+            <label>Kulüp:</label>
+            <span class="text-danger" asp-validation-for="@Model.Club"></span>
+            <input asp-for="@Model.Club" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label>Ülke:</label>
+            <span class="text-danger" asp-validation-for="@Model.Country"></span>
+            <br />
+            <select asp-for="Country">
+                <option value=@Model.Country>@Model.Country</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label>Şehir:</label>
+            <span class="text-danger" asp-validation-for="@Model.City"></span>
+            <br />
+            <select asp-for="City">
+                <option value=@Model.City>@Model.City</option>
+            </select>
+        </div>
+        <div class="mb-3">         
+            <label asp-for="IsActive">Oyuncu Aktif mi?</label>
+            <input asp-for="IsActive" />
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary mt-3">Kaydet</button>
+        </div>
+
+        <div class="text-danger mt-2" asp-validation-summary="ModelOnly"></div>
+
+    </form>
+</div>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+@section Script {
+    <script>
+        $(document).ready(function () {
+            console.log("JavaScript code executed"); // Add this line
+            var countrySelect = $("#Country");
+            var citySelect = $("#City");
+
+            // Fetch the list of countries when the page loads
+
+            $.get("/Country/Index", function (data) {
+                console.log(data);
+                // Check if data is an array or object
+                if (Array.isArray(data) || typeof data === 'object') {
+                    // Iterate over the data
+                    $.each(data, function (index, item) {
+                        countrySelect.append($('<option value="' + item.countryCode + '">' + item.countryName + '</option>'));
+                    });
+                } else {
+                    console.error("Received unexpected data format:", data);
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.error("AJAX request failed:", errorThrown);
+            });
+
+
+            // Handle the change event of the country select box
+            countrySelect.change(function () {
+
+                $("#loader").show();
+                var selectedCountryCode = countrySelect.val();
+
+                // Fetch the list of cities for the selected country
+                $.get("/User/GetCity", { countryCode: selectedCountryCode }, function (data) {
+                    citySelect.empty();
+                    citySelect.append($('<option>Please select a city</option>'));
+                    $.each(data, function (index, city) {
+
+                        data.cityList.sort((a, b) => a.name.localeCompare(b.name));
+                        citySelect.empty();
+                        citySelect.append($('<option value="">Please select a city</option>'));
+
+                        data.cityList.forEach(function (city) {
+                            citySelect.append($('<option value="' + city.name + '">' + city.name + '</option>'));
+                        });
+
+                        $("#loader").hide();
+                    });
+                });
+            });
+        });
+    </script>
+}
+
+

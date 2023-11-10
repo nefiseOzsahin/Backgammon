@@ -1,0 +1,130 @@
+﻿@model UserCreateViewModel
+@{
+    Layout = "_Layout";
+}
+
+<form asp-action="Create" method="post" class="p-4 w-75 mx-auto shadow">
+
+    <div class="mb-3">
+        <label>İsim:</label>
+        <span class="text-danger" asp-validation-for="@Model.Name"></span>
+        <input asp-for="@Model.Name" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label>Soyisim:</label>
+        <span class="text-danger" asp-validation-for="@Model.Surname"></span>
+        <input asp-for="@Model.Surname" class="form-control" />
+    </div>     
+    <div class="form-group">
+        <label>Cinsiyet:</label>
+        <span class="text-danger" asp-validation-for="@Model.Gender"></span>
+
+        <select class="form-control" asp-for="@Model.Gender">
+            <option>Seçiniz</option>
+            <option>Erkek</option>
+            <option>Kadın</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label>Email:</label>
+        <span class="text-danger" asp-validation-for="@Model.Email"></span>
+        <input asp-for="@Model.Email" class="form-control" type="email" />
+    </div>
+    <div class="mb-3">
+        <label>Telefon:</label>
+        <span class="text-danger" asp-validation-for="@Model.Phone"></span>
+        <input asp-for="@Model.Phone" class="form-control"  />
+    </div>
+    <div class="mb-3">
+        <label  class="form-label">Fotoğraf:</label>
+        <input class="form-control" type="file" asp-for="@Model.ImagePath">
+    </div>
+
+    <div class="mb-3">
+        <label>Kulüp:</label>
+        <span class="text-danger" asp-validation-for="@Model.Club"></span>
+        <input asp-for="@Model.Club" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label>Ülke:</label>
+        <span class="text-danger" asp-validation-for="@Model.Country"></span>
+        <br />
+        <select asp-for="Country">
+            <option value="">Please select a country</option>
+        </select>
+    </div>
+    <div class ="mb-3">
+        <label>Şehir:</label>
+        <span class="text-danger" asp-validation-for="@Model.City"></span>
+        <br />
+        <select asp-for="City">
+            <option value="">Please select a city</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label asp-for="IsActive">Oyuncu Aktif mi?</label>
+        <input asp-for="IsActive" />
+    </div>
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+    <div class="text-danger mt-2" asp-validation-summary="ModelOnly">
+
+    </div>
+    </form>
+
+<div id="loader" style="display: none;">
+    <img src="loader.gif" alt="Loading..." />
+</div>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+@section Script {
+    <script>
+        $(document).ready(function () {
+            console.log("JavaScript code executed"); // Add this line
+            var countrySelect = $("#Country");
+            var citySelect = $("#City");
+
+            // Fetch the list of countries when the page loads
+
+            $.get("/Country/Index", function (data) {
+                console.log(data);
+                // Check if data is an array or object
+                if (Array.isArray(data) || typeof data === 'object') {
+                    // Iterate over the data
+                    $.each(data, function (index, item) {
+                        countrySelect.append($('<option value="' + item.countryCode + '">' + item.countryName + '</option>'));
+                    });
+                } else {
+                    console.error("Received unexpected data format:", data);
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.error("AJAX request failed:", errorThrown);
+            });
+
+
+            // Handle the change event of the country select box
+            countrySelect.change(function () {
+
+                $("#loader").show();
+                var selectedCountryCode = countrySelect.val();
+
+                // Fetch the list of cities for the selected country
+                $.get("/User/GetCity", { countryCode: selectedCountryCode }, function (data) {
+                    citySelect.empty();
+                    citySelect.append($('<option>Please select a city</option>'));
+                    $.each(data, function (index, city) {
+
+                        data.cityList.sort((a, b) => a.name.localeCompare(b.name));
+                        citySelect.empty();
+                        citySelect.append($('<option value="">Please select a city</option>'));
+
+                        data.cityList.forEach(function (city) {
+                            citySelect.append($('<option value="' + city.name + '">' + city.name + '</option>'));
+                        });
+
+                        $("#loader").hide();
+                    });
+                });
+            });
+        });
+    </script>
+}
+
