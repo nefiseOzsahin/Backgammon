@@ -89,9 +89,23 @@ namespace Backgammon.Controllers
                 .Include(t => t.Tours).ThenInclude(tour => tour.Pairs)
                 .FirstOrDefaultAsync(x => x.Id == tournamentId);
 
+
+
+            List<ScoreViewModel> scoresForTour = new List<ScoreViewModel>();
+            var toursWithPairs = _context.Tours
+            .Include(tour => tour.Pairs)
+            .Where(t => t.TournamentId == tournamentId)
+            .ToList();
+            foreach (var tour in toursWithPairs)
+            {
+                var scoresForCurrentTour = InitializeScores(tour);
+                scoresForTour.AddRange(scoresForCurrentTour);
+            }
+
             var vm = new ToursVM
             {
                 Tournament = tournament,
+                Scores=scoresForTour
             };
 
             return View(vm);

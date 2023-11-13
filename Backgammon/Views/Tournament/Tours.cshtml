@@ -107,7 +107,7 @@ else
 
     <div class="tab-content">
 
-        @foreach (var p in Model.Tournament.Tours)
+       @* @foreach (var p in Model.Tournament.Tours)
         {
             <div class="tab-pane fade" id="@p.Name-pane" role="tabpanel" aria-labelledby="@p.Name-tab" tabindex="0">
                 @foreach (var item in p.Pairs)
@@ -120,7 +120,29 @@ else
                     }
                 }
             </div>
+        }*@
+
+         @foreach (var p in Model.Tournament.Tours)
+        {
+            <div class="tab-pane fade" id="@p.Name-pane" role="tabpanel" aria-labelledby="@p.Name-tab" tabindex="0">
+                @foreach (var item in p.Pairs)
+                {
+                    if (item.TourId == p.Id) // Assuming there's a property like TourId in your pair model
+                    {
+                        var scoresForCurrentPair = Model.Scores.FirstOrDefault(s => s.PairId == item.Id);
+
+                        <div>
+                            <p>
+                                @(scoresForCurrentPair != null
+                ? $"{scoresForCurrentPair.User1Name} : {item.User1Score} - {item.User2Score} : {scoresForCurrentPair.User2Name}"
+                : "Scores not available")
+                            </p>
+                        </div>
+                    }
+                }
+            </div>
         }
+
     </div>
 
     <form asp-action="DrawLot" method="post">
