@@ -7,7 +7,7 @@
 @if (Model.PairVMs != null)
 {
     <ul class="nav nav-tabs">
-        @foreach (var item in Model.Tournament.Tours.OrderBy(x=>x.Id))
+        @foreach (var item in Model.Tournament.Tours.OrderBy(x => x.Id).SkipLast(1))
         {
             <li class="nav-item" role="presentation">
                 <a class="nav-link" id="@item.Name-tab" data-bs-toggle="tab" data-bs-target="#@item.Name-pane" role="tab" aria-controls="@item.Name-pane" aria-selected="true">@item.Name</a>
@@ -26,8 +26,14 @@
                 {
                     if (item.TourId == p.Id) // Assuming there's a property like TourId in your pair model
                     {
+                        var scoresForCurrentPair = Model.Scores.FirstOrDefault(s => s.PairId == item.Id);
+
                         <div>
-                            @item.User1Score - @item.User2Score
+                            <p>
+                                @(scoresForCurrentPair != null
+                ? $"{scoresForCurrentPair.User1Name} : {item.User1Score} - {item.User2Score} : {scoresForCurrentPair.User2Name}"
+                : "Scores not available")
+                            </p>
                         </div>
                     }
                 }
@@ -36,38 +42,53 @@
         <!-- Last Tab Content -->
         <div class="tab-pane  show active" id="LastTab-pane" role="tabpanel" aria-labelledby="LastTab-tab" tabindex="0">
             <form asp-action="SaveScores" method="post">
-                <h3>Tur#@Model.Tournament.Tours.Count()</h3>
+               @* <h3>Tur#@Model.Tournament.Tours.Count()</h3>*@
                 <table class="table">
-                    <thead>
+                    @*<thead>
                         <tr>
                             <th>Oyuncu 1</th>
                             <th>Skor 1</th>
                             <th>Skor 2</th>
                             <th>Oyuncu 2</th>
                         </tr>
-                    </thead>
+                    </thead>*@
                     <tbody>
+                        
                         @for (int i = 0; i < Model.PairVMs.Count; i++)
                         {
                             <tr>
-                                <input type="hidden" name="Scores[@i].PairId" value="@Model.Scores[i].PairId" />
-                                <input type="hidden" name="Scores[@i].TournamentId" value="@Model.Tournament.Id" />
-                                <td>@Model.PairVMs[i].User1.Name @Model.PairVMs[i].User1.SurName</td>
-                                @if (Model.PairVMs[i].User2 != null)
+                                @if (Model.Tournament.Tours.Any())
                                 {
-                                    <td>
-                                        <input type="number" name="Scores[@i].User1Score" />
-                                    </td>
-                                    <td>
-                                        <input type="number" name="Scores[@i].User2Score" />
-                                    </td>
-                                    <td>@Model.PairVMs[i].User2.Name @Model.PairVMs[i].User2.SurName</td>
-                                }
-                                else
-                                {
-                                    <td><span>Bye</span></td>
-                                    <td></td> <!-- Empty cell for Skor 1 -->
-                                    <td></td> <!-- Empty cell for Skor 2 -->
+                                    var maxTourId = Model.Tournament.Tours.Max(t => t.Id);
+                                    var scoresForCurrentTour = Model.Scores.Where(s => s.TourId == maxTourId).ToList();
+
+
+                                    if (scoresForCurrentTour.Any())
+                                    {
+                                        var score = scoresForCurrentTour[i];
+                                        <input type="hidden" name="Scores[@i].PairId" value="@score.PairId" />
+                                        <input type="hidden" name="Scores[@i].TournamentId" value="@Model.Tournament.Id" />
+                                        <td>@Model.PairVMs[i].User1.Name @Model.PairVMs[i].User1.SurName</td>
+
+                                        @if (Model.PairVMs[i].User2 != null)
+                                        {
+                                            <td>
+                                                <input type="number" name="Scores[@i].User1Score" value="@score.User1Score" />
+                                                <input type="hidden" name="User1Name" value="@score.User1Name" />
+                                            </td>
+                                            <td>
+                                                <input type="number" name="Scores[@i].User2Score" value="@score.User2Score" />
+                                                <input type="hidden" name="User2Name" value="@score.User2Name" />
+                                            </td>
+                                            <td>@Model.PairVMs[i].User2.Name @Model.PairVMs[i].User2.SurName</td>
+                                        }
+                                        else
+                                        {
+                                            <td><span>Bye</span></td>
+                                            <td></td> <!-- Empty cell for User1Score -->
+                                            <td></td> <!-- Empty cell for User2Score -->
+                                        }
+                                    }
                                 }
                             </tr>
                         }

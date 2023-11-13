@@ -84,9 +84,10 @@ namespace Backgammon.Controllers
         public async Task<IActionResult> Tours(int tournamentId)
         {
             var tournament = await _context.Tournaments
-       .Include(t => t.Tours)
-           .ThenInclude(t => t.Pairs)
-       .FirstOrDefaultAsync(x => x.Id == tournamentId);
+                .Include(t => t.Users)
+                .Include(t => t.Tours).ThenInclude(tour => tour.Users)
+                .Include(t => t.Tours).ThenInclude(tour => tour.Pairs)
+                .FirstOrDefaultAsync(x => x.Id == tournamentId);
 
             var vm = new ToursVM
             {
@@ -150,6 +151,11 @@ namespace Backgammon.Controllers
 
                     };
                     pairVMs.Add(pairvm);
+                    shuffledUsers[i].Tours.Add(newTour);
+                    shuffledUsers[i + 1].Tours.Add(newTour);
+                    pair.User1Id = shuffledUsers[i].Id;
+                    pair.User2Id = shuffledUsers[i + 1].Id;
+
                 }
             }
 
@@ -172,6 +178,8 @@ namespace Backgammon.Controllers
 
                 };
                 pairVMs.Add(SingleUserPairvm);
+                shuffledUsers.Last().Tours.Add(newTour);
+                singleUserPair.User1Id = shuffledUsers.Last().Id;
             }
 
 
@@ -186,25 +194,51 @@ namespace Backgammon.Controllers
 
             var savedPairs = _context.Pairs.Where(p => p.TourId == newTour.Id).ToList();
 
-            List<ScoreViewModel> scores = savedPairs.Select(pair => new ScoreViewModel
+            List<ScoreViewModel> scoresForTour = new List<ScoreViewModel>();
+            var toursWithPairs = _context.Tours
+            .Include(tour => tour.Pairs)
+            .Where(t => t.TournamentId == model.Id)
+            .ToList();
+            foreach (var tour in toursWithPairs)
             {
-                TournamentId = model.Id,
-                PairId = pair.Id, // Set the PairId using the Id of the saved Pair entity
-                User1Score = 0,   // Initialize with default values
-                User2Score = 0    // Initialize with default values
-            }).ToList();
+                var scoresForCurrentTour = InitializeScores(tour);
+                scoresForTour.AddRange(scoresForCurrentTour);
+            }
 
             ToursVM vm = new()
             {
                 Tournament = await _context.Tournaments
-       .Include(t => t.Tours)
-           .ThenInclude(t => t.Pairs)
-       .FirstOrDefaultAsync(x => x.Id == model.Id),
+                    .Include(t => t.Users) // Include the Users for the Tournament
+                    .Include(t => t.Tours)
+                        .ThenInclude(tour => tour.Users) // Include the Users for each Tour
+                    .Include(t => t.Tours)
+                        .ThenInclude(tour => tour.Pairs)
+                    .FirstOrDefaultAsync(x => x.Id == model.Id),
                 PairVMs = pairVMs,
-                Scores = scores
+                Scores = scoresForTour
             };
 
             return View("Tours", vm);
+        }
+
+        private string GetUserDisplayName(int userId)
+        {
+            var user = _context.Users.Find(userId);
+            return user != null ? $"{user.Name} {user.SurName}" : "User not found";
+        }
+
+        private List<ScoreViewModel> InitializeScores(Tour tour)
+        {
+            return tour.Pairs.Select(pair => new ScoreViewModel
+            {
+                TournamentId = tour.TournamentId,
+                PairId = pair.Id,
+                User1Score = pair.User1Score,  // Fetch from the database
+                User2Score = pair.User2Score,  // Fetch from the database
+                User1Name = GetUserDisplayName(pair.User1Id),
+                User2Name = GetUserDisplayName(pair.User2Id),
+                TourId = tour.Id
+            }).ToList();
         }
 
 
