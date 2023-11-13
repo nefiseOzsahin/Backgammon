@@ -42,16 +42,9 @@
         <!-- Last Tab Content -->
         <div class="tab-pane  show active" id="LastTab-pane" role="tabpanel" aria-labelledby="LastTab-tab" tabindex="0">
             <form asp-action="SaveScores" method="post">
-               @* <h3>Tur#@Model.Tournament.Tours.Count()</h3>*@
+             
                 <table class="table">
-                    @*<thead>
-                        <tr>
-                            <th>Oyuncu 1</th>
-                            <th>Skor 1</th>
-                            <th>Skor 2</th>
-                            <th>Oyuncu 2</th>
-                        </tr>
-                    </thead>*@
+                  
                     <tbody>
                         
                         @for (int i = 0; i < Model.PairVMs.Count; i++)
