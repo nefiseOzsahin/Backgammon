@@ -4,6 +4,7 @@ using Backgammon.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backgammon.Migrations
 {
     [DbContext(typeof(BackgammonContext))]
-    partial class BackgammonContextModelSnapshot : ModelSnapshot
+    [Migration("20231116071832_TounamentUserAdded")]
+    partial class TounamentUserAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -289,9 +292,6 @@ namespace Backgammon.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ByeCount")
-                        .HasColumnType("int");
-
                     b.Property<int>("LifeCount")
                         .HasColumnType("int");
 
@@ -302,9 +302,6 @@ namespace Backgammon.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("WinCount")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -474,7 +471,7 @@ namespace Backgammon.Migrations
             modelBuilder.Entity("Backgammon.Entities.TournamentUser", b =>
                 {
                     b.HasOne("Backgammon.Entities.Tournament", "Tournament")
-                        .WithMany("TournamentUsers")
+                        .WithMany("tournamentUsers")
                         .HasForeignKey("TournamentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -553,9 +550,9 @@ namespace Backgammon.Migrations
 
             modelBuilder.Entity("Backgammon.Entities.Tournament", b =>
                 {
-                    b.Navigation("TournamentUsers");
-
                     b.Navigation("Tours");
+
+                    b.Navigation("tournamentUsers");
                 });
 #pragma warning restore 612, 618
         }

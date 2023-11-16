@@ -21,5 +21,6 @@ namespace Backgammon.Entities
         public DateTime? CreateDate { get; set; }
         public ICollection<AppUser> Users { get; set; } = new List<AppUser>();
         public ICollection<Tour> Tours { get; set; } = new List<Tour>();
+        public ICollection<TournamentUser> TournamentUsers { get; set; }= new List<TournamentUser>();
     }
 }

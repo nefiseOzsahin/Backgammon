@@ -47,7 +47,20 @@ namespace Backgammon.Controllers
                     foreach (int item in Id)
                     {
 
-                        model.Tournament.Users.Add(await _userManager.FindByIdAsync(item.ToString()));
+                        var user = await _userManager.FindByIdAsync(item.ToString());
+
+                        model.Tournament.Users.Add(user);
+
+                        // Create a TournamentUser entity and associate it with the tournament
+                        var tournamentUser = new TournamentUser
+                        {
+                            Tournament = model.Tournament,
+                            User = user,
+                            // Set other properties like LoseCount, LifeCount, etc.
+                        };
+
+                        // Add the TournamentUser to the context
+                        _context.TournamentUsers.Add(tournamentUser);
                     }
 
 
@@ -105,7 +118,7 @@ namespace Backgammon.Controllers
             var vm = new ToursVM
             {
                 Tournament = tournament,
-                Scores=scoresForTour
+                Scores = scoresForTour
             };
 
             return View(vm);
@@ -114,13 +127,24 @@ namespace Backgammon.Controllers
         [HttpPost]
         public async Task<IActionResult> DrawLot(Tournament model, int id)
         {
-            List<AppUser> users = await _userService.GetNonAdminUsersOfATournamentAsync(model.Id);
-            if (users.Count < 2)
+            List<AppUser> eligibleUsers = await _userService.GetNonAdminUsersOfATournamentAsync(model.Id);
+            if (eligibleUsers.Count < 2)
             {
                 // Handle the case where there are not enough users to create pairs.
                 // You may want to return a view with an error message in this case.
                 return View();
             }
+
+            List<AppUser> users = eligibleUsers
+    .Where(user =>
+    {
+        var tournamentUser = _context.TournamentUsers
+            .FirstOrDefault(tu => tu.UserId == user.Id && tu.TournamentId == model.Id);
+
+        return tournamentUser == null || tournamentUser.LoseCount < model.PlayLife;
+    })
+    .ToList();
+
 
             int existingTourCount = await _context.Tours
       .Where(t => t.TournamentId == model.Id)
@@ -194,6 +218,7 @@ namespace Backgammon.Controllers
                 pairVMs.Add(SingleUserPairvm);
                 shuffledUsers.Last().Tours.Add(newTour);
                 singleUserPair.User1Id = shuffledUsers.Last().Id;
+                UpdateByeCount(shuffledUsers.Last().Id, model.Id);
             }
 
 
@@ -276,6 +301,19 @@ namespace Backgammon.Controllers
                                 pair.User1Score = score.User1Score;
                                 pair.User2Score = score.User2Score;
 
+
+                                //Determine the loser and update the loseCount for the current tournament
+                                if (pair.User1Score < pair.User2Score)
+                                {
+                                    UpdateLoseCount(pair.User1Id, score.TournamentId);
+                                    UpdateWinCount(pair.User2Id, score.TournamentId);
+                                }
+                                else if (pair.User1Score > pair.User2Score)
+                                {
+                                    UpdateLoseCount(pair.User2Id, score.TournamentId);
+                                    UpdateWinCount(pair.User1Id, score.TournamentId);
+                                }
+
                                 // Update the pair in the database
                                 _context.Pairs.Update(pair);
                             }
@@ -310,6 +348,35 @@ namespace Backgammon.Controllers
 
             // If ModelState is not valid, return to the form with validation errors
             return View("Tours", new ToursVM()); // Replace with your actual view name and view model
+        }
+
+        private void UpdateLoseCount(int userId, int tournamentId)
+        {
+            var tournamentUser = _context.TournamentUsers.FirstOrDefault(tu => tu.UserId == userId && tu.TournamentId == tournamentId);
+            if (tournamentUser != null)
+            {
+                tournamentUser.LoseCount++;
+                _context.TournamentUsers.Update(tournamentUser);
+            }
+        }
+
+        private void UpdateWinCount(int userId, int tournamentId)
+        {
+            var tournamentUser = _context.TournamentUsers.FirstOrDefault(tu => tu.UserId == userId && tu.TournamentId == tournamentId);
+            if (tournamentUser != null)
+            {
+                tournamentUser.WinCount++;
+                _context.TournamentUsers.Update(tournamentUser);
+            }
+        }
+        private void UpdateByeCount(int userId, int tournamentId)
+        {
+            var tournamentUser = _context.TournamentUsers.FirstOrDefault(tu => tu.UserId == userId && tu.TournamentId == tournamentId);
+            if (tournamentUser != null)
+            {
+                tournamentUser.ByeCount++;
+                _context.TournamentUsers.Update(tournamentUser);
+            }
         }
 
 

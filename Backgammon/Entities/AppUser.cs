@@ -16,5 +16,7 @@ namespace Backgammon.Entities
         public ICollection<Tournament> Tournaments { get; set; } = new List<Tournament>();
         public ICollection<Tour> Tours { get; set; } = new List<Tour>();
 
+        public ICollection<TournamentUser> TournamentUsers { get; set; }= new List<TournamentUser>();
+
     }
 }

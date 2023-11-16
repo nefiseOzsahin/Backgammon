@@ -15,6 +15,8 @@ namespace Backgammon.Context
         public DbSet<Tour> Tours { get; set; }
         public DbSet<Pair> Pairs { get; set; }
 
+        public DbSet<TournamentUser> TournamentUsers { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -40,7 +42,11 @@ namespace Backgammon.Context
             modelBuilder.Entity<AppUser>()
               .Property(u => u.SurName)
               .IsRequired(false);
-         
+            modelBuilder.Entity<Tournament>()
+              .HasMany(t => t.TournamentUsers)
+              .WithOne(tu => tu.Tournament)
+              .HasForeignKey(tu => tu.TournamentId);
+
         }
     }
 }

@@ -131,6 +131,7 @@ else
 
     <form asp-action="DrawLot" method="post">
         <input type="hidden" value="@Model.Tournament.Id" name="Id" />
+        <input type="hidden" value="@Model.Tournament.PlayLife" name="PlayLife" />
         <button type="submit" class="btn btn-danger">Tur#@(Model.Tournament.Tours.Count() + 1) Kura Çek </button>
     </form>
 
