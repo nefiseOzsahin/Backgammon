@@ -4,6 +4,7 @@ using Backgammon.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backgammon.Migrations
 {
     [DbContext(typeof(BackgammonContext))]
-    partial class BackgammonContextModelSnapshot : ModelSnapshot
+    [Migration("20231120124044_isChampionColAdded")]
+    partial class isChampionColAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -281,29 +284,6 @@ namespace Backgammon.Migrations
                     b.ToTable("Tournaments");
                 });
 
-            modelBuilder.Entity("Backgammon.Entities.TournamentChampion", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ChampionId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TournamentId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ChampionId");
-
-                    b.HasIndex("TournamentId");
-
-                    b.ToTable("TournamentChampions");
-                });
-
             modelBuilder.Entity("Backgammon.Entities.TournamentUser", b =>
                 {
                     b.Property<int>("Id")
@@ -314,6 +294,9 @@ namespace Backgammon.Migrations
 
                     b.Property<int>("ByeCount")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsChampion")
+                        .HasColumnType("bit");
 
                     b.Property<int>("LifeCount")
                         .HasColumnType("int");
@@ -490,25 +473,6 @@ namespace Backgammon.Migrations
                         .HasForeignKey("TournamentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Tournament");
-                });
-
-            modelBuilder.Entity("Backgammon.Entities.TournamentChampion", b =>
-                {
-                    b.HasOne("Backgammon.Entities.AppUser", "Champion")
-                        .WithMany()
-                        .HasForeignKey("ChampionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Backgammon.Entities.Tournament", "Tournament")
-                        .WithMany()
-                        .HasForeignKey("TournamentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Champion");
 
                     b.Navigation("Tournament");
                 });

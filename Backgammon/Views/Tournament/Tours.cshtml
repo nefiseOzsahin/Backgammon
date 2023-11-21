@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Tours";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var championName = TempData["ChampionName"] as string;
 }
 
 @if (Model.PairVMs != null)
@@ -129,11 +130,22 @@ else
 
     </div>
 
+    @if (!string.IsNullOrEmpty(championName))
+    {
+        <div>
+            Şampiyon: @championName
+        </div>
+    }
+    else
+    {
+        
     <form asp-action="DrawLot" method="post">
         <input type="hidden" value="@Model.Tournament.Id" name="Id" />
         <input type="hidden" value="@Model.Tournament.PlayLife" name="PlayLife" />
         <button type="submit" class="btn btn-danger">Tur#@(Model.Tournament.Tours.Count() + 1) Kura Çek </button>
     </form>
+    }
+
 
 }
 

@@ -121,6 +121,15 @@ namespace Backgammon.Controllers
                 Scores = scoresForTour
             };
 
+
+            var champion = _context.TournamentChampions.Where(x => x.TournamentId == tournamentId).ToList();
+            if (champion.Count() != 0)
+            {
+                var championUser = _context.Users
+                   .FirstOrDefault(u => u.Id == champion.FirstOrDefault().ChampionId);
+                TempData["ChampionName"] = $"{championUser.Name} {championUser.SurName}";
+            }
+
             return View(vm);
         }
 
@@ -145,6 +154,25 @@ namespace Backgammon.Controllers
     })
     .ToList();
 
+            if (users.Count == 1)
+            {
+                // Handle the case where there are only two users (e.g., display a message)
+                TempData["ChampionName"] = $"{users.FirstOrDefault().Name} {users.FirstOrDefault().SurName}";
+
+
+                var champion = new TournamentChampion
+                {
+                    TournamentId = model.Id,
+                    ChampionId = users.FirstOrDefault().Id
+                };
+
+                _context.TournamentChampions.Add(champion);
+                _context.SaveChanges();
+
+
+                // Redirect to the Tours action or another appropriate action
+                return RedirectToAction("Tours", new { tournamentId = model.Id });
+            }
 
             int existingTourCount = await _context.Tours
       .Where(t => t.TournamentId == model.Id)
@@ -164,7 +192,11 @@ namespace Backgammon.Controllers
 
             // Shuffle the list of users to create random pairs.
             Random random = new Random();
-            List<AppUser> shuffledUsers = users.OrderBy(x => random.Next()).ToList();
+            //List<AppUser> shuffledUsers = users.OrderBy(x => random.Next()).ToList();
+            List<AppUser> shuffledUsers = users
+                            .OrderBy(u => u.TournamentUsers.FirstOrDefault(tu => tu.TournamentId == model.Id)?.LoseCount ?? int.MaxValue)
+                            .ThenBy(u => Guid.NewGuid()) // Add randomization
+                            .ToList();
 
             List<Pair> pairs = new List<Pair>();
             List<PairVM> pairVMs = new List<PairVM>();

@@ -16,5 +16,6 @@
         public int WinCount { get; set; }
 
         public int ByeCount { get; set; }
+
     }
 }

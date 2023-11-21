@@ -16,6 +16,7 @@ namespace Backgammon.Context
         public DbSet<Pair> Pairs { get; set; }
 
         public DbSet<TournamentUser> TournamentUsers { get; set; }
+        public DbSet<TournamentChampion> TournamentChampions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
