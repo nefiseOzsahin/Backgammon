@@ -189,14 +189,22 @@ namespace Backgammon.Controllers
             };
             _context.Tours.Add(newTour);
             await _context.SaveChangesAsync();
+            List<AppUser> shuffledUsers=new List<AppUser>();
 
             // Shuffle the list of users to create random pairs.
-            Random random = new Random();
-            //List<AppUser> shuffledUsers = users.OrderBy(x => random.Next()).ToList();
-            List<AppUser> shuffledUsers = users
-                            .OrderBy(u => u.TournamentUsers.FirstOrDefault(tu => tu.TournamentId == model.Id)?.LoseCount ?? int.MaxValue)
-                            .ThenBy(u => Guid.NewGuid()) // Add randomization
-                            .ToList();
+            if (model.Type== "Rastgele")
+            {
+                Random random = new Random();
+                shuffledUsers = users.OrderBy(x => random.Next()).ToList();
+            }else if(model.Type == "Kazananlar Eşleşir" || model.Type == "Kaybedenler Eşleşir")
+            {
+                shuffledUsers = users
+                                .OrderBy(u => u.TournamentUsers.FirstOrDefault(tu => tu.TournamentId == model.Id)?.LoseCount ?? int.MaxValue)
+                                .ThenBy(u => Guid.NewGuid()) // Add randomization
+                                .ToList();
+            }
+
+
 
             List<Pair> pairs = new List<Pair>();
             List<PairVM> pairVMs = new List<PairVM>();
