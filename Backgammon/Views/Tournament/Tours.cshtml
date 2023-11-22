@@ -67,11 +67,11 @@
                                         @if (Model.PairVMs[i].User2 != null)
                                         {
                                             <td>
-                                                <input type="number" name="Scores[@i].User1Score" value="@score.User1Score" />
+                                                <input type="number" name="Scores[@i].User1Score" value="@score.User1Score" onclick="clearInput(this)" />
                                                 <input type="hidden" name="User1Name" value="@score.User1Name" />
                                             </td>
                                             <td>
-                                                <input type="number" name="Scores[@i].User2Score" value="@score.User2Score" />
+                                                <input type="number" name="Scores[@i].User2Score" value="@score.User2Score" onclick="clearInput(this)" />
                                                 <input type="hidden" name="User2Name" value="@score.User2Name" />
                                             </td>
                                             <td>@Model.PairVMs[i].User2.Name @Model.PairVMs[i].User2.SurName</td>
@@ -88,7 +88,27 @@
                         }
                     </tbody>
                 </table>
-                <button type="submit" class="btn btn-primary">Save Scores</button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModalSkor">Skorları Kaydet</button>
+              
+                        <!-- Modal starts -->
+                    <div class="modal" id="myModalSkor">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Skor Kayıt</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Skorlar kayıt edilecek. Onaylıyor musunuz?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                                    <button type="submit" class="btn btn-primary">Onayla</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Modal ends -->
             </form>
         </div>
     </div>
@@ -144,11 +164,40 @@ else
         <input type="hidden" value="@Model.Tournament.PlayLife" name="PlayLife" />
         <input type="hidden" value="@Model.Tournament.Type" name="Type" />
         <input type="hidden" value="@Model.Tournament.ByeType" name="ByeType" />
-        <button type="submit" class="btn btn-danger">Tur#@(Model.Tournament.Tours.Count() + 1) Kura Çek </button>
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal">Tur#@(Model.Tournament.Tours.Count() + 1) Kura Çek </button>
+
+
+                        <!-- Modal starts -->
+                    <div class="modal" id="myModal">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Kura Çek</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Tur#@(Model.Tournament.Tours.Count() + 1) Kurası Çekilecek. Onaylıyor musunuz?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                                    <button type="submit" class="btn btn-primary">Onayla</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Modal ends -->
     </form>
     }
 
 
+}
+@section Script{
+     <script>
+        // Function to clear the default value when an input field is clicked
+        function clearInput(input) {
+            input.value = "";
+        }
+    </script>
 }
 
 
