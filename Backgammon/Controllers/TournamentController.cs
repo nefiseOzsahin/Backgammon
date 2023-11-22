@@ -189,19 +189,31 @@ namespace Backgammon.Controllers
             };
             _context.Tours.Add(newTour);
             await _context.SaveChangesAsync();
-            List<AppUser> shuffledUsers=new List<AppUser>();
-
-            // Shuffle the list of users to create random pairs.
-            if (model.Type== "Rastgele")
-            {
-                Random random = new Random();
-                shuffledUsers = users.OrderBy(x => random.Next()).ToList();
-            }else if(model.Type == "Kazananlar Eşleşir" || model.Type == "Kaybedenler Eşleşir")
+            Random random = new Random();
+            users= users.OrderBy(x => random.Next()).ToList();
+            List<AppUser> shuffledUsers = users;
+           
+            int minByeCount = 0;
+            AppUser lastone = new AppUser();
+            if (users.Count() % 2 != 0)
             {
                 shuffledUsers = users
-                                .OrderBy(u => u.TournamentUsers.FirstOrDefault(tu => tu.TournamentId == model.Id)?.LoseCount ?? int.MaxValue)
-                                .ThenBy(u => Guid.NewGuid()) // Add randomization
-                                .ToList();
+                  .OrderByDescending(u => u.TournamentUsers.FirstOrDefault(tu => tu.TournamentId == model.Id)?.ByeCount ?? int.MaxValue)
+                  .ToList();
+
+               lastone = shuffledUsers.LastOrDefault();
+
+                shuffledUsers = shuffledUsers.Except(new List<AppUser> { lastone }).ToList();
+            }
+            if (model.Type == "Kazananlar Eşleşir" || model.Type == "Kaybedenler Eşleşir" || model.Type == "Aynı Haklılar Eşleşir")
+            {
+               
+                    shuffledUsers = shuffledUsers
+                   .OrderBy(u => u.TournamentUsers.FirstOrDefault(tu => tu.TournamentId == model.Id)?.LoseCount ?? int.MaxValue)
+                   .ThenBy(u => random.Next()) // Use the same Random instance
+                   .ToList();
+
+                    
             }
 
 
@@ -237,13 +249,15 @@ namespace Backgammon.Controllers
                 }
             }
 
-            if (shuffledUsers.Count % 2 != 0)
+            if (users.Count % 2 != 0)
             {
+
+
                 // Create a pair with one user that has no rival
                 Pair singleUserPair = new Pair
                 {
 
-                    User1Id = shuffledUsers.Last().Id,
+                    User1Id = lastone.Id,
                     User2Id = 0
                 };
                 pairs.Add(singleUserPair);
@@ -251,14 +265,14 @@ namespace Backgammon.Controllers
                 PairVM SingleUserPairvm = new()
                 {
                     Tour = newTour,
-                    User1 = shuffledUsers.Last(),
+                    User1 = lastone,
                     User2 = null,
 
                 };
-                pairVMs.Add(SingleUserPairvm);
-                shuffledUsers.Last().Tours.Add(newTour);
-                singleUserPair.User1Id = shuffledUsers.Last().Id;
-                UpdateByeCount(shuffledUsers.Last().Id, model.Id);
+                pairVMs.Add(SingleUserPairvm);//
+                lastone.Tours.Add(newTour);
+             
+                UpdateByeCount(lastone.Id, model.Id);
             }
 
 
