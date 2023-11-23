@@ -15,9 +15,29 @@
         <label>Parola:</label>
         <span class="text-danger" asp-validation-for="@Model.Password"></span>
         <input asp-for="@Model.Password" class="form-control" type="password" />
-    </div>    
+    </div>
     <button type="submit" class="btn btn-primary">Kaydet</button>
     <div class="text-danger mt-2" asp-validation-summary="ModelOnly">
     </div>
 </form>
+@section Script {
+    <script>
+
+        $(document).ready(function() {
+
+        @if (TempData["SuccessMessageCreateAdmin"] != null)
+        {
+            <text>
+                    toastr.success('@TempData["SuccessMessageCreateAdmin"]');
+                setTimeout(function() {
+                    window.location.href = '@Url.Action("GetUserList", "User")';
+                }, 1000);
+            </text>
+
+        }
+
+                  });
+
+    </script>
+}
 

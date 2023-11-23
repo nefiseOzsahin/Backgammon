@@ -30,11 +30,11 @@
         <span class="text-danger" asp-validation-for="@Model.Tournament.Type"></span>
 
         <select class="form-control" asp-for="@Model.Tournament.Type">
-            <option>Seçiniz</option>
-            <option>Kazananlar Eşleşir</option>
-            <option>Kaybedenler Eşleşir</option>
-            <option>Aynı Haklılar Eşleşir</option>
-            <option>Rastgele</option>
+            <option value="">Seçiniz</option>
+            <option value="Kazananlar Eşleşir">Kazananlar Eşleşir</option>
+            <option value="Kaybedenler Eşleşir">Kaybedenler Eşleşir</option>
+            <option value="Aynı Haklılar Eşleşir">Aynı Haklılar Eşleşir</option>
+            <option value="Rastgele">Rastgele</option>
         </select>
     </div>
     <div class="form-group">
@@ -52,7 +52,7 @@
             <option>7</option>
             <option>8</option>
             <option>9</option>
-            <option>10</option>          
+            <option>10</option>
         </select>
     </div>
     <div class="mb-3">
@@ -60,7 +60,7 @@
         <span class="text-danger" asp-validation-for="@Model.Tournament.StartDate"></span>
         <div class="input-group date" id="datepicker" data-target-input="nearest">
             <input class="form-control datetimepicker-input" data-target="#datepicker" asp-for="@Model.Tournament.StartDate" />
-            <div class="input-group-append" data-target="#datepicker" data-toggle="datetimepicker">          
+            <div class="input-group-append" data-target="#datepicker" data-toggle="datetimepicker">
             </div>
         </div>
     </div>
@@ -71,7 +71,7 @@
         <select class="form-control" asp-for="@Model.Tournament.ByeType">
             <option>Seçiniz</option>
             <option>En Az Kaybedenler</option>
-            <option>En Az Kazananlar</option>           
+            <option>En Az Kazananlar</option>
             <option>Rastgele</option>
         </select>
     </div>
@@ -79,9 +79,14 @@
         <label>Masa Başlangıç:</label>
         <span class="text-danger" asp-validation-for="@Model.Tournament.TableStart"></span>
         <input asp-for="@Model.Tournament.TableStart" class="form-control" value="1" />
-    </div> 
+    </div>
     Tüm Oyuncular
-    <table class="table">
+
+    <div class="mb-3">
+        <label for="userSearch">Oyuncu Ara:</label>
+        <input type="text" id="userSearch" class="form-control" placeholder="Ara">
+    </div>
+    <table class="table" id="userTable">
         <thead>
             <tr>
                 <th></th>
@@ -89,18 +94,39 @@
             </tr>
         </thead>
         <tbody>
-            @foreach(var user in Model.Users)
+            @if (Model.Users != null)
             {
-                <tr>
-                    <td><input type="checkbox" name="Id[]" value="@user.Id" /></td>
-                    <td>@user.Name</td>
-                </tr>
-            }       
+                @foreach (var user in Model.Users)
+                {
+                    <tr>
+                        <td><input type="checkbox" name="Id[]" value="@user.Id" /></td>
+                        <td>@user.Name</td>
+                    </tr>
+                }
+            }        
         </tbody>
     </table>
 
     <button type="submit" class="btn btn-primary">Kaydet</button>
-    
+
     <div class="text-danger mt-2" asp-validation-summary="ModelOnly">
     </div>
 </form>
+@section Script {
+    <script>
+        // jQuery code to handle search
+        $(document).ready(function () {
+            $('#userSearch').on('input', function () {
+                var searchText = $(this).val().toLowerCase();
+                $('#userTable tbody tr').each(function () {
+                    var name = $(this).find('td:last-child').text().toLowerCase();
+                    if (name.includes(searchText)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+        });
+    </script>
+}

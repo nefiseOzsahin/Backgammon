@@ -69,7 +69,7 @@
                 <option value=@Model.City>@Model.City</option>
             </select>
         </div>
-        <div class="mb-3">         
+        <div class="mb-3">
             <label asp-for="IsActive">Oyuncu Aktif mi?</label>
             <input asp-for="IsActive" />
         </div>
@@ -85,54 +85,66 @@
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 @section Script {
     <script>
-        $(document).ready(function () {
-            console.log("JavaScript code executed"); // Add this line
-            var countrySelect = $("#Country");
-            var citySelect = $("#City");
+        $(document).ready(function() {
 
-            // Fetch the list of countries when the page loads
+        @if (TempData["SuccessMessageUpdate"] != null)
+        {
+            <text>
+                    toastr.success('@TempData["SuccessMessageUpdate"]');
+                setTimeout(function() {
+                    window.location.href = '@Url.Action("GetUserList", "User")';
+                }, 1000);
+            </text>
 
-            $.get("/Country/Index", function (data) {
-                console.log(data);
-                // Check if data is an array or object
-                if (Array.isArray(data) || typeof data === 'object') {
-                    // Iterate over the data
-                    $.each(data, function (index, item) {
-                        countrySelect.append($('<option value="' + item.countryCode + '">' + item.countryName + '</option>'));
-                    });
-                } else {
-                    console.error("Received unexpected data format:", data);
-                }
-            }).fail(function (jqXHR, textStatus, errorThrown) {
-                console.error("AJAX request failed:", errorThrown);
-            });
+        }
+                        
+
+        var countrySelect = $("#Country");
+        var citySelect = $("#City");
+
+        // Fetch the list of countries when the page loads
+
+        $.get("/Country/Index", function(data) {
+            console.log(data);
+            // Check if data is an array or object
+            if (Array.isArray(data) || typeof data === 'object') {
+                // Iterate over the data
+                $.each(data, function(index, item) {
+                    countrySelect.append($('<option value="' + item.countryCode + '">' + item.countryName + '</option>'));
+                });
+            } else {
+                console.error("Received unexpected data format:", data);
+            }
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error("AJAX request failed:", errorThrown);
+        });
 
 
-            // Handle the change event of the country select box
-            countrySelect.change(function () {
+        // Handle the change event of the country select box
+        countrySelect.change(function() {
 
-                $("#loader").show();
-                var selectedCountryCode = countrySelect.val();
+            $("#loader").show();
+            var selectedCountryCode = countrySelect.val();
 
-                // Fetch the list of cities for the selected country
-                $.get("/User/GetCity", { countryCode: selectedCountryCode }, function (data) {
+            // Fetch the list of cities for the selected country
+            $.get("/User/GetCity", { countryCode: selectedCountryCode }, function(data) {
+                citySelect.empty();
+                citySelect.append($('<option>Please select a city</option>'));
+                $.each(data, function(index, city) {
+
+                    data.cityList.sort((a, b) => a.name.localeCompare(b.name));
                     citySelect.empty();
-                    citySelect.append($('<option>Please select a city</option>'));
-                    $.each(data, function (index, city) {
+                    citySelect.append($('<option value="">Please select a city</option>'));
 
-                        data.cityList.sort((a, b) => a.name.localeCompare(b.name));
-                        citySelect.empty();
-                        citySelect.append($('<option value="">Please select a city</option>'));
-
-                        data.cityList.forEach(function (city) {
-                            citySelect.append($('<option value="' + city.name + '">' + city.name + '</option>'));
-                        });
-
-                        $("#loader").hide();
+                    data.cityList.forEach(function(city) {
+                        citySelect.append($('<option value="' + city.name + '">' + city.name + '</option>'));
                     });
+
+                    $("#loader").hide();
                 });
             });
         });
+                });
     </script>
 }
 

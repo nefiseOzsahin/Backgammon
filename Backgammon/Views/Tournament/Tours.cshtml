@@ -3,7 +3,15 @@
     ViewData["Title"] = "Tours";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var championName = TempData["ChampionName"] as string;
+    var UserCount = TempData["UserCount"] as string;
 }
+
+  @if (!string.IsNullOrEmpty(UserCount))
+    {
+        <div class="alert alert-danger">
+           @TempData["UserCount"]
+        </div>
+    }
 
 @if (Model.PairVMs != null)
 {

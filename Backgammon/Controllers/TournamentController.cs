@@ -78,6 +78,7 @@ namespace Backgammon.Controllers
             }
             else
             {
+                List<AppUser> users = new List<AppUser>();
 
                 foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
                 {
@@ -85,12 +86,15 @@ namespace Backgammon.Controllers
                 }
             }
 
-            List<AppUser> users = _context.Users.ToList();
+            var nonAdminUsers = await _userService.GetNonAdminUsersAsync();
+            TournamentCreateVM vm = new()
+            {
+                Users = nonAdminUsers,
+                Tournament = model.Tournament
+            };
 
-            model.Tournament.Users = users;
+            return View(vm);
 
-            return View(model);
-            ;
         }
 
 
@@ -139,9 +143,8 @@ namespace Backgammon.Controllers
             List<AppUser> eligibleUsers = await _userService.GetNonAdminUsersOfATournamentAsync(model.Id);
             if (eligibleUsers.Count < 2)
             {
-                // Handle the case where there are not enough users to create pairs.
-                // You may want to return a view with an error message in this case.
-                return View();
+                TempData["UserCount"] = "En az iki kişi olmalı";
+                return RedirectToAction("Tours", new { tournamentId = model.Id });
             }
 
             List<AppUser> users = eligibleUsers
@@ -190,9 +193,9 @@ namespace Backgammon.Controllers
             _context.Tours.Add(newTour);
             await _context.SaveChangesAsync();
             Random random = new Random();
-            users= users.OrderBy(x => random.Next()).ToList();
+            users = users.OrderBy(x => random.Next()).ToList();
             List<AppUser> shuffledUsers = users;
-           
+
             int minByeCount = 0;
             AppUser lastone = new AppUser();
             if (users.Count() % 2 != 0)
@@ -201,19 +204,19 @@ namespace Backgammon.Controllers
                   .OrderByDescending(u => u.TournamentUsers.FirstOrDefault(tu => tu.TournamentId == model.Id)?.ByeCount ?? int.MaxValue)
                   .ToList();
 
-               lastone = shuffledUsers.LastOrDefault();
+                lastone = shuffledUsers.LastOrDefault();
 
                 shuffledUsers = shuffledUsers.Except(new List<AppUser> { lastone }).ToList();
             }
             if (model.Type == "Kazananlar Eşleşir" || model.Type == "Kaybedenler Eşleşir" || model.Type == "Aynı Haklılar Eşleşir")
             {
-               
-                    shuffledUsers = shuffledUsers
-                   .OrderBy(u => u.TournamentUsers.FirstOrDefault(tu => tu.TournamentId == model.Id)?.LoseCount ?? int.MaxValue)
-                   .ThenBy(u => random.Next()) // Use the same Random instance
-                   .ToList();
 
-                    
+                shuffledUsers = shuffledUsers
+               .OrderBy(u => u.TournamentUsers.FirstOrDefault(tu => tu.TournamentId == model.Id)?.LoseCount ?? int.MaxValue)
+               .ThenBy(u => random.Next()) // Use the same Random instance
+               .ToList();
+
+
             }
 
 
@@ -271,7 +274,7 @@ namespace Backgammon.Controllers
                 };
                 pairVMs.Add(SingleUserPairvm);//
                 lastone.Tours.Add(newTour);
-             
+
                 UpdateByeCount(lastone.Id, model.Id);
             }
 
@@ -449,15 +452,28 @@ namespace Backgammon.Controllers
 
         public async Task<IActionResult> UpdateT(int tournamentId)
         {
-            var t = _context.Tournaments.FirstOrDefault(x => x.Id == tournamentId);
+            var tournament = await _context.Tournaments
+        .Include(t => t.Users) // Include users associated with the tournament
+        .FirstOrDefaultAsync(x => x.Id == tournamentId);
 
-            return View(t);
+            var allUsers = await _userService.GetNonAdminUsersAsync();
+
+            // Filter users who are already associated with the tournament
+            var usersInTournament = allUsers.Where(user => tournament.Users.Any(tUser => tUser.Id == user.Id)).ToList();
+
+            ViewBag.AllUsers = allUsers;
+            ViewBag.UsersInTournament = usersInTournament;
+
+            return View(tournament);
 
         }
         [HttpPost]
-        public async Task<IActionResult> UpdateT(Tournament model)
+        public async Task<IActionResult> UpdateT(Tournament model, int[] selectedUsers)
         {
-            var tournament = await _context.Tournaments.FirstOrDefaultAsync(x => x.Id == model.Id);
+            var tournament = await _context.Tournaments
+                            .Include(t => t.TournamentUsers)
+                            .Include(t => t.Users)  // Explicitly include the Users collection
+                            .FirstOrDefaultAsync(x => x.Id == model.Id);
             if (tournament == null)
             {
                 return NotFound();
@@ -470,6 +486,34 @@ namespace Backgammon.Controllers
             tournament.PlayLife = model.PlayLife;
             tournament.ByeType = model.ByeType;
             tournament.TableStart = model.TableStart;
+
+
+            // Add new users to both AppUserTournament and TournamentUsers
+            foreach (var userId in selectedUsers)
+            {
+                var user = await _userManager.FindByIdAsync(userId.ToString());
+
+                // Add user to AppUserTournament if not already present
+                if (!tournament.Users.Any(u => u.Id == user.Id))
+                {
+                    tournament.Users.Add(user);
+                }
+
+                // Add user to TournamentUsers if not already present
+                if (!tournament.TournamentUsers.Any(tu => tu.UserId == user.Id))
+                {
+                    var tournamentUser = new TournamentUser
+                    {
+                        TournamentId = tournament.Id,
+                        UserId = user.Id,
+                        // Set other properties like LoseCount, LifeCount, etc.
+                    };
+
+                    _context.TournamentUsers.Add(tournamentUser);
+                }
+            }
+
+
             try
             {
                 var result = _context.Tournaments.Update(tournament);
@@ -481,13 +525,55 @@ namespace Backgammon.Controllers
                 ModelState.AddModelError(string.Empty, e.Message);
                 return View();
             }
-            return View(tournament);
+            return RedirectToAction("UpdateT", new { tournamentId = tournament.Id });
         }
+        public async Task<IActionResult> ExcludeFromTournament(int userId, int tournamentId)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            var tournament = await _context.Tournaments
+                .Include(t => t.Users)
+                .Include(t => t.TournamentUsers)
+                .FirstOrDefaultAsync(t => t.Id == tournamentId);
+
+            if (user != null && tournament != null)
+            {
+                // Remove the user from the Users collection of the tournament
+                tournament.Users.Remove(user);
+
+                // Remove the user from the TournamentUsers table
+                var tournamentUser = tournament.TournamentUsers.FirstOrDefault(tu => tu.UserId == userId);
+                if (tournamentUser != null)
+                {
+                    tournament.TournamentUsers.Remove(tournamentUser);
+                }
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "User excluded from the tournament successfully!";
+                }
+                catch (Exception e)
+                {
+                    ModelState.AddModelError(string.Empty, e.Message);
+                }
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "User or tournament not found.";
+            }
+
+            return RedirectToAction("UpdateT", new { tournamentId = tournamentId });
+        }
+
 
         public async Task<IActionResult> TUserList(int tournamentId)
         {
-            List<AppUser> users = await _userService.GetNonAdminUsersOfATournamentAsync(tournamentId);
-            return View(users);
+            var tournamentUsers = await _context.TournamentUsers
+                .Where(tu => tu.TournamentId == tournamentId)
+                .OrderByDescending(tu => tu.WinCount)
+                .Include(tu => tu.User) // Eagerly load the User entity
+                .ToListAsync();
+            return View(tournamentUsers);
         }
 
         public async Task<IActionResult> DeleteT(int tournamentId)

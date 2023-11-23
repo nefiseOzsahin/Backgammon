@@ -117,7 +117,8 @@ namespace Backgammon.Controllers
                     });
 
                     await _userManager.AddToRoleAsync(user, "Admin");
-                    return RedirectToAction("Index");
+                    TempData["SuccessMessageCreateAdmin"] = "Admin Başarıyla oluşturuldu";
+                    return View();
                 }
                 foreach (var item in result.Errors)
                 {
@@ -181,8 +182,9 @@ namespace Backgammon.Controllers
               
                 var result=await _userManager.CreateAsync(user);
                 if(result.Succeeded)
-                {                  
-                    return RedirectToAction("Index");
+                {
+                    TempData["SuccessMessageCreate"] = "Başarıyla oluşturuldu";
+                    return View();
                 }                
                 foreach (var item in result.Errors)
                 {
@@ -315,7 +317,8 @@ namespace Backgammon.Controllers
             }
 
             // Update successful, redirect or return success message
-            return RedirectToAction("Index");
+            TempData["SuccessMessageUpdate"] = "Başarıyla güncellendi";
+            return View(user);
         }
 
         public async Task<IActionResult> DeleteUserAsync(int userId)
@@ -327,8 +330,8 @@ namespace Backgammon.Controllers
 
                 if (result.Succeeded)
                 {
-
-                    return RedirectToAction("Index");
+                    TempData["SuccessMessageDelete"] = "Başarıyla silindi";
+                    return RedirectToAction("GetUserList");
                 }
                 else
                 {

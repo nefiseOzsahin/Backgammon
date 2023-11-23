@@ -82,26 +82,110 @@
         <span class="text-danger" asp-validation-for="@Model.TableStart"></span>
         <input asp-for="@Model.TableStart" class="form-control" value="@(string.IsNullOrEmpty(Model.TableStart.ToString()) ? "1" : Model.TableStart)" />
     </div>
-    <button type="submit" class="btn btn-success">Güncelle</button>
+    <h2>All Users</h2>
+    <div class="mb-3">
+        <label for="userSearch">Oyuncu Ara:</label>
+        <input type="text" id="userSearch" class="form-control" placeholder="Ara">
+    </div>
+    <table class="table" id="userTable">
+        <thead>
+            <tr>
+                <th>Select</th>
+                <th>User ID</th>
+                <th>Name</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in ViewBag.AllUsers)
+            {
+                <tr>
+                    <td><input type="checkbox" name="selectedUsers" value="@user.Id" /></td>
+                    <td>@user.Id</td>
+                    <td>@user.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <h2>Users in this Tournament</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>User ID</th>
+                <th>Name</th>
+                <th>Action</th>
+                <!-- Add more columns as needed -->
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in ViewBag.UsersInTournament)
+            {
+                <tr>
+                    <td>@user.Id</td>
+                    <td>@user.Name</td>
+                    <td>
+                        <a asp-action="ExcludeFromTournament" type="submit" class="btn-link" asp-route-userId="@user.Id" asp-route-tournamentId="@Model.Id">Sil</a>
+                    </td>
+                    <!-- Add more columns as needed -->
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Hidden input for storing selected user IDs -->
+    <input type="hidden" id="SelectedUsersInput" name="SelectedUsers" />
+    <!-- Save button inside the form -->
+    <button type="button" class="btn btn-success" onclick="saveSelectedUsers()">Save</button>
     <div class="text-danger mt-2" asp-validation-summary="ModelOnly"></div>
 
 
 </form>
+
+
+
+
+
 @section Script{
 
     <script>
-        $(document).ready(function () {
+
+        function saveSelectedUsers() {
+            var selectedUsers = [];
+            $("input[name='selectedUsers']:checked").each(function() {
+                selectedUsers.push($(this).val());
+            });
+
+            // Assuming you have a hidden input for storing the selected user IDs
+            $("#SelectedUsersInput").val(selectedUsers.join(','));
+
+            // Manually submit the form
+            $("form").submit();
+        }
+
+        $(document).ready(function() {
         @if (TempData["SuccessMessage"] != null)
         {
             <text>
                     toastr.success('@TempData["SuccessMessage"]');
-                setTimeout(function () {
-                    window.location.href = '@Url.Action("GetListT", "Tournament")';
-                }, 1000);
+                //setTimeout(function() {
+                //    window.location.href = '@Url.Action("GetUserList", "User")';
+                //}, 1000);
             </text>
 
         }
-     });
+
+                $('#userSearch').on('input', function() {
+                    var searchText = $(this).val().toLowerCase();
+                    $('#userTable tbody tr').each(function() {
+                        var name = $(this).find('td:last-child').text().toLowerCase();
+                        if (name.includes(searchText)) {
+                            $(this).show();
+                        } else {
+                            $(this).hide();
+                        }
+                    });
+                });
+        });
     </script>
 }
 

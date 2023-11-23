@@ -56,5 +56,21 @@
 
     </tbody>
 </table>
+@section Script {
+    <script>
+        $(document).ready(function() {
+
+        @if (TempData["SuccessMessageDelete"] != null)
+        {
+            <text>
+                    toastr.success('@TempData["SuccessMessageDelete"]');
+              
+            </text>
+
+        }
+                                     });
+    </script>
+}
+
 
 

@@ -78,7 +78,18 @@
 @section Script {
     <script>
         $(document).ready(function () {
-            console.log("JavaScript code executed"); // Add this line
+
+             @if (TempData["SuccessMessageCreate"] != null)
+        {
+            <text>
+                    toastr.success('@TempData["SuccessMessageCreate"]');
+                setTimeout(function() {
+                    window.location.href = '@Url.Action("GetUserList", "User")';
+                }, 1000);
+            </text>
+
+        }
+       
             var countrySelect = $("#Country");
             var citySelect = $("#City");
 
