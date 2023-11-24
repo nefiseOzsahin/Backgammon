@@ -1,23 +1,97 @@
 ﻿@model AdminSignInModel
 @{
     ViewData["Title"] = "SignIn";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "_SignInLayout";
 }
 
-<form asp-action="SignIn" method="post" class="p-4 w-75 mx-auto shadow">
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="~/user/styleguide.css" />
+    <link rel="stylesheet" href="~/user/style.css" />
+</head>
+<style>
+    .label:focus {
+        outline: none;
+        border: none; /* You can set the border style you prefer when the input is focused */
+    }
+</style>
+<body>
+    <form asp-action="SignIn" method="post" class="p-4 w-75 mx-auto shadow">
 
-    <div class="mb-3">
-        <label>İsim:</label>
-        <span class="text-danger" asp-validation-for="@Model.UserName"></span>
-        <input asp-for="@Model.UserName" class="form-control" />
-    </div>
-    <div class="mb-3">
-        <label>Parola:</label>
-        <span class="text-danger" asp-validation-for="@Model.Password"></span>
-        <input asp-for="@Model.Password" class="form-control" type="password" />
-    </div>
-    <button type="submit" class="btn btn-primary">Giriş</button>
-    <div class="text-danger mt-2" asp-validation-summary="ModelOnly">
-    </div>
-</form>
+        <div class="giris-sayfasi">
+            <div class="log-in">
+                <div class="section">
+                    <div class="header-navigation">
+                        <img src="~/user/logomark.svg" />
+                    </div>
+                    <div class="container">
+                        <div class="content">
+                            <div class="text-and-supporting">
+                                <div class="text">Giris yap</div>
+                                <p class="supporting-text">Tekrar hosgeldiniz! Lutfen bilgilerinizi girin.</p>
+                            </div>
+                            <div class="div">
+                                <div class="form">
+                                    <div class="input-field">
+                                        <div class="div-2">
+                                            <div class="div-2">
+                                                <input class="label" for="input-2" placeholder="Kullanıcı adı" type="email" />
+                                                <span class="text-danger" asp-validation-for="@Model.UserName"></span>
+                                                <input asp-for="@Model.UserName" class="input form-control" placeholder="Kullanıcı adını girin" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="input-field">
+                                        <div class="div-2">
+                                            <div class="div-2">
+                                                <div class="text-wrapper">Sifre</div>
+                                                <span class="text-danger" asp-validation-for="@Model.Password"></span>
+                                                <input asp-for="@Model.Password" class="input form-control" type="password" />
+                                                @* <div class="input">
+                                                <div class="content-2"><input class="text-2" placeholder="••••••••" type="text" /></div>
+                                                <img class="eye-off" src="img/eye-off.svg" />
+                                                </div>*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between w-100">
+                                    <div class="checkbox">
+                                        <div class="checkbox-base-wrapper"><div class="checkbox-base"></div></div>
+                                        <div class="text-wrapper">Sifremi hatirla</div>
+                                    </div>
+                                    <button class="button">
+                                        <div class="button-base"><div class="text-3">Sifremi unuttum</div></div>
+                                    </button>
+                                </div>
+                                <div class="actions">
+                                    <button type="submit" class="btn btn-primary w-100" style="background-color:#7F56D9; border-color:#7F56D9">Giriş</button>
+                                    @*<button class="button-base-wrapper w-100">
+                                    <div class="div-wrapper"><div class="text-4">Giris yap</div></div>
+                                    </button>*@
+                                </div>
+                            </div>
+                            <div class="row-2">
+                                <div class="text-5">Henuz hesabiniz yok mu?</div>
+                                <button class="button">
+                                    <div class="button-base"><div class="text-3">Kayit ol</div></div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="footer"></div>
+                </div>
+                <div class="section-2">
+                    <img src="~/user/backgammon.svg" />
+                </div>
+            </div>
+        </div>
+
+        <div class="text-danger mt-2" asp-validation-summary="ModelOnly">
+        </div>
+    </form>   
+</body>
+</html>
 

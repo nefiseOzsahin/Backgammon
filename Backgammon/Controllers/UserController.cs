@@ -74,8 +74,7 @@ namespace Backgammon.Controllers
                     var entry = ModelState[key];
                     foreach (var error in entry.Errors)
                     {
-                        // Log or print the error messages
-                        // Example: Console.WriteLine($"{key}: {error.ErrorMessage}");
+                        ModelState.AddModelError("", error.ErrorMessage);
                     }
                 }
 
