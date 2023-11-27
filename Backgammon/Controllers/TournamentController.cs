@@ -185,6 +185,24 @@ namespace Backgammon.Controllers
         [HttpPost]
         public async Task<IActionResult> DrawLot(Tournament model, int id)
         {
+
+            var tournament = await _context.Tournaments
+                .Include(t => t.Users)
+                .Include(t => t.Tours).ThenInclude(tour => tour.Users)
+                .Include(t => t.Tours).ThenInclude(tour => tour.Pairs)
+                .FirstOrDefaultAsync(x => x.Id == model.Id);
+
+            var pai = tournament.Tours.LastOrDefault().Pairs;
+            foreach(var item in pai)
+            {
+                if(item.User1Id!=0 && item.User2Id != 0)
+                {
+                    if (item.User1Score == 0 && item.User2Score == 0) return RedirectToAction("Tours", new { tournamentId = model.Id });
+                }
+               
+            }
+
+
             List<AppUser> eligibleUsers = await _userService.GetNonAdminUsersOfATournamentAsync(model.Id);
             if (eligibleUsers.Count < 2)
             {
@@ -225,7 +243,7 @@ namespace Backgammon.Controllers
             int existingTourCount = await _context.Tours
       .Where(t => t.TournamentId == model.Id)
       .CountAsync();
-
+           
             // Generate the name for the new Tour
             string newTourName = $"Tur{existingTourCount + 1}";
 
