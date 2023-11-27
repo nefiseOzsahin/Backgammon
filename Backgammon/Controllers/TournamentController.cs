@@ -192,15 +192,21 @@ namespace Backgammon.Controllers
                 .Include(t => t.Tours).ThenInclude(tour => tour.Pairs)
                 .FirstOrDefaultAsync(x => x.Id == model.Id);
 
-            var pai = tournament.Tours.LastOrDefault().Pairs;
-            foreach(var item in pai)
+            if (tournament.Tours.Count() != 0)
             {
-                if(item.User1Id!=0 && item.User2Id != 0)
+                var pai = tournament.Tours.LastOrDefault().Pairs;
+                foreach (var item in pai)
                 {
-                    if (item.User1Score == 0 && item.User2Score == 0) return RedirectToAction("Tours", new { tournamentId = model.Id });
+                    if (item.User1Id != 0 && item.User2Id != 0)
+                    {
+                        if (item.User1Score == 0 && item.User2Score == 0) return RedirectToAction("Tours", new { tournamentId = model.Id });
+                    }
+
                 }
-               
+
             }
+
+          
 
 
             List<AppUser> eligibleUsers = await _userService.GetNonAdminUsersOfATournamentAsync(model.Id);
@@ -484,6 +490,11 @@ namespace Backgammon.Controllers
                 {
                     ModelState.AddModelError("", error.ErrorMessage);
                 }
+
+
+                var TournamentId = scores.FirstOrDefault().TournamentId;
+               
+                return RedirectToAction("Tours", new { tournamentId = TournamentId });
             }
 
             // If ModelState is not valid, return to the form with validation errors
