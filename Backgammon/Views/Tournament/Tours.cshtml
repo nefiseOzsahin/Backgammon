@@ -13,7 +13,7 @@
         </div>
     }
 
-@if (Model.PairVMs != null)
+@if (Model.AllPairsHaveZeroScore || Model.SaveScore)
 {
     <ul class="nav nav-tabs">
         @foreach (var item in Model.Tournament.Tours.OrderBy(x => x.Id).SkipLast(1))

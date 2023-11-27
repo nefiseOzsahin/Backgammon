@@ -107,23 +107,68 @@ namespace Backgammon.Controllers
                 .FirstOrDefaultAsync(x => x.Id == tournamentId);
 
 
-
             List<ScoreViewModel> scoresForTour = new List<ScoreViewModel>();
             var toursWithPairs = _context.Tours
             .Include(tour => tour.Pairs)
             .Where(t => t.TournamentId == tournamentId)
             .ToList();
+
             foreach (var tour in toursWithPairs)
             {
                 var scoresForCurrentTour = InitializeScores(tour);
                 scoresForTour.AddRange(scoresForCurrentTour);
+              
             }
+
+            List<PairVM> pairVms = new List<PairVM>();
+            bool allPairsHaveZeroScore = false;
+
+
+            if (toursWithPairs.Count() != 0)
+            {
+                var lastTour = toursWithPairs.Last();
+
+                foreach (var pair in lastTour.Pairs)
+                {
+                    var scoresForCurrentPair = InitializeScores(lastTour);
+                    scoresForTour.AddRange(scoresForCurrentPair);
+
+                    // Calculate allPairsHaveZeroScore based on your logic
+                    if(pair.User1Id!=0 && pair.User2Id != 0)
+                    {
+                        if (pair.User1Score == 0 && pair.User2Score == 0)
+                        {
+                            allPairsHaveZeroScore = true;
+                            break; // No need to continue checking if any pair has a non-zero score
+                        }
+                    }
+                 
+                }
+
+
+               pairVms = lastTour.Pairs
+              .Select(pair => new PairVM
+              {
+                    // Map properties from Pair to PairVM
+                  PairId = pair.Id,
+                  User1 = _context.Users.FirstOrDefault(user => user.Id == pair.User1Id),
+                  User2 = _context.Users.FirstOrDefault(user => user.Id == pair.User2Id),
+                  Tour = pair.Tour
+
+              })
+              .ToList();
+
+            }
+           
 
             var vm = new ToursVM
             {
                 Tournament = tournament,
-                Scores = scoresForTour
+                Scores = scoresForTour,
+                PairVMs= pairVms,
+                AllPairsHaveZeroScore = allPairsHaveZeroScore          
             };
+
 
 
             var champion = _context.TournamentChampions.Where(x => x.TournamentId == tournamentId).ToList();
@@ -311,7 +356,8 @@ namespace Backgammon.Controllers
                         .ThenInclude(tour => tour.Pairs)
                     .FirstOrDefaultAsync(x => x.Id == model.Id),
                 PairVMs = pairVMs,
-                Scores = scoresForTour
+                Scores = scoresForTour,
+                SaveScore=true
             };
 
             return View("Tours", vm);
@@ -343,17 +389,36 @@ namespace Backgammon.Controllers
         {
             if (ModelState.IsValid)
             {
-                using (var transaction = _context.Database.BeginTransaction())
+
+                foreach (var score in scores)
+                {
+                    // Retrieve the pair from the database
+
+                    var pairOfScore = _context.Pairs.Where(x => x.Id == score.PairId).FirstOrDefault();
+
+
+                    if (pairOfScore.User1Id != 0 && pairOfScore.User2Id != 0)
+                    {
+                        if (score.User1Score == 0 && score.User2Score == 0)
+                        {
+                            return RedirectToAction("Tours", new { tournamentId = score.TournamentId }); // Replace with your actual view name and view model
+                        }
+
+                    }
+                }
+
+                    using (var transaction = _context.Database.BeginTransaction())
                 {
                     try
                     {
+
                         foreach (var score in scores)
                         {
-                            // Retrieve the pair from the database
+                            // Retrieve the pair from the database 
                             var pair = _context.Pairs.FirstOrDefault(p => p.Id == score.PairId);
-
                             if (pair != null)
                             {
+                               
                                 // Update the scores
                                 pair.User1Score = score.User1Score;
                                 pair.User2Score = score.User2Score;
@@ -404,7 +469,9 @@ namespace Backgammon.Controllers
             }
 
             // If ModelState is not valid, return to the form with validation errors
-            return View("Tours", new ToursVM()); // Replace with your actual view name and view model
+            return View("Tours", new ToursVM{
+                DrawLot = true
+            }); // Replace with your actual view name and view model
         }
 
         private void UpdateLoseCount(int userId, int tournamentId)
