@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "Qufv3XkQMpYt+VIwvdrlPcdg4BSz3vm3fRh3Ph4yy18=",
+  "Hash": "pslV9SP3EhdjvG0bbZllDwuxbyQlAi2aHbRLcyrBAw8=",
   "Source": "Backgammon",
   "BasePath": "_content/Backgammon",
   "Mode": "Default",
@@ -2412,6 +2412,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\lib\\toastr.js\\toastr.min.js"
+    },
+    {
+      "Identity": "C:\\Users\\ozsah\\source\\repos\\Backgammon\\Backgammon\\wwwroot\\turnuvalar\\style.css",
+      "SourceId": "Backgammon",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\ozsah\\source\\repos\\Backgammon\\Backgammon\\wwwroot\\",
+      "BasePath": "_content/Backgammon",
+      "RelativePath": "turnuvalar/style.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\turnuvalar\\style.css"
     },
     {
       "Identity": "C:\\Users\\ozsah\\source\\repos\\Backgammon\\Backgammon\\wwwroot\\user\\backgammon.svg",

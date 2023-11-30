@@ -1,62 +1,384 @@
 ﻿@model List<Tournament>
 @{
-    ViewData["Title"] = "GetListT";
     Layout = "_Layout1";
+    string userName = User.Identity.Name;
+
+    if (!string.IsNullOrEmpty(userName) && char.IsLower(userName[0]))
+    {
+        userName = char.ToUpper(userName[0]) + userName.Substring(1);
+    }
+
 }
+<link href="~/turnuvalar/style.css" rel="stylesheet" />
+<link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />
+<link href="~/lib/toastr.js/toastr.min.css" rel="stylesheet" />
+<style>
+        a {
+            display: flex;
+            /* Your styles go here */
+            text-decoration: none;
+            color: #007bff; /* Change the color to your preference */
+            /* Add any other styles you want */
+        }
 
-<h1>GetListT</h1>
+        .flex-container {
+            display: flex;
+            align-items: end;
+            gap: 12px;
+        }
+        .text4 {
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>#</th>
-            <th>Turnuva İsmi</th>
-            <th>Şampiyon</th>
-            <th>Oyuncu</th>
-            <th>Tarih</th>
-            <th>İşlem</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.Id</td>
-                <td>@item.Name</td>
-                <td></td>
-                <td>@item.Users.Count()</td>
-                <td>@item.StartDate</td>
-                <td>
-                    <a asp-action="Tours" asp-route-tournamentId="@item.Id">Turlar</a>
-                    <a asp-action="TUserList" asp-route-tournamentId="@item.Id">Sıralama</a>
-                    <a asp-action="UpdateT" asp-route-tournamentId="@item.Id">Güncelle</a>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal-@item.Id">
-                           Sil
-                    </button>
-                        <!-- Modal starts -->
-                    <div class="modal" id="myModal-@item.Id">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Modal Title</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        transition: color 0.3s; /* Add a smooth transition effect */
+    }
+
+    .text4:hover {
+        color: white; /* Change the text color to white on hover */
+    }
+</style>
+
+
+<div class="main-wrap">
+    <div class="main">
+        <div class="main2">
+            <div class="header-section">
+                <div class="container">
+                    <div class="page-header">
+                        <div class="content5">
+                            <div class="text-and-supporting-text2">
+                                <div class="text5">Turnuvalar</div>
+                                <div class="supporting-text2">
+                                    Listelenen turnuvalari gorebilir, turnuvalar uzerinde
+                                    duzenleme, silme, yeni turnuva ekleme islemleri
+                                    yapabilirsiniz
                                 </div>
-                                <div class="modal-body">
-                                    @item.Name turnuvası silinecek. Onaylıyor musunuz?
+                            </div>
+                            <div class="actions">
+                                <div class="button2">
+                                    <div class="button-base2">
+                                        <div class="text6">@userName</div>
+                                    </div>
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
-                                    <a class="btn btn-primary" asp-action="DeleteT" asp-route-tournamentId="@item.Id">Sil</a>
+                                <div class="button3">
+                                    <div class="button-base3">
+                                        <svg class="log-out2"
+                                             width="20"
+                                             height="20"
+                                             viewBox="0 0 20 20"
+                                             fill="none"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M7.5 17.5H4.16667C3.72464 17.5 3.30072 17.3244 2.98816 17.0118C2.67559 16.6993 2.5 16.2754 2.5 15.8333V4.16667C2.5 3.72464 2.67559 3.30072 2.98816 2.98816C3.30072 2.67559 3.72464 2.5 4.16667 2.5H7.5M13.3333 14.1667L17.5 10M17.5 10L13.3333 5.83333M17.5 10H7.5"
+                                                  stroke="white"
+                                                  stroke-width="1.67"
+                                                  stroke-linecap="round"
+                                                  stroke-linejoin="round" />
+                                        </svg>
+
+                                        @if (User.Identity.IsAuthenticated)
+                                        {
+                                            <a class="text4" asp-action="SignOut" asp-controller="User">Çıkış yap</a>
+                                        }
+                                        else
+                                        {
+                                            <a class="text4" asp-action="SignIn" asp-controller="User">Giriş</a>
+                                        }
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- Modal ends -->
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                </div>
+            </div>
+            <div class="frame-7">
+                <div class="filters-bar">
+                    <div class="content6">
+                        <div class="input-dropdown2">
+                            <div class="input-dropdown-base">
+                                <div class="input-with-label">
+                                    <div class="input2">
+                                        <div class="content3">
+                                            <svg class="search3"
+                                                 width="20"
+                                                 height="20"
+                                                 viewBox="0 0 20 20"
+                                                 fill="none"
+                                                 xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M17.5 17.5L13.875 13.875M15.8333 9.16667C15.8333 12.8486 12.8486 15.8333 9.16667 15.8333C5.48477 15.8333 2.5 12.8486 2.5 9.16667C2.5 5.48477 5.48477 2.5 9.16667 2.5C12.8486 2.5 15.8333 5.48477 15.8333 9.16667Z"
+                                                      stroke="#667085"
+                                                      stroke-width="1.66667"
+                                                      stroke-linecap="round"
+                                                      stroke-linejoin="round" />
+                                            </svg>
+
+                                            <div class="text7">Turnuva ara</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="frame-859">
+                            <div class="checkbox">
+                                <div class="checkbox2">
+                                    <div class="checkbox-base">
+                                        <svg class="check"
+                                             width="12"
+                                             height="12"
+                                             viewBox="0 0 12 12"
+                                             fill="none"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M10 3L4.5 8.5L2 6"
+                                                  stroke="#7F56D9"
+                                                  stroke-width="1.6666"
+                                                  stroke-linecap="round"
+                                                  stroke-linejoin="round" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="text8">Oynaniyor</div>
+                            </div>
+                            <div class="checkbox">
+                                <div class="checkbox2">
+                                    <div class="checkbox-base">
+                                        <svg class="check2"
+                                             width="12"
+                                             height="12"
+                                             viewBox="0 0 12 12"
+                                             fill="none"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M10 3L4.5 8.5L2 6"
+                                                  stroke="#7F56D9"
+                                                  stroke-width="1.6666"
+                                                  stroke-linecap="round"
+                                                  stroke-linejoin="round" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="text8">Tamamlandi</div>
+                            </div>
+                            <div class="checkbox">
+                                <div class="checkbox2">
+                                    <div class="checkbox-base">
+                                        <svg class="check3"
+                                             width="12"
+                                             height="12"
+                                             viewBox="0 0 12 12"
+                                             fill="none"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M10 3L4.5 8.5L2 6"
+                                                  stroke="#7F56D9"
+                                                  stroke-width="1.6666"
+                                                  stroke-linecap="round"
+                                                  stroke-linejoin="round" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="text8">Oynanacak</div>
+                            </div>
+                        </div>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <div class="button3">
+                                <a class="button-base4" asp-action="CreateT" asp-controller="Tournament">
+                                    <svg class="plus"
+                                     width="20"
+                                     height="20"
+                                     viewBox="0 0 20 20"
+                                     fill="none"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9.99996 4.16675V15.8334M4.16663 10.0001H15.8333"
+                                          stroke="white"
+                                          stroke-width="1.67"
+                                          stroke-linecap="round"
+                                          stroke-linejoin="round" />
+                                    </svg>
+
+                                    <div class="text9">Turnuva ekle</div>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="frame-8">
+                    <div class="table">
+                        <div class="card-header">
+                            <div class="content7">
+                                <div class="text-and-supporting-text2">
+                                    <div class="text10">Turnuvalar</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="content8">
+                            <div class="column">
+                                <div class="table-header-cell">
+                                    <div class="table-header">
+                                        <div class="text11">No</div>
+                                    </div>
+                                </div>
+
+                                @foreach (var item in Model)
+                                {
+
+                                    <div class="table-cell">
+                                        <div class="text12">@item.Id</div>
+                                    </div>
+                                }
+
+                            </div>
+                            <div class="column">
+                                <div class="table-header-cell">
+                                    <div class="table-header">
+                                        <div class="text11">Turnuva ismi</div>
+                                    </div>
+                                </div>
+                                @foreach (var item in Model)
+                                {
+                                    <div class="table-cell2">
+                                        <div class="text13">@item.Name</div>
+
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="column">
+                                <div class="table-header-cell">
+                                    <div class="table-header">
+                                        <div class="text11">Konum</div>
+                                    </div>
+                                </div>
+                                @foreach (var item in Model)
+                                {
+                                    <div class="table-cell">
+                                        <div class="featured-icon">
+                                            <svg class="map-pin"
+                                             width="20"
+                                             height="20"
+                                             viewBox="0 0 20 20"
+                                             fill="none"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M17.5 8.33325C17.5 14.1666 10 19.1666 10 19.1666C10 19.1666 2.5 14.1666 2.5 8.33325C2.5 6.34413 3.29018 4.43647 4.6967 3.02995C6.10322 1.62343 8.01088 0.833252 10 0.833252C11.9891 0.833252 13.8968 1.62343 15.3033 3.02995C16.7098 4.43647 17.5 6.34413 17.5 8.33325Z"
+                                                  stroke="#7F56D9"
+                                                  stroke-width="1.66667"
+                                                  stroke-linecap="round"
+                                                  stroke-linejoin="round" />
+                                                <path d="M10 10.8333C11.3807 10.8333 12.5 9.71396 12.5 8.33325C12.5 6.95254 11.3807 5.83325 10 5.83325C8.61929 5.83325 7.5 6.95254 7.5 8.33325C7.5 9.71396 8.61929 10.8333 10 10.8333Z"
+                                                  stroke="#7F56D9"
+                                                  stroke-width="1.66667"
+                                                  stroke-linecap="round"
+                                                  stroke-linejoin="round" />
+                                            </svg>
+                                        </div>
+                                        <div class="text12">@item.Place</div>
+                                    </div>
+                                }
+                            </div>
+
+
+                            <div class="column">
+                                <div class="table-header-cell">
+                                    <div class="table-header">
+                                        <div class="text11">Katılımcı</div>
+                                    </div>
+                                </div>
+                                @foreach (var item in Model)
+                                {
+                                    <div class="table-cell2">
+                                        <div class="badge">
+                                            <div class="badge-base4">
+                                                <div class="text18">@item.Users.Count()</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <div class="column">
+                                <div class="table-header-cell">
+
+                                    <div class="text11">Tarih</div>
+
+                                </div>
+                                @foreach (var item in Model)
+                                {
+                                    <div class="table-cell">
+
+                                        <div class="text17">@item.StartDate</div>
+
+
+                                    </div>
+                                }
+                            </div>
+                            <div class="column">
+                                <div class="table-header-cell">
+                                    <div class="table-header">
+                                        <div class="text11">İşlem</div>
+                                    </div>
+                                </div>
+                                @foreach (var item in Model)
+                                {
+                                    <div class="table-cell2">
+                                        <div class="badge d-flex">
+                                            <a class="badge-base4" asp-action="Tours" asp-route-tournamentId="@item.Id">
+                                                <div class="text18">Turlar</div>
+                                            </a>
+                                            <a class="badge-base4" asp-action="TUserList" asp-route-tournamentId="@item.Id">
+                                                <div class="text18">Sıralama</div>
+                                            </a>
+                                            <a class="badge-base4" asp-action="UpdateT" asp-route-tournamentId="@item.Id">
+                                                <div class="text18">Güncelleme</div>
+                                            </a>
+                                            <a href="#" class="badge-base4" data-bs-toggle="modal" data-bs-target="#myModal-@item.Id">
+                                                <div class="text18">Sil</div>
+                                            </a>
+                                            <!-- Modal starts -->
+                                    
+
+                                        </div>
+                                    </div>
+                                            <div class="modal" id="myModal-@item.Id">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Modal Title</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            @item.Name turnuvası silinecek. Onaylıyor musunuz?
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                                                            <a class="btn btn-primary" asp-action="DeleteT" asp-route-tournamentId="@item.Id">Sil</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Modal ends -->
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table2">
+                        <div class="pagination">
+                            <div class="actions2">
+                                <div class="button3">
+                                    <div class="button-base5">
+                                        <div class="text19">Onceki</div>
+                                    </div>
+                                </div>
+                                <div class="button3">
+                                    <div class="button-base5">
+                                        <div class="text19">Sonraki</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="details">Sayfa 1/3</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Script{
 
     <script>
@@ -74,3 +396,4 @@
                      });
     </script>
 }
+
