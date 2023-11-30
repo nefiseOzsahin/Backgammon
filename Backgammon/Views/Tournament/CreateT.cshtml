@@ -1,6 +1,6 @@
 ﻿@model TournamentCreateVM
 @{
-    Layout = "_Layout";
+    Layout = "_Layout1";
 }
 
 <form asp-action="CreateT" asp-controller="Tournament" method="post" class="p-4 w-75 mx-auto shadow">
@@ -80,13 +80,12 @@
         <span class="text-danger" asp-validation-for="@Model.Tournament.TableStart"></span>
         <input asp-for="@Model.Tournament.TableStart" class="form-control" value="1" />
     </div>
-    Tüm Oyuncular
 
     <div class="mb-3">
         <label for="userSearch">Oyuncu Ara:</label>
         <input type="text" id="userSearch" class="form-control" placeholder="Ara">
     </div>
-    <table class="table" id="userTable">
+    <table class="table w-100" id="userTable">
         <thead>
             <tr>
                 <th></th>

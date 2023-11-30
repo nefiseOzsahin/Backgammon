@@ -1,0 +1,55 @@
+.avatar-label-group,
+.avatar-label-group * {
+  box-sizing: border-box;
+}
+.avatar-label-group {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+}
+.avatar {
+  background: var(--avatarusersquare-lyle-kauffman, undefined);
+  border-radius: 200px;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  position: relative;
+}
+.avatar-online-indicator {
+  background: var(--success-500, #12b76a);
+  border-radius: 5px;
+  border-style: solid;
+  border-color: var(--white, #ffffff);
+  border-width: 1.5px;
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
+  overflow: hidden;
+}
+.text-and-supporting-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+}
+.text {
+  color: var(--white, #ffffff);
+  text-align: left;
+  font: var(--textsm-semibold, 600 14px/20px "Inter-SemiBold", sans-serif);
+  position: relative;
+}
+.supporting-text {
+  color: var(--gray-100, #f2f4f7);
+  text-align: left;
+  font: var(--textsm-regular, 400 14px/20px "Inter-Regular", sans-serif);
+  position: relative;
+}

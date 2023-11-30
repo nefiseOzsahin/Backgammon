@@ -1,0 +1,154 @@
+﻿@{
+     string userName = User.Identity.Name;
+
+    if (!string.IsNullOrEmpty(userName) && char.IsLower(userName[0]))
+    {
+        userName = char.ToUpper(userName[0]) + userName.Substring(1);
+    }
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="globals.css" />
+    <link rel="stylesheet" href="~/home/styleguide.css" />
+    <link rel="stylesheet" href="~/home/style.css" />
+    <link rel="stylesheet" href="~/home/avatar/style.css" />
+    <link rel="stylesheet" href="~/home/avatar/var.css" />
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />
+    <link href="~/lib/toastr.js/toastr.min.css" rel="stylesheet" />
+
+    <style>
+        a {
+            display: flex;
+            /* Your styles go here */
+            text-decoration: none;
+            color: #007bff; /* Change the color to your preference */
+            /* Add any other styles you want */
+        }
+
+        .flex-container {
+            display: flex;
+            align-items: end;
+            gap: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="anasayfa">
+
+        <div class="sidebar-navigation ">
+            <img class="divider" src="~/home/divider-2.svg" />
+            <div class="content">
+                <div class="nav">
+                    <header class="header">
+                        <div class="frame">
+                            <div class="logo">
+                                <div class="logo-wrap"><img class="logomark" src="~/home/logomark.svg" /></div>
+                            </div>
+                            <a asp-action="Index" asp-controller="Home" class="d-block">
+                                <div class="text">TAVLA</div>
+                            </a>
+                        </div>
+                    </header>
+
+                    <div class="div-wrapper mt-2">
+                        @{
+                            var activeController = ViewContext.RouteData.Values["controller"]?.ToString();
+                            var activeAction = ViewContext.RouteData.Values["action"]?.ToString();
+
+                            var navigationItems = new[]
+                            {
+                        new { Controller = "Home", Action = "Index", Text = "Anasayfa", Icon = "home/home.svg", Condition = UserIsInRole("Admin")  },
+                        new { Controller = "Tournament", Action = "GetListT", Text = "Turnuvalar", Icon = "home/solar-cup-star-outline.svg", Condition = UserIsInRole("Admin") },
+                        new { Controller = "Tournament", Action = "CreateT", Text = "Turnuva Ekle", Icon = "home/solar-cup-star-outline.svg", Condition = UserIsInRole("Admin") },
+                        new { Controller = "User", Action = "GetUserList", Text = "Oyuncular", Icon = "home/users.svg", Condition = UserIsInRole("Admin") },
+                        new { Controller = "User", Action = "Create", Text = "Oyuncu Ekle", Icon = "home/users.svg", Condition = UserIsInRole("Admin") },
+                        new { Controller = "User", Action = "CreateAdmin", Text = "Admin Oluştur", Icon = "home/user-plus.svg", Condition = UserIsInRole("Admin") && UserIdentityNameIs("ankara") },
+         
+                                        };
+                        }
+
+                        <div class="navigation">
+                            @foreach (var item in navigationItems.Where(x => x.Condition))
+                            {
+                                var isActive = string.Equals(activeController, item.Controller, StringComparison.OrdinalIgnoreCase)
+                                && string.Equals(activeAction, item.Action, StringComparison.OrdinalIgnoreCase);
+
+                                <div class="@(isActive ? "nav-item-base" : "content-wrapper")">
+                                    <a asp-action="@item.Action" asp-controller="@item.Controller" class="d-block">
+                                        <div class="flex-container">
+                                            <img class="img-2" src="~/@item.Icon" />
+                                            <div class="text-2">@item.Text</div>
+                                        </div>
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    @functions {
+                        bool UserIsLoggedIn()
+                        {
+                            // Add your logic to check if the user is logged in
+                            return User?.Identity.IsAuthenticated ?? false; // Replace with your actual check
+                        }
+
+                        bool UserIsInRole(string role)
+                        {
+                            // Add your logic to check if the user is in a specific role
+                            return User != null && User.IsInRole(role); // Replace with your actual check
+                        }
+
+                        bool UserIdentityNameIs(string username)
+                        {
+                            // Add your logic to check if the user's username is a specific value
+                            return User?.Identity.Name == username; // Replace with your actual check
+                        }
+                    }
+
+
+                </div>
+                <footer class="footer">
+                    <div class="nav-item-base-wrapper">
+                        <div class="nav-item-base-2">
+                            <div class="div-2">
+                                <img class="img-2" src="~/home/settings.svg" />
+                                <div class="text-2">Ayarlar</div>
+                            </div>
+                        </div>
+                    </div>
+                    <img class="divider-2" src="~/home/divider-2.svg" />
+                    <div class="account">
+                        <div class="avatar-label-group">
+                        
+                            <div class="text-and-supporting-text">
+                                <div class="text">@userName</div>
+                                <div class="supporting-text"></div>
+                            </div>
+                        </div>
+                        <div class="img">
+                            <div class="button">
+                                <div class="button-base"><img class="img" src="~/home/log-out.svg" /></div>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+        <div class="main-wrap">
+            <div class="main">
+                <div class="main-2">
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/font-awesome/js/all.min.js"></script>
+    <script src="~/lib/toastr.js/toastr.min.js"></script>
+    @RenderSection("Script", required: false)
+</body>
+</html>
