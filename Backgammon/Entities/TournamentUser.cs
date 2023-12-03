@@ -17,5 +17,7 @@
 
         public int ByeCount { get; set; }
 
+        public int TourId { get; set; }
+
     }
 }

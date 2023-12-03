@@ -321,6 +321,9 @@ namespace Backgammon.Migrations
                     b.Property<int>("LoseCount")
                         .HasColumnType("int");
 
+                    b.Property<int>("TourId")
+                        .HasColumnType("int");
+
                     b.Property<int>("TournamentId")
                         .HasColumnType("int");
 

@@ -3,28 +3,148 @@
 @{
     ViewData["Title"] = "Tournament Score List";
     Layout = "_Layout1";
+    string userName = User.Identity.Name;
+
+    if (!string.IsNullOrEmpty(userName) && char.IsLower(userName[0]))
+    {
+        userName = char.ToUpper(userName[0]) + userName.Substring(1);
+    }
 }
 
-<h1>Tournament Score List</h1>
+<link href="~/turnuvalar/style.css" rel="stylesheet" />
+<link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />
+<link href="~/lib/toastr.js/toastr.min.css" rel="stylesheet" />
+<style>
+    a {
+        display: flex;
+        /* Your styles go here */
+        text-decoration: none;
+        color: #007bff; /* Change the color to your preference */
+        /* Add any other styles you want */
+    }
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>User Name</th>
-            <th>Lose Count</th>
-            <th>Win Count</th>
-            <th>Bye Count</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var tournamentUser in Model)
-        {
-            <tr>
-                <td>@tournamentUser.User.Name</td>
-                <td>@tournamentUser.LoseCount</td>
-                <td>@tournamentUser.WinCount</td>
-                <td>@tournamentUser.ByeCount</td>
-            </tr>
+    .flex-container {
+        display: flex;
+        align-items: end;
+        gap: 12px;
+    }
+
+    .text4 {
+        transition: color 0.3s; /* Add a smooth transition effect */
+    }
+
+        .text4:hover {
+            color: white; /* Change the text color to white on hover */
         }
-    </tbody>
-</table>
+</style>
+
+
+<div class="main-wrap">
+    <div class="main">
+        <div class="main2">
+            <div class="header-section">
+                <div class="container">
+                    <div class="page-header">
+                        <div class="content5">
+                            <div class="text-and-supporting-text2">
+                                <div class="text5">Turnuva Skor Sayfası</div>
+                                <div class="supporting-text2">
+                                    Oyuncuların kazanma, kaybetme, bye sayılarını görebilirsiniz.
+                                </div>
+                            </div>
+                            <div class="actions">
+                                <div class="button2">
+                                    <div class="button-base2">
+                                        <div class="text6">@userName</div>
+                                    </div>
+                                </div>
+                                <div class="button3">
+                                    <div class="button-base3">
+                                        <svg class="log-out2"
+                                             width="20"
+                                             height="20"
+                                             viewBox="0 0 20 20"
+                                             fill="none"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M7.5 17.5H4.16667C3.72464 17.5 3.30072 17.3244 2.98816 17.0118C2.67559 16.6993 2.5 16.2754 2.5 15.8333V4.16667C2.5 3.72464 2.67559 3.30072 2.98816 2.98816C3.30072 2.67559 3.72464 2.5 4.16667 2.5H7.5M13.3333 14.1667L17.5 10M17.5 10L13.3333 5.83333M17.5 10H7.5"
+                                                  stroke="white"
+                                                  stroke-width="1.67"
+                                                  stroke-linecap="round"
+                                                  stroke-linejoin="round" />
+                                        </svg>
+
+                                        @if (User.Identity.IsAuthenticated)
+                                        {
+                                            <a class="text4" asp-action="SignOut" asp-controller="User">Çıkış yap</a>
+                                        }
+                                        else
+                                        {
+                                            <a class="text4" asp-action="SignIn" asp-controller="User">Giriş</a>
+                                        }
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="frame-7">
+
+                <div class="frame-8">
+                    <table class="table">
+                        <thead class="card-header ">
+                            <tr class="content7">
+                                <th class=" w-50">İsim</th>
+                                <th class="text-and-supporting-text2">Kazanma</th>
+                                <th class="text-and-supporting-text2">Yenilgi</th>
+                                <th class="text-and-supporting-text2">Bye</th>
+                            </tr>
+                        </thead>
+                        <tbody class="card-header ">
+                            @foreach (var tournamentUser in Model)
+                            {
+
+                                if (@tournamentUser.LoseCount == 2)
+                                {
+                                    <tr class="content7 alert alert-danger w-100">
+                                        <td class="w-50">@tournamentUser.User.Name</td>
+                                        <td class="text-and-supporting-text2">   <div class="badge"><div class="badge-base4">  <div class="text18">@tournamentUser.WinCount</div></div></div></td>
+                                        <td class="text-and-supporting-text2"> <div class="badge"><div class="badge-base4">  <div class="text18">@tournamentUser.LoseCount</div></div></div></td>
+                                        <td class="text-and-supporting-text2"> <div class="badge"><div class="badge-base4">  <div class="text18">@tournamentUser.ByeCount</div></div></div></td>
+                                    </tr>
+
+                                }
+                                if (@tournamentUser.LoseCount == 1)
+                                {
+                                    <tr class="content7 alert alert-warning w-100">
+                                        <td class="w-50">@tournamentUser.User.Name</td>
+                                        <td class="text-and-supporting-text2">   <div class="badge"><div class="badge-base4">  <div class="text18">@tournamentUser.WinCount</div></div></div></td>
+                                        <td class="text-and-supporting-text2"> <div class="badge"><div class="badge-base4">  <div class="text18">@tournamentUser.LoseCount</div></div></div></td>
+                                        <td class="text-and-supporting-text2"> <div class="badge"><div class="badge-base4">  <div class="text18">@tournamentUser.ByeCount</div></div></div></td>
+
+                                    </tr>
+
+                                }
+                                if (@tournamentUser.LoseCount == 0)
+                                {
+                                    <tr class="content7 alert alert-success w-100">
+                                        <td class="w-50">@tournamentUser.User.Name</td>
+                                        <td class="text-and-supporting-text2">   <div class="badge"><div class="badge-base4">  <div class="text18">@tournamentUser.WinCount</div></div></div></td>
+                                        <td class="text-and-supporting-text2"> <div class="badge"><div class="badge-base4">  <div class="text18">@tournamentUser.LoseCount</div></div></div></td>
+                                        <td class="text-and-supporting-text2"> <div class="badge"><div class="badge-base4">  <div class="text18">@tournamentUser.ByeCount</div></div></div></td>
+
+                                    </tr>
+                                }
+                              
+
+
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
