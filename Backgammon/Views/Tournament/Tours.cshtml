@@ -4,123 +4,220 @@
     Layout = "_Layout1";
     var championName = TempData["ChampionName"] as string;
     var UserCount = TempData["UserCount"] as string;
-}
+    string userName = User.Identity.Name;
 
-  @if (!string.IsNullOrEmpty(UserCount))
+    if (!string.IsNullOrEmpty(userName) && char.IsLower(userName[0]))
     {
-        <div class="alert alert-danger">
-           @TempData["UserCount"]
-        </div>
+        userName = char.ToUpper(userName[0]) + userName.Substring(1);
     }
 
+}
+
+<link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+<style>
+    a {
+        display: flex;
+        /* Your styles go here */
+        text-decoration: none;
+        color: #007bff; /* Change the color to your preference */
+        /* Add any other styles you want */
+    }
+
+    .flex-container {
+        display: flex;
+        align-items: end;
+        gap: 12px;
+    }
+
+    .text4 {
+        transition: color 0.3s; /* Add a smooth transition effect */
+    }
+
+        .text4:hover {
+            color: white; /* Change the text color to white on hover */
+        }
+
+
+
+</style>
+@if (!string.IsNullOrEmpty(UserCount))
+{
+    <div class="main-wrap">
+        <div class="main">
+            <div class="main2">
+                <div class="alert alert-danger">
+                    @TempData["UserCount"]
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<link href="~/turnuvalar/style.css" rel="stylesheet" />
 @if (Model.AllPairsHaveZeroScore || Model.SaveScore)
 {
-    <ul class="nav nav-tabs">
-        @foreach (var item in Model.Tournament.Tours.OrderBy(x => x.Id).SkipLast(1))
-        {
-            <li class="nav-item" role="presentation">
-                <a class="nav-link" id="@item.Name-tab" data-bs-toggle="tab" data-bs-target="#@item.Name-pane" role="tab" aria-controls="@item.Name-pane" aria-selected="true">@item.Name</a>
-            </li>
-        }
-        <li class="nav-item" role="presentation">
-            <a class="nav-link active bg-warning" id="LastTab-tab" data-bs-toggle="tab" data-bs-target="#LastTab-pane" role="tab" aria-controls="LastTab-pane" aria-selected="true">Tur @Model.Tournament.Tours.Count()</a>
-        </li>
-    </ul>
-
-    <div class="tab-content">
-        @foreach (var p in Model.Tournament.Tours)
-        {
-            <div class="tab-pane fade" id="@p.Name-pane" role="tabpanel" aria-labelledby="@p.Name-tab" tabindex="0">
-                @foreach (var item in p.Pairs)
-                {
-                    if (item.TourId == p.Id) // Assuming there's a property like TourId in your pair model
-                    {
-                        var scoresForCurrentPair = Model.Scores.FirstOrDefault(s => s.PairId == item.Id);
-
-                        <div>
-                            <p>
-                                @(scoresForCurrentPair != null
-                ? $"{scoresForCurrentPair.User1Name} : {item.User1Score} - {item.User2Score} : {scoresForCurrentPair.User2Name}"
-                : "Scores not available")
-                            </p>
-                        </div>
-                    }
-                }
-            </div>
-        }
-        <!-- Last Tab Content -->
-        <div class="tab-pane  show active" id="LastTab-pane" role="tabpanel" aria-labelledby="LastTab-tab" tabindex="0">
-            <form asp-action="SaveScores" method="post">
-
-                <table class="table">
-
-                    <tbody>
-
-                        @for (int i = 0; i < Model.PairVMs.Count; i++)
-                        {
-                            <tr>
-                                @if (Model.Tournament.Tours.Any())
-                                {
-                                    var maxTourId = Model.Tournament.Tours.Max(t => t.Id);
-                                    var scoresForCurrentTour = Model.Scores.Where(s => s.TourId == maxTourId).ToList();
-
-
-                                    if (scoresForCurrentTour.Any())
-                                    {
-                                        var score = scoresForCurrentTour[i];
-                                        <input type="hidden" name="Scores[@i].PairId" value="@score.PairId" />
-                                        <input type="hidden" name="Scores[@i].TournamentId" value="@Model.Tournament.Id" />
-                                        <td>@Model.PairVMs[i].User1.Name @Model.PairVMs[i].User1.SurName</td>
-
-                                        @if (Model.PairVMs[i].User2 != null)
-                                        {
-                                            <td>
-                                                <input type="number" name="Scores[@i].User1Score" value="@score.User1Score" onclick="clearInput(this)" />
-                                                <input type="hidden" name="User1Name" value="@score.User1Name" />
-                                            </td>
-                                            <td>
-                                                <input type="number" name="Scores[@i].User2Score" value="@score.User2Score" onclick="clearInput(this)" />
-                                                <input type="hidden" name="User2Name" value="@score.User2Name" />
-                                            </td>
-                                            <td>@Model.PairVMs[i].User2.Name @Model.PairVMs[i].User2.SurName</td>
-                                        }
-                                        else
-                                        {
-                                            <td><span>Bye</span></td>
-                                            <td></td> <!-- Empty cell for User1Score -->
-                                            <td></td> <!-- Empty cell for User2Score -->
-                                        }
-                                    }
-                                }
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModalSkor">Skorları Kaydet</button>
-              
-                        <!-- Modal starts -->
-                    <div class="modal" id="myModalSkor">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Skor Kayıt</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="main-wrap">
+        <div class="main">
+            <div class="main2">
+                <div class="header-section">
+                    <div class="container">
+                        <div class="page-header">
+                            <div class="content5">
+                                <div class="text-and-supporting-text2">
+                                    <div class="text5">@Model.Tournament.Name.ToUpper()</div>
+                                    <div class="supporting-text2">
+                                        Turnuva skor kayıt sayfası. Tur skorlarını kayıt edebilir, yeni kuralar çekebilirsiniz.
+                                    </div>
                                 </div>
-                                <div class="modal-body">
-                                    Skorlar kayıt edilecek. Onaylıyor musunuz?
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
-                                    <button type="submit" class="btn btn-primary">Onayla</button>
+                                <div class="actions">
+                                    <div class="button2">
+                                        <div class="button-base2">
+                                            <div class="text6">@userName</div>
+                                        </div>
+                                    </div>
+                                    <div class="button3">
+                                        <div class="button-base3">
+                                            <svg class="log-out2"
+                                             width="20"
+                                             height="20"
+                                             viewBox="0 0 20 20"
+                                             fill="none"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M7.5 17.5H4.16667C3.72464 17.5 3.30072 17.3244 2.98816 17.0118C2.67559 16.6993 2.5 16.2754 2.5 15.8333V4.16667C2.5 3.72464 2.67559 3.30072 2.98816 2.98816C3.30072 2.67559 3.72464 2.5 4.16667 2.5H7.5M13.3333 14.1667L17.5 10M17.5 10L13.3333 5.83333M17.5 10H7.5"
+                                                  stroke="white"
+                                                  stroke-width="1.67"
+                                                  stroke-linecap="round"
+                                                  stroke-linejoin="round" />
+                                            </svg>
+
+                                            @if (User.Identity.IsAuthenticated)
+                                            {
+                                                <a class="text4" asp-action="SignOut" asp-controller="User">Çıkış yap</a>
+                                            }
+                                            else
+                                            {
+                                                <a class="text4" asp-action="SignIn" asp-controller="User">Giriş</a>
+                                            }
+
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- Modal ends -->
-            </form>
+                </div>
+
+                <div class="frame-7">
+                    <ul class="nav nav-tabs " style="display:inline-flex; flex-direction:row">
+                        @foreach (var item in Model.Tournament.Tours.OrderBy(x => x.Id).SkipLast(1))
+                        {
+
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link" id="@item.Name-tab" data-bs-toggle="tab" data-bs-target="#@item.Name-pane" role="tab" aria-controls="@item.Name-pane" aria-selected="true"><span style="color:#7F56D9">@item.Name</span></a>
+                            </li>
+
+                        }
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link active" id="LastTab-tab" data-bs-toggle="tab" data-bs-target="#LastTab-pane" role="tab" aria-controls="LastTab-pane" aria-selected="true"><span style="color:#7F56D9">Tur @Model.Tournament.Tours.Count()</span></a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        @foreach (var p in Model.Tournament.Tours)
+                        {
+                            <div class="tab-pane fade" id="@p.Name-pane" role="tabpanel" aria-labelledby="@p.Name-tab" tabindex="0">
+                                @foreach (var item in p.Pairs)
+                                {
+                                    if (item.TourId == p.Id) // Assuming there's a property like TourId in your pair model
+                                    {
+                                        var scoresForCurrentPair = Model.Scores.FirstOrDefault(s => s.PairId == item.Id);
+
+                                        <div>
+                                            <p>
+                                                @(scoresForCurrentPair != null
+                                ? $"{scoresForCurrentPair.User1Name} : {item.User1Score} - {item.User2Score} : {scoresForCurrentPair.User2Name}"
+                                : "Scores not available")
+                                            </p>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        }
+                        <!-- Last Tab Content -->
+                        <div class="tab-pane  show active" id="LastTab-pane" role="tabpanel" aria-labelledby="LastTab-tab" tabindex="0">
+                            <form asp-action="SaveScores" method="post">
+
+                                <table class="table">
+
+                                    <tbody>
+
+                                        @for (int i = 0; i < Model.PairVMs.Count; i++)
+                                        {
+                                            <tr>
+                                                @if (Model.Tournament.Tours.Any())
+                                                {
+                                                    var maxTourId = Model.Tournament.Tours.Max(t => t.Id);
+                                                    var scoresForCurrentTour = Model.Scores.Where(s => s.TourId == maxTourId).ToList();
+
+
+                                                    if (scoresForCurrentTour.Any())
+                                                    {
+                                                        var score = scoresForCurrentTour[i];
+                                                        <input type="hidden" name="Scores[@i].PairId" value="@score.PairId" />
+                                                        <input type="hidden" name="Scores[@i].TournamentId" value="@Model.Tournament.Id" />
+                                                        <td>@Model.PairVMs[i].User1.Name @Model.PairVMs[i].User1.SurName</td>
+
+                                                        @if (Model.PairVMs[i].User2 != null)
+                                                        {
+                                                            <td>
+                                                                <input type="number" name="Scores[@i].User1Score" value="@score.User1Score" onclick="clearInput(this)" />
+                                                                <input type="hidden" name="User1Name" value="@score.User1Name" />
+                                                            </td>
+                                                            <td>
+                                                                <input type="number" name="Scores[@i].User2Score" value="@score.User2Score" onclick="clearInput(this)" />
+                                                                <input type="hidden" name="User2Name" value="@score.User2Name" />
+                                                            </td>
+                                                            <td>@Model.PairVMs[i].User2.Name @Model.PairVMs[i].User2.SurName</td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td><span>Bye</span></td>
+                                                            <td></td> <!-- Empty cell for User1Score -->
+                                                            <td></td> <!-- Empty cell for User2Score -->
+                                                        }
+                                                    }
+                                                }
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                                <button type="button" class="btn btn-primary"  style="background-color:#7F56D9; border-color:#7F56D9" data-bs-toggle="modal" data-bs-target="#myModalSkor">Skorları Kaydet</button>
+
+                                <!-- Modal starts -->
+                                <div class="modal" id="myModalSkor">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Skor Kayıt</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Skorlar kayıt edilecek. Onaylıyor musunuz?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                                                <button type="submit" class="btn btn-primary">Onayla</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Modal ends -->
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
 }
 else
 {
@@ -166,41 +263,41 @@ else
     }
     else
     {
-        
-    <form asp-action="DrawLot" method="post">
-        <input type="hidden" value="@Model.Tournament.Id" name="Id" />
-        <input type="hidden" value="@Model.Tournament.PlayLife" name="PlayLife" />
-        <input type="hidden" value="@Model.Tournament.Type" name="Type" />
-        <input type="hidden" value="@Model.Tournament.ByeType" name="ByeType" />
-        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal">Tur#@(Model.Tournament.Tours.Count() + 1) Kura Çek </button>
+
+        <form asp-action="DrawLot" method="post">
+            <input type="hidden" value="@Model.Tournament.Id" name="Id" />
+            <input type="hidden" value="@Model.Tournament.PlayLife" name="PlayLife" />
+            <input type="hidden" value="@Model.Tournament.Type" name="Type" />
+            <input type="hidden" value="@Model.Tournament.ByeType" name="ByeType" />
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal">Tur#@(Model.Tournament.Tours.Count() + 1) Kura Çek </button>
 
 
-                        <!-- Modal starts -->
-                    <div class="modal" id="myModal">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Kura Çek</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    Tur#@(Model.Tournament.Tours.Count() + 1) Kurası Çekilecek. Onaylıyor musunuz?
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
-                                    <button type="submit" class="btn btn-primary">Onayla</button>
-                                </div>
-                            </div>
+            <!-- Modal starts -->
+            <div class="modal" id="myModal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Kura Çek</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Tur#@(Model.Tournament.Tours.Count() + 1) Kurası Çekilecek. Onaylıyor musunuz?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                            <button type="submit" class="btn btn-primary">Onayla</button>
                         </div>
                     </div>
-                    <!-- Modal ends -->
-    </form>
+                </div>
+            </div>
+            <!-- Modal ends -->
+        </form>
     }
 
 
 }
 @section Script{
-     <script>
+    <script>
         // Function to clear the default value when an input field is clicked
         function clearInput(input) {
             input.value = "";
