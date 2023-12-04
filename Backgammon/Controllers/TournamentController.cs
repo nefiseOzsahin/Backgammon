@@ -417,7 +417,7 @@ namespace Backgammon.Controllers
         private string GetUserDisplayName(int userId)
         {
             var user = _context.Users.Find(userId);
-            return user != null ? $"{user.Name} {user.SurName}" : "User not found";
+            return user != null ? $"{user.Name} {user.SurName}" : "Bye";
         }
 
         private List<ScoreViewModel> InitializeScores(Tour tour)
