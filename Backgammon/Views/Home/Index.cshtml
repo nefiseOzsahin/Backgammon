@@ -1,4 +1,5 @@
-﻿@{
+﻿@model List<Tournament>;
+@{
     Layout = "_Layout1";
 
 
@@ -68,15 +69,15 @@
                     <div class="div-3"><img class="img" src="~/home/dropdown.svg" /></div>
                 </div>
                 <div class="number-and-chart">
-                    <div class="number-and-badge"><div class="number">251</div></div>
+                    <div class="number-and-badge"><div class="number"></div></div>
                     <div class="progress-circle">
                         <div class="overlap">
                             <div class="ring">
                                 <div class="overlap-group"><img class="line-2" src="~/home/ring.svg" /></div>
-                             @*   <div class="line-wrapper"><img class="line" src="~/home/ring.svg" />*@
+                                @*   <div class="line-wrapper"><img class="line" src="~/home/ring.svg" />*@
                             </div>
-                            <div class="label">Aktif kullanıcı</div>
-                            <div class="number-2">55%</div>
+                            <div class="label">Oyuncu #</div>
+                            <div class="number-2">@ViewBag.userCount</div>
                         </div>
                     </div>
                 </div>
@@ -87,14 +88,14 @@
                     <div class="div-3"><img class="img" src="~/home/dropdown.svg" /></div>
                 </div>
                 <div class="number-and-chart">
-                    <div class="number-and-badge"><div class="number">31</div></div>
+                    <div class="number-and-badge"><div class="number"></div></div>
                     <div class="progress-circle">
                         <div class="overlap">
                             <div class="ring">
                                 <div class="line-wrapper"><img class="line-2" src="~/home/line.svg" /></div>
                             </div>
-                            <div class="label-2">Oynandı</div>
-                            <div class="number-2">85%</div>
+                            <div class="label-2">Turnuva #</div>
+                            <div class="number-2">@ViewBag.tournamentCount</div>
                         </div>
                     </div>
                 </div>
@@ -121,14 +122,14 @@
                 @if (User.IsInRole("Admin"))
                 {
                     <button class="button-2">
-                    <div class="button-base-3">
-                        <img class="img" src="~/home/plus.svg" />
-                          <a class="btn btn-primary w-100" asp-action="CreateT" asp-controller="Tournament" style="background-color:#7F56D9; border-color:#7F56D9">Turnuva Ekle</a>
-                    </div>
-                </button>
-                    
+                        <div class="button-base-3">
+                            <img class="img" src="~/home/plus.svg" />
+                            <a class="btn btn-primary w-100" asp-action="CreateT" asp-controller="Tournament" style="background-color:#7F56D9; border-color:#7F56D9">Turnuva Ekle</a>
+                        </div>
+                    </button>
+
                 }
-                
+
             </div>
         </div>
         <div class="table-wrapper">
@@ -143,148 +144,91 @@
                         <div class="table-header-cell">
                             <div class="table-header"><div class="text-9">No</div></div>
                         </div>
-                        <div class="table-cell"><div class="text-wrapper-2">15</div></div>
-                        <div class="table-cell-2"><div class="text-wrapper-2">84</div></div>
-                        <div class="table-cell"><div class="text-wrapper-2">187</div></div>
+                        @foreach (var item in Model)
+                        {
+                            <div class="table-cell"><div class="text-wrapper-2">@item.Id</div></div>
+
+                        }
                     </div>
                     <div class="div-3">
                         <div class="table-header-cell">
                             <div class="table-header"><div class="text-9">Turnuva İsmi</div></div>
                         </div>
-                        <div class="table-cell-3">
-                            <div class="avatar-2"></div>
-                            <div class="div-3">
-                                <div class="text-10">Ankara Tavla</div>
-                                <div class="text-wrapper-2">ankaratavla@gmail.com</div>
+                        @foreach (var item in Model)
+                        {
+                            <div class="table-cell-3">
+                                <div class="avatar-2"></div>
+                                <div class="div-3">
+                                    <div class="text-10">@item.Name</div>
+                                    <div class="text-wrapper-2"></div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="table-cell-4">
-                            <div class="avatar-3"></div>
-                            <div class="div-3">
-                                <div class="text-10">Cumhuriyet Turnuvasi</div>
-                                <div class="text-wrapper-2">actavla@gmail.com</div>
-                            </div>
-                        </div>
-                        <div class="table-cell-3">
-                            <div class="avatar-4"></div>
-                            <div class="div-3">
-                                <div class="text-10">100. Yil Turnuvasi</div>
-                                <div class="text-wrapper-2">acta@gmail.com</div>
-                            </div>
-                        </div>
+
+                        }
                     </div>
                     <div class="div-3">
                         <div class="table-header-cell">
                             <div class="table-header"><div class="text-9">Lokasyon</div></div>
                         </div>
-                        <div class="table-cell-3">
-                            <div class="featured-icon"><img class="map-pin" src="~/home/map-pin.svg" /></div>
-                            <div class="text-11">ABC Hotel,Ankara</div>
-                        </div>
-                        <div class="table-cell-4">
-                            <div class="featured-icon"><img class="map-pin" src="~/home/map-pin.svg" /></div>
-                            <div class="text-11">Radison Hotel,Istanbul</div>
-                        </div>
-                        <div class="table-cell-3">
-                            <div class="featured-icon"><img class="map-pin" src="~/home/map-pin.svg" /></div>
-                            <div class="text-11">Hotel Time, Ankara</div>
-                        </div>
+                        @foreach (var item in Model)
+                        {
+                            <div class="table-cell-3">
+                                <div class="featured-icon"><img class="map-pin" src="~/home/map-pin.svg" /></div>
+                                <div class="text-11">@item.Place</div>
+                            </div>
+                        }
+
                     </div>
                     <div class="column">
                         <div class="table-header-cell">
                             <div class="table-header"><div class="text-9">Tarih</div></div>
                         </div>
-                        <div class="table-cell">
-                            <div class="div-5">
-                                <div class="text-12">30.11.2023</div>
-                                <div class="text-wrapper-2">19:11</div>
+                        @foreach (var item in Model)
+                        {
+                            <div class="table-cell">
+                                <div class="div-5">
+                                    <div class="text-12">@item.StartDate</div>
+                                    <div class="text-wrapper-2"></div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="table-cell-2">
-                            <div class="div-5">
-                                <div class="text-12">15.12.2023</div>
-                                <div class="text-wrapper-2">20:00</div>
-                            </div>
-                        </div>
-                        <div class="table-cell">
-                            <div class="div-5">
-                                <div class="text-12">25.12.2023</div>
-                                <div class="text-wrapper-2">18:00</div>
-                            </div>
-                        </div>
+
+                        }
                     </div>
-                    <div class="div-5">
-                        <div class="table-header-wrapper">
-                            <div class="table-header"><div class="text-9">Bye/Ana</div></div>
-                        </div>
-                        <div class="table-cell">
-                            <div class="div-5">
-                                <div class="text-12">ECKY</div>
-                                <div class="text-wrapper-2">H</div>
-                            </div>
-                        </div>
-                        <div class="table-cell-2">
-                            <div class="div-5">
-                                <div class="text-12">ECKY</div>
-                                <div class="text-wrapper-2">H</div>
-                            </div>
-                        </div>
-                        <div class="table-cell">
-                            <div class="div-5">
-                                <div class="text-12">ECKY</div>
-                                <div class="text-wrapper-2">H</div>
-                            </div>
-                        </div>
-                    </div>
+
+
                     <div class="div-3">
                         <div class="table-header-cell">
                             <div class="table-header"><div class="text-9">Katilimci sayisi</div></div>
                         </div>
-                        <div class="avatar-group-wrapper">
-                            <div class="avatar-group">
-                                <div class="avatars">
-                                    <div class="avatar-5"><img src="~/home/avatar-10.svg" /></div>
-                                    <div class="avatar-6"><img src="~/home/avatar11.svg" /></div>
-                                    <div class="avatar-7"><img src="~/home/avatar12.svg" /></div>
-                                    <div class="avatar-8"><img src="~/home/avatar13.svg" /></div>
-                                    <div class="avatar-9"><div class="text-13">20</div></div>
+
+
+                        @foreach (var item in Model)
+                        {
+                            <div class="avatar-group-wrapper">
+                                <div class="avatar-group">
+                                    <div class="avatars">
+                                        <div class="avatar-14"><img src="~/home/avatar15.svg" /></div>
+                                        <div class="avatar-15"><img src="~/home/avatar12.svg" /></div>
+                                        <div class="avatar-16"><img src="~/home/avatar17.svg" /></div>
+                                        <div class="avatar-17"><img src="~/home/avatar11.svg" /></div>
+                                        <div class="avatar-9"><div class="text-13">@item.Users.Count()</div></div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="table-cell-5">
-                            <div class="avatar-group">
-                                <div class="avatars">
-                                    <div class="avatar-10"><img src="~/home/avatar14.svg" /></div>
-                                    <div class="avatar-11"><img src="~/home/avatar15.svg" /></div>
-                                    <div class="avatar-12"><img src="~/home/avatar16.svg" /></div>
-                                    <div class="avatar-13"><img src="~/home/avatar17.svg" /></div>
-                                    <div class="avatar-9"><div class="text-13">12</div></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="avatar-group-wrapper">
-                            <div class="avatar-group">
-                                <div class="avatars">
-                                    <div class="avatar-14"><img src="~/home/avatar15.svg" /></div>
-                                    <div class="avatar-15"><img src="~/home/avatar12.svg" /></div>
-                                    <div class="avatar-16"><img src="~/home/avatar17.svg" /></div>
-                                    <div class="avatar-17"><img src="~/home/avatar11.svg" /></div>
-                                    <div class="avatar-9"><div class="text-13">9</div></div>
-                                </div>
-                            </div>
-                        </div>
+                        }
                     </div>
                     <div class="div-3">
                         <div class="table-header-cell-2"></div>
-                        <div class="table-cell-3">
-                            <div class="div-3"><img class="img" src="~/home/dropdown.svg" /></div>
-                        </div>
-                        <div class="table-cell-4">
-                            <div class="div-3"><img class="img" src="~/home/dropdown.svg" /></div>
-                        </div>
-                        <div class="table-cell-3">
-                            <div class="div-3"><img class="img" src="~/home/dropdown.svg" /></div>
-                        </div>
+                        @foreach (var item in Model)
+                        {
+                            <div class="table-cell-3">
+                                <a class="badge-base4" asp-action="TUserList" asp-controller="Tournament" asp-route-tournamentId="@item.Id">
+                                    <div class="" style="color:#7F56D9">Sıralama</div>
+                                </a>
+                            </div>
+                        }
+
+
                     </div>
                 </div>
             </div>
