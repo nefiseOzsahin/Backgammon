@@ -2,144 +2,314 @@
 @{
     ViewData["Title"] = "UpdateT";
     Layout = "_Layout1";
+    string userName = User.Identity.Name;
+
+    if (!string.IsNullOrEmpty(userName) && char.IsLower(userName[0]))
+    {
+        userName = char.ToUpper(userName[0]) + userName.Substring(1);
+    }
 }
+<link href="~/turnuvalar/style.css" rel="stylesheet" />
+<link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />
+<link href="~/lib/toastr.js/toastr.min.css" rel="stylesheet" />
+<style>
+    a {
+        display: flex;
+        /* Your styles go here */
+        text-decoration: none;
+        color: #007bff; /* Change the color to your preference */
+        /* Add any other styles you want */
+    }
 
-<h1>UpdateT</h1>
-<form method="post" asp-action="UpdateT">
-    <input asp-for="@Model.Id" type="hidden" />
-    <div class="mb-3">
-        <label>Turnuva İsmi:</label>
-        <span class="text-danger" asp-validation-for="@Model.Name"></span>
-        <input asp-for="@Model.Name" class="form-control" />
-    </div>
-    <div class="mb-3">
-        <label>Turnuva Konumu:</label>
-        <span class="text-danger" asp-validation-for="@Model.Place"></span>
-        <input asp-for="@Model.Place" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label>Turnuva Sistemi:</label>
-        <span class="text-danger" asp-validation-for="@Model.System"></span>
+    .flex-container {
+        display: flex;
+        align-items: end;
+        gap: 12px;
+    }
 
-        <select class="form-control" asp-for="@Model.System">
-            <option>Seçiniz</option>
-            <option>BG System</option>
-            <option>Bracket</option>
-        </select>
-    </div>
-    <div class="form-group">
-        <label>Turnuva Tipi:</label>
-        <span class="text-danger" asp-validation-for="@Model.Type"></span>
+    .text4 {
+        transition: color 0.3s; /* Add a smooth transition effect */
+    }
 
-        <select class="form-control" asp-for="@Model.Type">
-            <option>Seçiniz</option>
-            <option>Kazananlar Eşleşir</option>
-            <option>Kaybedenler Eşleşir</option>
-            <option>Aynı Haklılar Eşleşir</option>
-            <option>Rastgele</option>
-        </select>
-    </div>
-    <div class="form-group">
-        <label>Oynama Hakkı:</label>
-        <span class="text-danger" asp-validation-for="@Model.PlayLife"></span>
+        .text4:hover {
+            color: white; /* Change the text color to white on hover */
+        }
+</style>
+<div class="main-wrap">
+    <div class="main">
+        <div class="main2">
 
-        <select class="form-control" asp-for="@Model.PlayLife">
-            <option>Seçiniz</option>
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-            <option>5</option>
-            <option>6</option>
-            <option>7</option>
-            <option>8</option>
-            <option>9</option>
-            <option>10</option>
-        </select>
-    </div>
-    <div class="mb-3">
-        <label>Başlama Zamanı:</label>
-        <span class="text-danger" asp-validation-for="@Model.StartDate"></span>
-        <div class="input-group date" id="datepicker" data-target-input="nearest">
-            <input class="form-control datetimepicker-input" data-target="#datepicker" asp-for="@Model.StartDate" />
-            <div class="input-group-append" data-target="#datepicker" data-toggle="datetimepicker">
+            <div class="header-section">
+                <div class="container">
+                    <div class="page-header">
+                        <div class="content5">
+                            <div class="text-and-supporting-text2">
+                                <div class="text5">Turnuva Güncelleme</div>
+                                <div class="supporting-text2">
+                                    Turnuva bilgilerini güncelleyebilir, oyuncu ekleyip çıkarabilirsiniz.
+                                </div>
+                            </div>
+                            <div class="actions">
+                                <div class="button2">
+                                    <div class="button-base2">
+                                        <div class="text6">@userName</div>
+                                    </div>
+                                </div>
+                                <div class="button3">
+                                    <div class="button-base3">
+                                        <svg class="log-out2"
+                                             width="20"
+                                             height="20"
+                                             viewBox="0 0 20 20"
+                                             fill="none"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M7.5 17.5H4.16667C3.72464 17.5 3.30072 17.3244 2.98816 17.0118C2.67559 16.6993 2.5 16.2754 2.5 15.8333V4.16667C2.5 3.72464 2.67559 3.30072 2.98816 2.98816C3.30072 2.67559 3.72464 2.5 4.16667 2.5H7.5M13.3333 14.1667L17.5 10M17.5 10L13.3333 5.83333M17.5 10H7.5"
+                                                  stroke="white"
+                                                  stroke-width="1.67"
+                                                  stroke-linecap="round"
+                                                  stroke-linejoin="round" />
+                                        </svg>
+
+                                        @if (User.Identity.IsAuthenticated)
+                                        {
+                                            <a class="text4" asp-action="SignOut" asp-controller="User">Çıkış yap</a>
+                                        }
+                                        else
+                                        {
+                                            <a class="text4" asp-action="SignIn" asp-controller="User">Giriş</a>
+                                        }
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="frame-7">
+                <form method="post" asp-action="UpdateT">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <input asp-for="@Model.Id" type="hidden" />
+                            <div class="mb-3">
+                                <label>Turnuva İsmi:</label>
+                                <span class="text-danger" asp-validation-for="@Model.Name"></span>
+                                <input asp-for="@Model.Name" class="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label>Turnuva Konumu:</label>
+                                <span class="text-danger" asp-validation-for="@Model.Place"></span>
+                                <input asp-for="@Model.Place" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label>Turnuva Sistemi:</label>
+                                <span class="text-danger" asp-validation-for="@Model.System"></span>
+
+                                <select class="form-control" asp-for="@Model.System">
+                                    <option>Seçiniz</option>
+                                    <option>BG System</option>
+                                    <option>Bracket</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Turnuva Tipi:</label>
+                                <span class="text-danger" asp-validation-for="@Model.Type"></span>
+
+                                <select class="form-control" asp-for="@Model.Type">
+                                    <option>Seçiniz</option>
+                                    <option>Kaybedenler Eşleşir</option>
+                                    <option>Rastgele</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Oynama Hakkı:</label>
+                                <span class="text-danger" asp-validation-for="@Model.PlayLife"></span>
+
+                                <select class="form-control" asp-for="@Model.PlayLife">
+                                    <option>Seçiniz</option>
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                    <option>6</option>
+                                    <option>7</option>
+                                    <option>8</option>
+                                    <option>9</option>
+                                    <option>10</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label>Başlama Zamanı:</label>
+                                <span class="text-danger" asp-validation-for="@Model.StartDate"></span>
+                                <div class="input-group date" id="datepicker" data-target-input="nearest">
+                                    <input class="form-control datetimepicker-input" data-target="#datepicker" asp-for="@Model.StartDate" />
+                                    <div class="input-group-append" data-target="#datepicker" data-toggle="datetimepicker">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Bye Tipi:</label>
+                                <span class="text-danger" asp-validation-for="@Model.ByeType"></span>
+
+                                <select class="form-control" asp-for="@Model.ByeType">
+                                    <option>Seçiniz</option>
+                                    <option>Rastgele</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label>Masa Başlangıç:</label>
+                                <span class="text-danger" asp-validation-for="@Model.TableStart"></span>
+                                <input asp-for="@Model.TableStart" class="form-control" value="@(string.IsNullOrEmpty(Model.TableStart.ToString()) ? "1" : Model.TableStart)" />
+                            </div>
+                             <div class="d-flex justify-content-end">
+                            <!-- Hidden input for storing selected user IDs -->
+                            <input type="hidden" id="SelectedUsersInput" name="SelectedUsers" />
+                            <!-- Save button inside the form -->
+                            <button type="button" class="btn btn-success" onclick="saveSelectedUsers()" style="background-color:#7F56D9; border-color:#7F56D9">Kaydet</button>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text6">Tüm Oyuncuların Listesi</div>
+                            <div class="mb-3">
+
+                                <input type="text" id="userSearch" class="form-control" placeholder="Ara">
+                            </div>
+                            <table class="table" id="userTable">
+                                <thead>
+                                    <tr class="content8">
+                                        <th>
+                                            <div class="table-cell2">
+                                                <div class="text12"></div>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="table-cell2">
+                                                <div class="text12">No</div>
+                                            </div>
+                                        </th>
+                                        <th style="padding-left:40px">
+                                            <div class="table-cell2">
+                                                <div class="text12">İsim</div>
+                                            </div>
+                                        </th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var user in ViewBag.AllUsers)
+                                    {
+                                        <tr class="content8">
+                                            <td class="column">
+                                                <div class="text13" hidden>@user.Name @user.SurName</div>
+                                                <div class="table-cell2">
+                                                    <input type="checkbox" name="selectedUsers" value="@user.Id" />
+                                                </div>
+                                            </td>
+
+                                            <td class="column">
+                                                <div class="table-cell2">
+                                                    <div class="text13">@user.Id</div>
+                                                </div>
+                                            </td>
+                                            <td class="column">
+                                                <div class="table-cell2">
+                                                    <div class="text13">@user.Name</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text6">Turnuva Oyuncuları</div>
+                            <div class="mb-3">
+
+                                <input type="text" id="tournamentUserSearch" class="form-control" placeholder="Ara">
+                            </div>
+                            <table class="table" id="tournamentUserTable">
+                                <thead>
+                                    <tr class="content8">
+
+                                        <th class="column">
+                                            <div class="table-cell2">
+                                                <div class="text13">No</div>
+                                            </div>
+                                        </th>
+                                        <th class="column">
+                                            <div class="table-cell2">
+                                                <div class="text13">İsim</div>
+                                            </div>
+                                        </th>
+                                        <th class="column">
+                                            <div class="table-cell2">
+                                                <div class="text13">İşlem</div>
+                                            </div>
+                                        </th>
+                                        <!-- Add more columns as needed -->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var user in ViewBag.UsersInTournament)
+                                    {
+                                        <tr class="content8">
+
+                                            <td class="column">
+                                                <div class="text13" hidden>@user.Name @user.SurName</div>
+                                                <div class="table-cell2">
+                                                    <div class="text13">@user.Id</div>
+                                                </div>
+                                            </td>
+                                            <td class="column">
+                                                <div class="table-cell2">
+                                                    <div class="text13">@user.Name</div>
+                                                </div>
+                                            </td>
+                                            <td class="column">
+                                                <a href="#" data-bs-toggle="modal" data-bs-target="#myModal-@user.Id" class="btn-link">
+
+                                                    <div class="table-cell2">
+                                                        <div class="text13">Sil</div>
+                                                    </div>
+                                                </a>
+                                                <div class="modal" id="myModal-@user.Id">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Modal Title</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                @user.Name @user.SurName silinecek. Onaylıyor musunuz?
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                                                                <a class="btn btn-primary" asp-action="ExcludeFromTournament" type="submit" asp-route-userId="@user.Id" asp-route-tournamentId="@Model.Id">Sil</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- Modal ends -->
+                                            </td>
+                                            <!-- Add more columns as needed -->
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+                    <div class="text-danger mt-2" asp-validation-summary="ModelOnly"></div>
+
+
+                </form>
             </div>
         </div>
     </div>
-    <div class="form-group">
-        <label>Bye Tipi:</label>
-        <span class="text-danger" asp-validation-for="@Model.ByeType"></span>
-
-        <select class="form-control" asp-for="@Model.ByeType">
-            <option>Seçiniz</option>
-            <option>En Az Kaybedenler</option>
-            <option>En Az Kazananlar</option>
-            <option>Rastgele</option>
-        </select>
-    </div>
-    <div class="mb-3">
-        <label>Masa Başlangıç:</label>
-        <span class="text-danger" asp-validation-for="@Model.TableStart"></span>
-        <input asp-for="@Model.TableStart" class="form-control" value="@(string.IsNullOrEmpty(Model.TableStart.ToString()) ? "1" : Model.TableStart)" />
-    </div>
-    <h2>All Users</h2>
-    <div class="mb-3">
-        <label for="userSearch">Oyuncu Ara:</label>
-        <input type="text" id="userSearch" class="form-control" placeholder="Ara">
-    </div>
-    <table class="table" id="userTable">
-        <thead>
-            <tr>
-                <th>Select</th>
-                <th>User ID</th>
-                <th>Name</th>
-
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var user in ViewBag.AllUsers)
-            {
-                <tr>
-                    <td><input type="checkbox" name="selectedUsers" value="@user.Id" /></td>
-                    <td>@user.Id</td>
-                    <td>@user.Name</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    <h2>Users in this Tournament</h2>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>User ID</th>
-                <th>Name</th>
-                <th>Action</th>
-                <!-- Add more columns as needed -->
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var user in ViewBag.UsersInTournament)
-            {
-                <tr>
-                    <td>@user.Id</td>
-                    <td>@user.Name</td>
-                    <td>
-                        <a asp-action="ExcludeFromTournament" type="submit" class="btn-link" asp-route-userId="@user.Id" asp-route-tournamentId="@Model.Id">Sil</a>
-                    </td>
-                    <!-- Add more columns as needed -->
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    <!-- Hidden input for storing selected user IDs -->
-    <input type="hidden" id="SelectedUsersInput" name="SelectedUsers" />
-    <!-- Save button inside the form -->
-    <button type="button" class="btn btn-success" onclick="saveSelectedUsers()">Save</button>
-    <div class="text-danger mt-2" asp-validation-summary="ModelOnly"></div>
-
-
-</form>
+</div>
 
 
 
@@ -185,7 +355,18 @@
                         }
                     });
                 });
+            $('#tournamentUserSearch').on('input', function() {
+                var searchText = $(this).val().toLowerCase();
+                $('#tournamentUserTable tbody tr').each(function() {
+                    var name = $(this).find('td:first-child').text().toLowerCase();
+                    if (name.includes(searchText)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
         });
     </script>
-}
+                }
 

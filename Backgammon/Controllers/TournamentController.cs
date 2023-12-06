@@ -682,7 +682,7 @@ namespace Backgammon.Controllers
                 try
                 {
                     await _context.SaveChangesAsync();
-                    TempData["SuccessMessage"] = "User excluded from the tournament successfully!";
+                    TempData["SuccessMessage"] = "Oyuncu başarıyla silindi!";
                 }
                 catch (Exception e)
                 {
@@ -691,7 +691,7 @@ namespace Backgammon.Controllers
             }
             else
             {
-                TempData["ErrorMessage"] = "User or tournament not found.";
+                TempData["ErrorMessage"] = "Kullanıcı veya turnuva bulunamadı";
             }
 
             return RedirectToAction("UpdateT", new { tournamentId = tournamentId });
