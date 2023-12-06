@@ -37,22 +37,7 @@
             color: white; /* Change the text color to white on hover */
         }
 
-         
-
-
 </style>
-@if (!string.IsNullOrEmpty(UserCount))
-{
-    <div class="main-wrap">
-        <div class="main">
-            <div class="main2">
-                <div class="alert alert-danger">
-                    @TempData["UserCount"]
-                </div>
-            </div>
-        </div>
-    </div>
-}
 <link href="~/turnuvalar/style.css" rel="stylesheet" />
 <div class="main-wrap">
     <div class="main">
@@ -66,6 +51,16 @@
                                 <div class="supporting-text2">
                                     Turnuva skor kayıt sayfası. Tur skorlarını kayıt edebilir, yeni kuralar çekebilirsiniz.
                                 </div>
+                                 @if (!string.IsNullOrEmpty(UserCount))
+            {
+               
+                  
+                            <div class="alert alert-danger mt-3 w-100">
+                                @TempData["UserCount"]
+                            </div>
+                   
+                
+            }
                             </div>
                             <div class="actions">
                                 <div class="button2">
@@ -103,7 +98,9 @@
                         </div>
                     </div>
                 </div>
+
             </div>
+           
             @if (Model.AllPairsHaveZeroScore || Model.SaveScore)
             {
 
@@ -256,48 +253,48 @@
                         }
 
                     </div>
-                
 
-                @if (!string.IsNullOrEmpty(championName))
-                {
-               
-                    <div class="btn btn-danger">
+
+                    @if (!string.IsNullOrEmpty(championName))
+                    {
+
+                        <div class="btn btn-danger">
                             Şampiyon: @championName
-                    </div>
-                    
-                }
-                else
-                {
+                        </div>
 
-                    <form asp-action="DrawLot" method="post">
-                        <input type="hidden" value="@Model.Tournament.Id" name="Id" />
-                        <input type="hidden" value="@Model.Tournament.PlayLife" name="PlayLife" />
-                        <input type="hidden" value="@Model.Tournament.Type" name="Type" />
-                        <input type="hidden" value="@Model.Tournament.ByeType" name="ByeType" />
-                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal">Tur#@(Model.Tournament.Tours.Count() + 1) Kura Çek </button>
+                    }
+                    else
+                    {
+
+                        <form asp-action="DrawLot" method="post">
+                            <input type="hidden" value="@Model.Tournament.Id" name="Id" />
+                            <input type="hidden" value="@Model.Tournament.PlayLife" name="PlayLife" />
+                            <input type="hidden" value="@Model.Tournament.Type" name="Type" />
+                            <input type="hidden" value="@Model.Tournament.ByeType" name="ByeType" />
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal">Tur#@(Model.Tournament.Tours.Count() + 1) Kura Çek </button>
 
 
-                        <!-- Modal starts -->
-                        <div class="modal" id="myModal">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">Kura Çek</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        Tur#@(Model.Tournament.Tours.Count() + 1) Kurası Çekilecek. Onaylıyor musunuz?
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
-                                        <button type="submit" class="btn btn-primary">Onayla</button>
+                            <!-- Modal starts -->
+                            <div class="modal" id="myModal">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Kura Çek</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Tur#@(Model.Tournament.Tours.Count() + 1) Kurası Çekilecek. Onaylıyor musunuz?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                                            <button type="submit" class="btn btn-primary">Onayla</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <!-- Modal ends -->
-                    </form>
-                }
+                            <!-- Modal ends -->
+                        </form>
+                    }
 
                 </div>
             }
