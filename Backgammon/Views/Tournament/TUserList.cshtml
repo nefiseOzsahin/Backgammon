@@ -1,4 +1,5 @@
-﻿@model List<TournamentUser>
+﻿@using System.Globalization
+@model List<TournamentUser>
 
 @{
     ViewData["Title"] = "Tournament Score List";
@@ -9,6 +10,12 @@
     {
         userName = char.ToUpper(userName[0]) + userName.Substring(1);
     }
+
+    string originalString = Model.FirstOrDefault().Tournament.Name;
+
+          TextInfo textInfo = CultureInfo.CurrentCulture.TextInfo;
+        string capitalizedString2 = textInfo.ToTitleCase(originalString);
+
 }
 
 <link href="~/turnuvalar/style.css" rel="stylesheet" />
@@ -48,7 +55,7 @@
                     <div class="page-header">
                         <div class="content5">
                             <div class="text-and-supporting-text2">
-                                <div class="text5">Turnuva Skor Sayfası</div>
+                                <div class="text5">@capitalizedString2 Skor Sayfası</div>
                                 <div class="supporting-text2">
                                     Oyuncuların kazanma, kaybetme, bye sayılarını görebilirsiniz.
                                 </div>

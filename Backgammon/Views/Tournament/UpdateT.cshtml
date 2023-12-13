@@ -163,11 +163,11 @@
                                 <span class="text-danger" asp-validation-for="@Model.TableStart"></span>
                                 <input asp-for="@Model.TableStart" class="form-control" value="@(string.IsNullOrEmpty(Model.TableStart.ToString()) ? "1" : Model.TableStart)" />
                             </div>
-                             <div class="d-flex justify-content-end">
-                            <!-- Hidden input for storing selected user IDs -->
-                            <input type="hidden" id="SelectedUsersInput" name="SelectedUsers" />
-                            <!-- Save button inside the form -->
-                            <button type="button" class="btn btn-success" onclick="saveSelectedUsers()" style="background-color:#7F56D9; border-color:#7F56D9">Kaydet</button>
+                            <div class="d-flex justify-content-end">
+                                <!-- Hidden input for storing selected user IDs -->
+                                <input type="hidden" id="SelectedUsersInput" name="SelectedUsers" />
+                                <!-- Save button inside the form -->
+                                <button type="button" class="btn btn-success" onclick="saveSelectedUsers()" style="background-color:#7F56D9; border-color:#7F56D9">Kaydet</button>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -221,7 +221,35 @@
                                         </tr>
                                     }
                                 </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td>
+                                            <div class="pagination" id="user-pagination-container">
+                                                <div class="actions2">
+                                                    <button id="previousPageButton" style="border:none">
+                                                        <div class="button-base5">
+                                                            <div class="text19">Onceki</div>
+                                                        </div>
+                                                    </button>
+                                                    <button style="border:none" id="nextPageButton">
+                                                        <div class="button-base5">
+                                                            <div class="text19">Sonraki</div>
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                                <div class="d-flex align-items-center">
+                                                    
+                                                    <div id="userTotalPages">@(Math.Ceiling((double)ViewBag.AllUsers.Count / 5))</div>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                    </tr>
+                                </tfoot>
                             </table>
+
+
+
                         </div>
                         <div class="col-md-4">
                             <div class="text6">Turnuva Oyuncuları</div>
@@ -297,6 +325,32 @@
                                         </tr>
                                     }
                                 </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td>
+                                            <div class="pagination" id="tournament-user-pagination-container">
+                                                <div class="actions2">
+                                                    <button id="previousPageButton2" style="border:none">
+                                                        <div class="button-base5">
+                                                            <div class="text19">Onceki</div>
+                                                        </div>
+                                                    </button>
+                                                    <button style="border:none" id="nextPageButton2">
+                                                        <div class="button-base5">
+                                                            <div class="text19">Sonraki</div>
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                                <div class="d-flex align-items-center">
+                                                    
+                                                    <div id="tournamentUserTotalPages">@(Math.Ceiling((double)ViewBag.UsersInTournament.Count / 5))</div>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                    </tr>
+                                </tfoot>
+
                             </table>
                         </div>
                     </div>
@@ -344,10 +398,11 @@
 
         }
 
-                $('#userSearch').on('input', function() {
+
+                $('#tournamentUserSearch').on('input', function() {
                     var searchText = $(this).val().toLowerCase();
-                    $('#userTable tbody tr').each(function() {
-                        var name = $(this).find('td:last-child').text().toLowerCase();
+                    $('#tournamentUserTable tbody tr').each(function() {
+                        var name = $(this).find('td:first-child').text().toLowerCase();
                         if (name.includes(searchText)) {
                             $(this).show();
                         } else {
@@ -355,17 +410,6 @@
                         }
                     });
                 });
-            $('#tournamentUserSearch').on('input', function() {
-                var searchText = $(this).val().toLowerCase();
-                $('#tournamentUserTable tbody tr').each(function() {
-                    var name = $(this).find('td:first-child').text().toLowerCase();
-                    if (name.includes(searchText)) {
-                        $(this).show();
-                    } else {
-                        $(this).hide();
-                    }
-                });
-            });
         });
     </script>
                 }

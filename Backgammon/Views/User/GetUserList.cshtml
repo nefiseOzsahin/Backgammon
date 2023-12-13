@@ -1,4 +1,5 @@
-﻿@model List<AppUser>
+﻿@using System.Globalization
+@model List<AppUser>
 
 @{
     ViewData["Title"] = "GetUserList";
@@ -159,7 +160,7 @@
                     </div>
                 </div>
                 <table class="table" id="userTable">
-                    <thead >
+                    <thead>
                         <tr class="content8" style="border:none">
                             <th class="column">
                                 <div class="table-cell2">
@@ -174,7 +175,7 @@
                             </th>
                             <th class="column " style="padding-left:60px;">
 
-                                <div class="table-cell2" >
+                                <div class="table-cell2">
                                     <div class="featured-icon">
                                         <svg class="map-pin"
                                              width="20"
@@ -206,12 +207,12 @@
                                     </div>
                                 </div>
                             </th>
-                            <th class="column"  style="padding-left:30px;">
+                            <th class="column" style="padding-left:30px;">
                                 <div class="table-cell2">
                                     <div class="text17">Üyelik Tarihi</div>
                                 </div>
                             </th>
-                            <th class="column"  style="padding-left:20px;">
+                            <th class="column" style="padding-left:20px;">
                                 <div class="table-cell2">
 
 
@@ -220,13 +221,13 @@
 
                                 </div>
                             </th>
-                            <th class="column"  style="padding-left:70px;">
+                            <th class="column" style="padding-left:70px;">
                                 <div class="table-cell2">
                                     <div class="badge d-flex">
 
 
-                                         <div class="text17">İşlem</div>
-                                     
+                                        <div class="text17">İşlem</div>
+
 
                                     </div>
                                 </div>
@@ -247,7 +248,10 @@
                                 </td>
                                 <td class="column">
                                     <div class="table-cell2">
-                                        <div class="text13">@item.Name @item.SurName</div>
+                                        <div class="text13">
+                                            @CultureInfo.CurrentCulture.TextInfo.ToTitleCase(item.Name.ToLower())
+                                            @CultureInfo.CurrentCulture.TextInfo.ToTitleCase(item.SurName.ToLower())
+                                        </div>
 
                                     </div>
                                 </td>
@@ -280,7 +284,10 @@
                                     <div class="table-cell2">
                                         <div class="badge">
                                             <div class="badge-base4">
-                                                <div class="text18">@item.Club</div>
+                                                <div class="text18">
+                                                    @CultureInfo.CurrentCulture.TextInfo.ToTitleCase(item.Club.ToLower())
+
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -343,9 +350,33 @@
                         }
                     </tbody>
                 </table>
+                <div class="table2">
+                    <div class="pagination" id="user-pagination-container">
+                        <div class="actions2">
+                            <button id="previousPageButton" style="border:none">
+                                <div class="button-base5">
+                                    <div class="text19">Onceki</div>
+                                </div>
+                            </button>
+                            <button style="border:none" id="nextPageButton">
+                                <div class="button-base5">
+                                    <div class="text19">Sonraki</div>
+                                </div>
+                            </button>
+                        </div>
+                        <div class="d-flex align-items-center">
+                           
+                            <div id="currentPage"></div>
+                          
+                            <div id="userTotalPages">@(Math.Ceiling((double)Model.Count() / 5))</div>
+                        </div>
+                    </div>
+                </div>
             </div>
-         
+
+
         </div>
+
     </div>
 </div>
 
@@ -353,20 +384,20 @@
 @section Script {
     <script>
         $(document).ready(function() {
-            // jQuery code to handle search
-            $(document).ready(function() {
-                $('#userSearch').on('input', function() {
-                    var searchText = $(this).val().toLowerCase();
-                    $('#userTable tbody tr').each(function() {
-                        var name = $(this).find('td:last-child').text().toLowerCase();
-                        if (name.includes(searchText)) {
-                            $(this).show();
-                        } else {
-                            $(this).hide();
-                        }
-                    });
-                });
-            });
+            ////// jQuery code to handle search
+            ////$(document).ready(function() {
+            ////    $('#userSearch').on('input', function() {
+            ////        var searchText = $(this).val().toLowerCase();
+            ////        $('#userTable tbody tr').each(function() {
+            ////            var name = $(this).find('td:last-child').text().toLowerCase();
+            ////            if (name.includes(searchText)) {
+            ////                $(this).show();
+            ////            } else {
+            ////                $(this).hide();
+            ////            }
+            ////        });
+            ////    });
+            ////});
         @if (TempData["SuccessMessageDelete"] != null)
         {
             <text>
@@ -375,7 +406,7 @@
             </text>
 
         }
-                                                                                                                                                                                                                                                                                                                                             });
+                                                                                                                                                                                                                                                                                                                                                                             });
     </script>
 }
 

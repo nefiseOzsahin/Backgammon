@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "Hyyt4to6M6F5rS/936BuEJYp4D+iomHUAEc39i+H1m+tZF4fh7lfF6dL2ZXfBmAyTTrzVumypN9Rrz6NEMUr6Q==",
+  "dgSpecHash": "bQwrNZoyF1mChm1ZhJWomV/Q773L1liIVPZIDQGenQ2WB0e/kxcBI/1Mc46JRlE1jtTRwONUpd48xIiOo1AZMA==",
   "success": true,
   "projectFilePath": "C:\\Users\\ozsah\\source\\repos\\Backgammon\\Backgammon\\Backgammon.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\ozsah\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\ozsah\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\ozsah\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",
     "C:\\Users\\ozsah\\.nuget\\packages\\humanizer\\2.14.1\\humanizer.2.14.1.nupkg.sha512",
@@ -92,7 +93,7 @@
     "C:\\Users\\ozsah\\.nuget\\packages\\microsoft.codeanalysis.razor\\6.0.22\\microsoft.codeanalysis.razor.6.0.22.nupkg.sha512",
     "C:\\Users\\ozsah\\.nuget\\packages\\microsoft.codeanalysis.scripting.common\\4.0.0\\microsoft.codeanalysis.scripting.common.4.0.0.nupkg.sha512",
     "C:\\Users\\ozsah\\.nuget\\packages\\microsoft.codeanalysis.workspaces.common\\4.0.0\\microsoft.codeanalysis.workspaces.common.4.0.0.nupkg.sha512",
-    "C:\\Users\\ozsah\\.nuget\\packages\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",
+    "C:\\Users\\ozsah\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
     "C:\\Users\\ozsah\\.nuget\\packages\\microsoft.data.sqlclient\\5.1.1\\microsoft.data.sqlclient.5.1.1.nupkg.sha512",
     "C:\\Users\\ozsah\\.nuget\\packages\\microsoft.data.sqlclient.sni.runtime\\5.1.0\\microsoft.data.sqlclient.sni.runtime.5.1.0.nupkg.sha512",
     "C:\\Users\\ozsah\\.nuget\\packages\\microsoft.diasymreader\\1.3.0\\microsoft.diasymreader.1.3.0.nupkg.sha512",

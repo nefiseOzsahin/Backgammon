@@ -1,4 +1,5 @@
-﻿@model List<Tournament>;
+﻿@using System.Globalization
+@model List<Tournament>;
 @{
     Layout = "_Layout1";
 
@@ -11,6 +12,29 @@
     }
 
 }
+<style>
+    .full-height-row {
+        width: 1000px; /* Adjust the height as needed */
+        display: flex;
+    }
+
+    .avatar-group-wrapper {
+        background-color: white;
+    }
+
+    tr {
+        display: flex;
+        width: 900px;
+        align-items: center;
+        border-bottom-width: 1px;
+    }
+
+    td {
+        flex: 1;
+        border-bottom-width: 0px !important;
+        padding: 10px;
+    }
+</style>
 
 <div class="div-wrapper">
     <div class="container">
@@ -113,7 +137,8 @@
                             <div class="input-2">
                                 <div class="div">
                                     <img class="img" src="~/home/search-2.svg" />
-                                    <div class="text-6">Turnuva ara</div>
+                                    <input type="text" id="tournamentSearch" class="form-control" placeholder="Turnuva ara">
+                                    <div id="tournamentCurrentPage"></div>
                                 </div>
                             </div>
                         </div>
@@ -132,105 +157,161 @@
 
             </div>
         </div>
-        <div class="table-wrapper">
-            <div class="table">
-                <div class="card-header">
-                    <div class="text-and-supporting-wrapper">
-                        <div class="text-and-supporting"><div class="text-8">Yaklasan Turnuvalar</div></div>
-                    </div>
-                </div>
-                <div class="content-3">
-                    <div class="div-3">
-                        <div class="table-header-cell">
-                            <div class="table-header"><div class="text-9">No</div></div>
-                        </div>
-                        @foreach (var item in Model)
-                        {
-                            <div class="table-cell"><div class="text-wrapper-2">@item.Id</div></div>
+        <div class="frame-8">
+            <table class="table " id="tournamentTable">
+                <thead>
+                    <tr class="full-height-row  text-center">
 
-                        }
-                    </div>
-                    <div class="div-3">
-                        <div class="table-header-cell">
-                            <div class="table-header"><div class="text-9">Turnuva İsmi</div></div>
-                        </div>
-                        @foreach (var item in Model)
-                        {
-                            <div class="table-cell-3">
-                                <div class="avatar-2"></div>
-                                <div class="div-3">
-                                    <div class="text-10">@item.Name</div>
-                                    <div class="text-wrapper-2"></div>
+
+                        <th class="w-100">
+
+
+
+                            <div class="text-10" style="margin-left:0px">No</div>
+
+                        </th>
+
+
+
+                        <th class="w-100">
+                            <div class="text-10" style="margin-left:-50px"> Turnuva İsmi</div>
+
+
+                        </th>
+                        <th>
+
+                            <div class="text-10" style="margin-left:-80px"> Konum</div>
+
+
+
+                        </th>
+                        <th class="w-100">
+                            <div class="text-10" style="margin-left:60px"> Katılımcı</div>
+
+
+
+                        </th>
+                        <th class="w-100">
+                            <div class="text-10" style="margin-left:20px"> Tarih</div>
+
+
+
+                        </th>
+                        <th class="w-100">
+                            <div class="text-10" style="margin-left:-40px"> İşlem</div>
+
+
+
+                        </th>
+                    </tr>
+
+                </thead>
+                <tbody>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="table-cell2">
+                                    <div class="text-9">@item.Id</div>
                                 </div>
-                            </div>
-
-                        }
-                    </div>
-                    <div class="div-3">
-                        <div class="table-header-cell">
-                            <div class="table-header"><div class="text-9">Lokasyon</div></div>
-                        </div>
-                        @foreach (var item in Model)
-                        {
-                            <div class="table-cell-3">
-                                <div class="featured-icon"><img class="map-pin" src="~/home/map-pin.svg" /></div>
-                                <div class="text-11">@item.Place</div>
-                            </div>
-                        }
-
-                    </div>
-                    <div class="column">
-                        <div class="table-header-cell">
-                            <div class="table-header"><div class="text-9">Tarih</div></div>
-                        </div>
-                        @foreach (var item in Model)
-                        {
-                            <div class="table-cell">
-                                <div class="div-5">
-                                    <div class="text-12">@item.StartDate</div>
-                                    <div class="text-wrapper-2"></div>
+                            </td>
+                            <td>
+                                <div class="table-cell2">
+                                    <div class="text-9">@CultureInfo.CurrentCulture.TextInfo.ToTitleCase(item.Name.ToLower())</div>
                                 </div>
-                            </div>
-
-                        }
-                    </div>
-
-
-                    <div class="div-3">
-                        <div class="table-header-cell">
-                            <div class="table-header"><div class="text-9">Katilimci sayisi</div></div>
-                        </div>
-
-
-                        @foreach (var item in Model)
-                        {
-                            <div class="avatar-group-wrapper">
-                                <div class="avatar-group">
-                                    <div class="avatars">
-                                        <div class="avatar-14"><img src="~/home/avatar15.svg" /></div>
-                                        <div class="avatar-15"><img src="~/home/avatar12.svg" /></div>
-                                        <div class="avatar-16"><img src="~/home/avatar17.svg" /></div>
-                                        <div class="avatar-17"><img src="~/home/avatar11.svg" /></div>
-                                        <div class="avatar-9"><div class="text-13">@item.Users.Count()</div></div>
+                            </td>
+                            <td>
+                                <div class="table-cell2 d-flex align-items-center">
+                                    <div class="featured-icon">
+                                        <svg class="map-pin"
+                                         width="20"
+                                         height="20"
+                                         viewBox="0 0 20 20"
+                                         fill="none"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M17.5 8.33325C17.5 14.1666 10 19.1666 10 19.1666C10 19.1666 2.5 14.1666 2.5 8.33325C2.5 6.34413 3.29018 4.43647 4.6967 3.02995C6.10322 1.62343 8.01088 0.833252 10 0.833252C11.9891 0.833252 13.8968 1.62343 15.3033 3.02995C16.7098 4.43647 17.5 6.34413 17.5 8.33325Z"
+                                              stroke="#7F56D9"
+                                              stroke-width="1.66667"
+                                              stroke-linecap="round"
+                                              stroke-linejoin="round" />
+                                            <path d="M10 10.8333C11.3807 10.8333 12.5 9.71396 12.5 8.33325C12.5 6.95254 11.3807 5.83325 10 5.83325C8.61929 5.83325 7.5 6.95254 7.5 8.33325C7.5 9.71396 8.61929 10.8333 10 10.8333Z"
+                                              stroke="#7F56D9"
+                                              stroke-width="1.66667"
+                                              stroke-linecap="round"
+                                              stroke-linejoin="round" />
+                                        </svg>
+                                    </div>
+                                    <div class="text-9">@CultureInfo.CurrentCulture.TextInfo.ToTitleCase(item.Place.ToLower())</div>
+                                </div>
+                            </td>
+                            <td style="justify-content:end">
+                                <div class="table-cell2 avatar-group-wrapper" style="background-color:white!important;border-bottom-width:0px!important">
+                                    <div class="avatar-group">
+                                        <div class="avatars">
+                                            <div class="avatar-14"><img src="~/home/avatar15.svg" /></div>
+                                            <div class="avatar-15"><img src="~/home/avatar12.svg" /></div>
+                                            <div class="avatar-16"><img src="~/home/avatar17.svg" /></div>
+                                            <div class="avatar-17"><img src="~/home/avatar11.svg" /></div>
+                                            <div class="avatar-9"><div class="text-13">@item.Users.Count()</div></div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        }
-                    </div>
-                    <div class="div-3">
-                        <div class="table-header-cell-2"></div>
-                        @foreach (var item in Model)
-                        {
-                            <div class="table-cell-3">
-                                <a class="badge-base4" asp-action="TUserList" asp-controller="Tournament" asp-route-tournamentId="@item.Id">
-                                    <div  style="color:#7F56D9">Sıralama</div>
-                                </a>
-                            </div>
-                        }
+                                @* <div class="table-cell2">
+                            <div class="text-9">@item.Users.Count()</div>
+                            </div>*@
+                            </td>
+                            <td>
+                                <div class="table-cell2">
+                                    <div class="text-9">@item.StartDate</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="table-cell2">
+                                    <div class="table-cell2">
+                                        <div class="badge d-flex">
+
+                                            <a class="badge-base4" asp-action="TUserList" asp-controller="Tournament" asp-route-tournamentId="@item.Id">
+                                                <div class="text18" style="color:#7F56D9">Sıralama</div>
+                                            </a>
 
 
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="table2">
+            <div class="d-flex align-items-center justify-content-center w-100" id="tournament-pagination-container">
+                <div class="d-flex align-items-center w-100 justify-content-between" style="gap:20px">
+                    <div>
+
+                        <button class="btn btn-primary" id="previousPageButton" style="background-color:#7F56D9; border-color:#7F56D9">
+                            <div class="button-base5">
+                                <div class="text19">Onceki</div>
+                            </div>
+                        </button>
+
+                        <button class="btn btn-primary " style="background-color:#7F56D9; border-color:#7F56D9">
+                            <div class="button-base5" id="nextPageButton">
+                                <div class="text19">Sonraki</div>
+                            </div>
+                        </button>
                     </div>
+                    <div class="d-flex align-items-center">
+
+                        <div id="tournamentTotalPages">@(Math.Ceiling((double)Model.Count() / 5))</div>
+                    </div>
+
+
                 </div>
+
             </div>
         </div>
     </div>

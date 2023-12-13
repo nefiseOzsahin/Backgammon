@@ -23,7 +23,7 @@ namespace Backgammon.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> CreateTAsync()
+        public async Task<IActionResult> CreateT()
         {
             var nonAdminUsers = await _userService.GetNonAdminUsersAsync();
             TournamentCreateVM vm = new()
@@ -600,7 +600,7 @@ namespace Backgammon.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> UpdateT(Tournament model, int[] selectedUsers)
+        public async Task<IActionResult> UpdateT(Tournament model, int[] selectedUsers,int pageNum)
         {
             var tournament = await _context.Tournaments
                             .Include(t => t.TournamentUsers)
@@ -610,6 +610,29 @@ namespace Backgammon.Controllers
             {
                 return NotFound();
             }
+            //viewden gelen turnuva bilgilerinde bir değişiklik yoksa başlangıç
+            bool differentUser = false;
+            if (model.Name == tournament.Name && model.TableStart == tournament.TableStart && model.StartDate == tournament.StartDate && model.Place == tournament.Place && model.System == tournament.System && model.Type == tournament.Type && model.ByeType == tournament.ByeType && model.PlayLife == tournament.PlayLife) {
+                foreach (var userId in selectedUsers)
+                {
+                    var user = await _userManager.FindByIdAsync(userId.ToString());
+
+                    // Add user to AppUserTournament if not already present
+                    if (!tournament.Users.Any(u => u.Id == user.Id))
+                    {
+                       differentUser = true;
+                        break;
+                    }
+
+                }
+
+                if (!differentUser)
+                {
+                    TempData["ErrorMessage"] = "evcut bilgilerde bir değişiklik yapmadınız.";
+                    return RedirectToAction("UpdateT", new { tournamentId = model.Id });
+                }
+            }
+            //viewden gelen turnuva bilgilerinde bir değişiklik yoksa bitiş
             tournament.Name = model.Name ?? "";
             tournament.StartDate = model.StartDate;
             tournament.Place = model.Place;
@@ -703,7 +726,8 @@ namespace Backgammon.Controllers
             var tournamentUsers = await _context.TournamentUsers
                 .Where(tu => tu.TournamentId == tournamentId)
                 .OrderByDescending(tu => tu.WinCount)
-                .Include(tu => tu.User) // Eagerly load the User entity
+                .Include(tu => tu.User)
+                .Include(tu=>tu.Tournament)// Eagerly load the User entity
                 .ToListAsync();
             return View(tournamentUsers);
         }

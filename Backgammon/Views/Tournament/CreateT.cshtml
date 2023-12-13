@@ -88,6 +88,7 @@
             </div>
             <div class="frame-7">
                 <form asp-action="CreateT" asp-controller="Tournament" method="post">
+                    <input type="hidden" name="pageNum" id="pageNumInput" value="1" />
                     <div class="row">
                         <div class="col-md-4">
                             <div class="mb-3">
@@ -115,8 +116,8 @@
                                 <span class="text-danger" asp-validation-for="@Model.Tournament.Type"></span>
 
                                 <select class="form-control" asp-for="@Model.Tournament.Type">
-                                    <option value="">Seçiniz</option>                                  
-                                    <option value="Kaybedenler Eşleşir">Kaybedenler Eşleşir</option>                                   
+                                    <option value="">Seçiniz</option>
+                                    <option value="Kaybedenler Eşleşir">Kaybedenler Eşleşir</option>
                                     <option value="Rastgele">Rastgele</option>
                                 </select>
                             </div>
@@ -152,7 +153,7 @@
                                 <span class="text-danger" asp-validation-for="@Model.Tournament.ByeType"></span>
 
                                 <select class="form-control" asp-for="@Model.Tournament.ByeType">
-                                    <option>Seçiniz</option>                                   
+                                    <option>Seçiniz</option>
                                     <option>Rastgele</option>
                                 </select>
                             </div>
@@ -201,7 +202,7 @@
 
                                             </div>
                                         </th>
-                                        <th class="column " >
+                                        <th class="column ">
 
                                             <div class="table-cell2">
                                                 <div class="featured-icon">
@@ -235,8 +236,8 @@
                                                 </div>
                                             </div>
                                         </th>
-                                       
-                                        <th class="column" >
+
+                                        <th class="column">
                                             <div class="table-cell2">
 
 
@@ -302,7 +303,7 @@
                                                         </div>
                                                     </div>
                                                 </td>
-                                               
+
                                                 <td class="column">
                                                     <div class="table-cell2">
                                                         @if (@item.IsActive)
@@ -322,10 +323,34 @@
                                         }
                                     }
                                 </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td>
+                                            <div class="pagination" id="user-pagination-container">
+                                                <div class="actions2">
+                                                    <button id="previousPageButton" style="border:none">
+                                                        <div class="button-base5">
+                                                            <div class="text19">Onceki</div>
+                                                        </div>
+                                                    </button>
+                                                    <button style="border:none" id="nextPageButton">
+                                                        <div class="button-base5">
+                                                            <div class="text19">Sonraki</div>
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                                <div class="d-flex align-items-center">
+                                                   
+                                                    <div id="userTotalPages">@(Model.Users?.Any() ?? false ? Math.Ceiling((double)Model.Users.Count() / 5) : 1)</div>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                     </div>
-
 
                     <div class="text-danger mt-2" asp-validation-summary="ModelOnly">
                     </div>
@@ -334,39 +359,3 @@
         </div>
     </div>
 </div>
-@section Script {
-    <script>
-        // jQuery code to handle search
-        //$(document).ready(function() {
-        //    $('#userSearch').on('input', function() {
-        //        var searchText = $(this).val().toLowerCase();
-        //        $('#userTable tbody tr').each(function() {
-        //            var name = $(this).find('td:last-child').text().toLowerCase();
-        //            if (name.includes(searchText)) {
-        //                $(this).show();
-        //            } else {
-        //                $(this).hide();
-        //            }
-        //        });
-        //    });
-        //});
-        $(document).ready(function() {
-            // jQuery code to handle search
-
-
-            $(document).ready(function() {
-                $('#userSearch').on('input', function() {
-                    var searchText = $(this).val().toLowerCase();
-                    $('#userTable tbody tr').each(function() {
-                        var name = $(this).find('td:first-child').text().toLowerCase();
-                        if (name.includes(searchText)) {
-                            $(this).show();
-                        } else {
-                            $(this).hide();
-                        }
-                    });
-                });
-            });
-        });
-    </script>
-    }
