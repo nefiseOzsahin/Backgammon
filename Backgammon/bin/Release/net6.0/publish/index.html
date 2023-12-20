@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Backgammon Game</title>
+  <style>
+    /* CSS Styles */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #F0F0F0;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .board {
+      width: 600px;
+      height: 300px;
+      background-color: #FFFFFF;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+    
+    .point {
+      width: 40px;
+      height: 240px;
+      background-color: #D8D8D8;
+      position: relative;
+      margin: 0 5px;
+    }
+    
+    .bar {
+      width: 40px;
+      height: 240px;
+      background-color: #D8D8D8;
+      position: absolute;
+      top: 30px;
+    }
+    
+    .checker {
+      width: 30px;
+      height: 30px;
+      background-color: #000000;
+      border-radius: 50%;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Backgammon Game</h1>
+    <div class="board">
+      <div class="point"></div>
+      <div class="point"></div>
+      <div class="point"></div>
+      <div class="point"></div>
+      <div class="point"></div>
+      <div class="point"></div>
+      <div class="bar"></div>
+      <div class="point"></div>
+      <div class="point"></div>
+      <div class="point"></div>
+      <div class="point"></div>
+      <div class="point"></div>
+      <div class="point"></div>
+    </div>
+  </div>
+</body>
+</html>

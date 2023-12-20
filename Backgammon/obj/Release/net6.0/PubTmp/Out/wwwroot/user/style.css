@@ -1,0 +1,442 @@
+﻿.giris-sayfasi {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    background-color: var(--white);
+}
+
+    .giris-sayfasi .log-in {
+        display: flex;
+        height: 960px;
+        align-items: center;
+        position: relative;
+        align-self: stretch;
+        width: 100%;
+        background-color: var(--white);
+    }
+
+    .giris-sayfasi .section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        flex: 1;
+        align-self: stretch;
+        flex-grow: 1;
+    }
+
+    .giris-sayfasi .header-navigation {
+        display: flex;
+        height: 96px;
+        align-items: flex-start;
+        padding: 32px;
+        position: relative;
+        align-self: stretch;
+        width: 100%;
+    }
+
+.logomark {
+    display: inline-flex;
+    align-items: flex-start;
+    position: relative;
+    box-shadow: var(--shadow-sm);
+}
+
+    .logomark .content {
+        position: relative;
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 0.3px solid;
+        border-color: #cfd4dc;
+        background: linear-gradient(180deg, rgb(255, 255, 255) 0%, rgb(207.67, 212.89, 220.73) 100%);
+        background-image: url(./img/grid.svg);
+        background-size: 100% 100%;
+    }
+
+    .logomark .overlap-group {
+        position: relative;
+        height: 24px;
+        top: 8px;
+    }
+
+    .logomark .dot {
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        top: 0;
+        left: 8px;
+        border-radius: 8px;
+        box-shadow: 0px 1px 2px #1018280f, 0px 1px 3px #1018281a;
+        background: linear-gradient(180deg, rgb(82.96, 55.64, 158.36) 0%, rgb(104.93, 64.81, 198.19) 100%);
+    }
+
+    .logomark .blur {
+        position: absolute;
+        width: 32px;
+        height: 16px;
+        top: 8px;
+        left: 0;
+        background-color: #ffffff33;
+        border-radius: 0px 0px 8px 8px;
+        backdrop-filter: blur(5px) brightness(100%);
+        -webkit-backdrop-filter: blur(5px) brightness(100%);
+    }
+
+
+    .giris-sayfasi .logomark {
+        position: relative;
+        flex: 0 0 auto;
+        margin-top: -2px;
+        margin-bottom: -4px;
+        margin-left: -3px;
+    }
+
+    .giris-sayfasi .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0px 32px;
+        position: relative;
+        align-self: stretch;
+        width: 100%;
+        flex: 0 0 auto;
+    }
+
+    .giris-sayfasi .content {
+        width: 360px;
+        gap: 32px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        flex: 0 0 auto;
+    }
+
+    .giris-sayfasi .text-and-supporting {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        position: relative;
+        align-self: stretch;
+        width: 100%;
+        flex: 0 0 auto;
+    }
+
+    .giris-sayfasi .text {
+        align-self: stretch;
+        font-family: var(--display-md-semibold-font-family);
+        font-weight: var(--display-md-semibold-font-weight);
+        color: var(--gray-900);
+        font-size: var(--display-md-semibold-font-size);
+        letter-spacing: var(--display-md-semibold-letter-spacing);
+        line-height: var(--display-md-semibold-line-height);
+        position: relative;
+        margin-top: -1px;
+        font-style: var(--display-md-semibold-font-style);
+    }
+
+    .giris-sayfasi .supporting-text {
+        position: relative;
+        align-self: stretch;
+        font-family: var(--text-md-regular-font-family);
+        font-weight: var(--text-md-regular-font-weight);
+        color: var(--gray-500);
+        font-size: var(--text-md-regular-font-size);
+        letter-spacing: var(--text-md-regular-letter-spacing);
+        line-height: var(--text-md-regular-line-height);
+        font-style: var(--text-md-regular-font-style);
+    }
+
+    .giris-sayfasi .div {
+        gap: 24px;
+        align-self: stretch;
+        width: 100%;
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        flex: 0 0 auto;
+    }
+
+    .giris-sayfasi .form {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+        position: relative;
+        align-self: stretch;
+        width: 100%;
+        flex: 0 0 auto;
+    }
+
+    .giris-sayfasi .input-field {
+        flex-direction: column;
+        align-items: flex-start;
+        display: flex;
+        position: relative;
+        align-self: stretch;
+        width: 100%;
+        flex: 0 0 auto;
+    }
+
+    .giris-sayfasi .div-2 {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+        position: relative;
+        align-self: stretch;
+        width: 100%;
+        flex: 0 0 auto;
+    }
+
+    .giris-sayfasi .label {
+        position: relative;
+        width: fit-content;
+        margin-top: -1px;
+        font-family: var(--text-sm-medium-font-family);
+        font-weight: var(--text-sm-medium-font-weight);
+        color: var(--gray-700);
+        font-size: var(--text-sm-medium-font-size);
+        letter-spacing: var(--text-sm-medium-letter-spacing);
+        line-height: var(--text-sm-medium-line-height);
+        white-space: nowrap;
+        font-style: var(--text-sm-medium-font-style);
+        background: transparent;
+        border: none;
+        padding: 0;
+    }
+
+    .giris-sayfasi .input {
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+        background-color: var(--white);
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid;
+        border-color: var(--gray-300);
+        box-shadow: var(--shadow-xs);
+        display: flex;
+        position: relative;
+        align-self: stretch;
+        width: 100%;
+        flex: 0 0 auto;
+    }
+
+    .giris-sayfasi .content-2 {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        position: relative;
+        flex: 1;
+        flex-grow: 1;
+    }
+
+    .giris-sayfasi .text-2 {
+        position: relative;
+        flex: 1;
+        margin-top: -1px;
+        font-family: var(--text-md-regular-font-family);
+        font-weight: var(--text-md-regular-font-weight);
+        color: var(--gray-500);
+        font-size: var(--text-md-regular-font-size);
+        letter-spacing: var(--text-md-regular-letter-spacing);
+        line-height: var(--text-md-regular-line-height);
+        font-style: var(--text-md-regular-font-style);
+        background: transparent;
+        border: none;
+        padding: 0;
+    }
+
+    .giris-sayfasi .text-wrapper {
+        position: relative;
+        width: fit-content;
+        margin-top: -1px;
+        font-family: var(--text-sm-medium-font-family);
+        font-weight: var(--text-sm-medium-font-weight);
+        color: var(--gray-700);
+        font-size: var(--text-sm-medium-font-size);
+        letter-spacing: var(--text-sm-medium-letter-spacing);
+        line-height: var(--text-sm-medium-line-height);
+        white-space: nowrap;
+        font-style: var(--text-sm-medium-font-style);
+    }
+
+    .giris-sayfasi .eye-off {
+        position: relative;
+        width: 16px;
+        height: 16px;
+    }
+
+    .giris-sayfasi .row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        align-self: stretch;
+        width: 100%;
+        flex: 0 0 auto;
+    }
+
+    .giris-sayfasi .checkbox {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        position: relative;
+        flex: 0 0 auto;
+    }
+
+    .giris-sayfasi .checkbox-base-wrapper {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        flex: 0 0 auto;
+    }
+
+    .giris-sayfasi .checkbox-base {
+        position: relative;
+        width: 16px;
+        height: 16px;
+        background-color: var(--white);
+        border-radius: 4px;
+        border: 1px solid;
+        border-color: var(--gray-300);
+    }
+
+    .giris-sayfasi .button {
+        display: inline-flex;
+        align-items: flex-start;
+        position: relative;
+        flex: 0 0 auto;
+        all: unset;
+        box-sizing: border-box;
+    }
+
+    .giris-sayfasi .button-base {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        position: relative;
+        flex: 0 0 auto;
+    }
+
+    .giris-sayfasi .text-3 {
+        width: fit-content;
+        font-family: var(--text-sm-semibold-font-family);
+        font-weight: var(--text-sm-semibold-font-weight);
+        color: var(--brand-700);
+        font-size: var(--text-sm-semibold-font-size);
+        letter-spacing: var(--text-sm-semibold-letter-spacing);
+        line-height: var(--text-sm-semibold-line-height);
+        white-space: nowrap;
+        position: relative;
+        margin-top: -1px;
+        font-style: var(--text-sm-semibold-font-style);
+    }
+
+    .giris-sayfasi .actions {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        position: relative;
+        align-self: stretch;
+        width: 100%;
+        flex: 0 0 auto;
+    }
+
+    .giris-sayfasi .button-base-wrapper {
+        display: flex;
+        align-items: flex-start;
+        align-self: stretch;
+        width: 100%;
+        border-radius: 8px;
+        position: relative;
+        flex: 0 0 auto;
+        all: unset;
+        box-sizing: border-box;
+    }
+
+    .giris-sayfasi .div-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 18px;
+        position: relative;
+        flex: 1;
+        flex-grow: 1;
+        background-color: var(--brand-600);
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid;
+        box-shadow: var(--shadow-xs);
+        border-color: var(--brand-600);
+    }
+
+    .giris-sayfasi .text-4 {
+        width: fit-content;
+        font-family: var(--text-md-semibold-font-family);
+        font-weight: var(--text-md-semibold-font-weight);
+        color: var(--white);
+        font-size: var(--text-md-semibold-font-size);
+        letter-spacing: var(--text-md-semibold-letter-spacing);
+        line-height: var(--text-md-semibold-line-height);
+        white-space: nowrap;
+        position: relative;
+        margin-top: -1px;
+        font-style: var(--text-md-semibold-font-style);
+    }
+
+    .giris-sayfasi .row-2 {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 4px;
+        position: relative;
+        align-self: stretch;
+        width: 100%;
+        flex: 0 0 auto;
+    }
+
+    .giris-sayfasi .text-5 {
+        width: fit-content;
+        font-family: var(--text-sm-regular-font-family);
+        font-weight: var(--text-sm-regular-font-weight);
+        color: var(--gray-500);
+        font-size: var(--text-sm-regular-font-size);
+        letter-spacing: var(--text-sm-regular-letter-spacing);
+        line-height: var(--text-sm-regular-line-height);
+        white-space: nowrap;
+        position: relative;
+        margin-top: -1px;
+        font-style: var(--text-sm-regular-font-style);
+    }
+
+    .giris-sayfasi .footer {
+        position: relative;
+        align-self: stretch;
+        width: 100%;
+        height: 96px;
+    }
+
+    .giris-sayfasi .section-2 {
+        position: relative;
+        flex: 1;
+        align-self: stretch;
+        flex-grow: 1;
+        background-image: url(./img/section.png);
+        background-size: cover;
+        background-position: 50% 50%;
+    }
+
+

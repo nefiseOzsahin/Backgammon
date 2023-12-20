@@ -1,5 +1,5 @@
 ﻿@using System.Globalization
-@model List<Tournament>;
+@model List<Backgammon.Entities.Tournament>;
 @{
     Layout = "_Layout1";
 
@@ -269,16 +269,53 @@
                             <td>
                                 <div class="table-cell2">
                                     <div class="table-cell2">
-                                        <div class="badge d-flex">
+                                        <div class="badge d-flex" style="gap:10px">
+
+                                            @if (User.IsInRole("Admin"))
+                                            {
+                                                <a class="badge-base4" asp-action="Tours" asp-controller="Tournament" asp-route-tournamentId="@item.Id">
+                                                    <div class="text18" style="color:#7F56D9">Turlar</div>
+                                                </a>
+
+                                            }
 
                                             <a class="badge-base4" asp-action="TUserList" asp-controller="Tournament" asp-route-tournamentId="@item.Id">
                                                 <div class="text18" style="color:#7F56D9">Sıralama</div>
                                             </a>
 
+                                            @if (User.IsInRole("Admin"))
+                                            {
+                                                <a class="badge-base4" asp-action="UpdateT" asp-controller="Tournament" asp-route-tournamentId="@item.Id">
+                                                    <div class="text18" style="color:#7F56D9">Güncelleme</div>
+                                                </a>
+
+                                                <a href="#" class="badge-base4" data-bs-toggle="modal" data-bs-target="#myModal-@item.Id">
+                                                    <div class="text18" style="color:#7F56D9">Sil</div>
+                                                </a>
+
+                                            }
 
 
                                         </div>
                                     </div>
+                                    <div class="modal" id="myModal-@item.Id">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Modal Title</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    @item.Name turnuvası silinecek. Onaylıyor musunuz?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                                                    <a class="btn btn-primary" asp-action="DeleteT" asp-controller="Tournament" asp-route-tournamentId="@item.Id">Sil</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Modal ends -->
 
                                 </div>
                             </td>

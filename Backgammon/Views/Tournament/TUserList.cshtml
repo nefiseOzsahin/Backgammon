@@ -13,8 +13,8 @@
 
     string originalString = Model.FirstOrDefault().Tournament.Name;
 
-          TextInfo textInfo = CultureInfo.CurrentCulture.TextInfo;
-        string capitalizedString2 = textInfo.ToTitleCase(originalString);
+    TextInfo textInfo = CultureInfo.CurrentCulture.TextInfo;
+    string capitalizedString2 = textInfo.ToTitleCase(originalString);
 
 }
 
@@ -113,38 +113,63 @@
                             @foreach (var tournamentUser in Model)
                             {
 
-                                if (@tournamentUser.LoseCount == 2)
+
+                                string alertClass = "success";
+                                switch (@tournamentUser.LoseCount)
                                 {
-                                    <tr class="content7 alert alert-danger w-100">
-                                        <td class="w-50">@tournamentUser.User.Name</td>
-                                        <td class="text-and-supporting-text2">   <div class="badge"><div class="badge-base4">  <div class="text18">@tournamentUser.WinCount</div></div></div></td>
-                                        <td class="text-and-supporting-text2"> <div class="badge"><div class="badge-base4">  <div class="text18">@tournamentUser.LoseCount</div></div></div></td>
-                                        <td class="text-and-supporting-text2"> <div class="badge"><div class="badge-base4">  <div class="text18">@tournamentUser.ByeCount</div></div></div></td>
-                                    </tr>
-
+                                    case 7:
+                                        alertClass = "dark";
+                                        break;
+                                    case 6:
+                                        alertClass = "light";
+                                        break;
+                                    case 5:
+                                        alertClass = "secondary";
+                                        break;
+                                    case 4:
+                                        alertClass = "primary";
+                                        break;
+                                    case 3:
+                                        alertClass = "info";
+                                        break;
+                                    case 2:
+                                        alertClass = "danger";
+                                        break;
+                                    case 1:
+                                        alertClass = "warning";
+                                        break;
+                                    case 0:
+                                        alertClass = "success";
+                                        break;
                                 }
-                                if (@tournamentUser.LoseCount == 1)
-                                {
-                                    <tr class="content7 alert alert-warning w-100">
-                                        <td class="w-50">@tournamentUser.User.Name</td>
-                                        <td class="text-and-supporting-text2">   <div class="badge"><div class="badge-base4">  <div class="text18">@tournamentUser.WinCount</div></div></div></td>
-                                        <td class="text-and-supporting-text2"> <div class="badge"><div class="badge-base4">  <div class="text18">@tournamentUser.LoseCount</div></div></div></td>
-                                        <td class="text-and-supporting-text2"> <div class="badge"><div class="badge-base4">  <div class="text18">@tournamentUser.ByeCount</div></div></div></td>
 
-                                    </tr>
 
-                                }
-                                if (@tournamentUser.LoseCount == 0)
-                                {
-                                    <tr class="content7 alert alert-success w-100">
-                                        <td class="w-50">@tournamentUser.User.Name</td>
-                                        <td class="text-and-supporting-text2">   <div class="badge"><div class="badge-base4">  <div class="text18">@tournamentUser.WinCount</div></div></div></td>
-                                        <td class="text-and-supporting-text2"> <div class="badge"><div class="badge-base4">  <div class="text18">@tournamentUser.LoseCount</div></div></div></td>
-                                        <td class="text-and-supporting-text2"> <div class="badge"><div class="badge-base4">  <div class="text18">@tournamentUser.ByeCount</div></div></div></td>
+                                <tr class="content7 alert alert-@alertClass w-100">
+                                    <td class="w-50">@tournamentUser.User.Name</td>
+                                    <td class="text-and-supporting-text2">
+                                        <div class="badge">
+                                            <div class="badge-base4">
+                                                <div class="text18">@tournamentUser.WinCount</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-and-supporting-text2">
+                                        <div class="badge">
+                                            <div class="badge-base4">
+                                                <div class="text18">@tournamentUser.LoseCount</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-and-supporting-text2">
+                                        <div class="badge">
+                                            <div class="badge-base4">
+                                                <div class="text18">@tournamentUser.ByeCount</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
 
-                                    </tr>
-                                }
-                              
+
 
 
                             }

@@ -1,0 +1,575 @@
+/* Figma Styles of your File */
+:root {
+  /* Colors */
+  --white: #ffffff;
+  --black: #000000;
+  --gray-25: #fcfcfd;
+  --gray-50: #f9fafb;
+  --gray-100: #f2f4f7;
+  --gray-200: #eaecf0;
+  --gray-300: #d0d5dd;
+  --gray-400: #98a2b3;
+  --gray-500: #667085;
+  --gray-600: #475467;
+  --gray-700: #344054;
+  --gray-800: #1d2939;
+  --gray-900: #101828;
+  --brand-25: #fcfaff;
+  --brand-50: #f9f5ff;
+  --brand-100: #f4ebff;
+  --brand-200: #e9d7fe;
+  --brand-300: #d6bbfb;
+  --brand-400: #b692f6;
+  --brand-500: #9e77ed;
+  --brand-600: #7f56d9;
+  --brand-700: #6941c6;
+  --brand-800: #53389e;
+  --brand-900: #42307d;
+  --error-25: #fffbfa;
+  --error-50: #fef3f2;
+  --error-100: #fee4e2;
+  --error-200: #fecdca;
+  --error-300: #fda29b;
+  --error-400: #f97066;
+  --error-500: #f04438;
+  --error-600: #d92d20;
+  --error-700: #b42318;
+  --error-800: #912018;
+  --error-900: #7a271a;
+  --warning-25: #fffcf5;
+  --warning-50: #fffaeb;
+  --warning-100: #fef0c7;
+  --warning-200: #fedf89;
+  --warning-300: #fec84b;
+  --warning-400: #fdb022;
+  --warning-500: #f79009;
+  --warning-600: #dc6803;
+  --warning-700: #b54708;
+  --warning-800: #93370d;
+  --warning-900: #7a2e0e;
+  --success-25: #f6fef9;
+  --success-50: #ecfdf3;
+  --success-100: #d1fadf;
+  --success-200: #a6f4c5;
+  --success-300: #6ce9a6;
+  --success-400: #32d583;
+  --success-500: #12b76a;
+  --success-600: #039855;
+  --success-700: #027a48;
+  --success-800: #05603a;
+  --success-900: #054f31;
+  --bluegray-25: #fcfcfd;
+  --bluegray-50: #f8f9fc;
+  --bluegray-100: #eaecf5;
+  --bluegray-200: #d5d9eb;
+  --bluegray-300: #afb5d9;
+  --bluegray-400: #717bbc;
+  --bluegray-500: #4e5ba6;
+  --bluegray-600: #3e4784;
+  --bluegray-700: #363f72;
+  --bluegray-800: #293056;
+  --bluegray-900: #101323;
+  --bluelight-25: #f5fbff;
+  --bluelight-50: #f0f9ff;
+  --bluelight-100: #e0f2fe;
+  --bluelight-200: #b9e6fe;
+  --bluelight-300: #7cd4fd;
+  --bluelight-400: #36bffa;
+  --bluelight-500: #0ba5ec;
+  --bluelight-600: #0086c9;
+  --bluelight-700: #026aa2;
+  --bluelight-800: #065986;
+  --bluelight-900: #0b4a6f;
+  --blue-25: #f5faff;
+  --blue-50: #eff8ff;
+  --blue-100: #d1e9ff;
+  --blue-200: #b2ddff;
+  --blue-300: #84caff;
+  --blue-400: #53b1fd;
+  --blue-500: #2e90fa;
+  --blue-600: #1570ef;
+  --blue-700: #175cd3;
+  --blue-800: #1849a9;
+  --blue-900: #194185;
+  --indigo-25: #f5f8ff;
+  --indigo-50: #eef4ff;
+  --indigo-100: #e0eaff;
+  --indigo-200: #c7d7fe;
+  --indigo-300: #a4bcfd;
+  --indigo-400: #8098f9;
+  --indigo-500: #6172f3;
+  --indigo-600: #444ce7;
+  --indigo-700: #3538cd;
+  --indigo-800: #2d31a6;
+  --indigo-900: #2d3282;
+  --purple-25: #fafaff;
+  --purple-50: #f4f3ff;
+  --purple-100: #ebe9fe;
+  --purple-200: #d9d6fe;
+  --purple-300: #bdb4fe;
+  --purple-400: #9b8afb;
+  --purple-500: #7a5af8;
+  --purple-600: #6938ef;
+  --purple-700: #5925dc;
+  --purple-800: #4a1fb8;
+  --purple-900: #3e1c96;
+  --pink-25: #fef6fb;
+  --pink-50: #fdf2fa;
+  --pink-100: #fce7f6;
+  --pink-200: #fcceee;
+  --pink-300: #faa7e0;
+  --pink-400: #f670c7;
+  --pink-500: #ee46bc;
+  --pink-600: #dd2590;
+  --pink-700: #c11574;
+  --pink-800: #9e165f;
+  --pink-900: #851651;
+  --ros-25: #fff5f6;
+  --ros-50: #fff1f3;
+  --ros-100: #ffe4e8;
+  --ros-200: #fecdd6;
+  --ros-300: #fea3b4;
+  --ros-400: #fd6f8e;
+  --ros-500: #f63d68;
+  --ros-600: #e31b54;
+  --ros-700: #c01048;
+  --ros-800: #a11043;
+  --ros-900: #89123e;
+  --orange-25: #fffaf5;
+  --orange-50: #fff6ed;
+  --orange-100: #ffead5;
+  --orange-200: #fddcab;
+  --orange-300: #feb273;
+  --orange-400: #fd853a;
+  --orange-500: #fb6514;
+  --orange-600: #ec4a0a;
+  --orange-700: #c4320a;
+  --orange-800: #9c2a10;
+  --orange-900: #7e2410;
+  --gradient-gray-600-500-90-deg: linear-gradient(
+    90deg,
+    rgba(71, 84, 103, 1) 0%,
+    rgba(102, 112, 133, 1) 100%
+  );
+  --gradient-gray-700-600-45-deg: linear-gradient(
+    45deg,
+    rgba(52, 64, 84, 1) 0%,
+    rgba(71, 84, 103, 1) 100%
+  );
+  --gradient-gray-800-600-45-deg: linear-gradient(
+    45deg,
+    rgba(29, 41, 57, 1) 0%,
+    rgba(71, 84, 103, 1) 100%
+  );
+  --gradient-gray-800-600-90-deg: linear-gradient(
+    63.44deg,
+    rgba(29, 41, 57, 1) 0%,
+    rgba(71, 84, 103, 1) 100%
+  );
+  --gradient-gray-800-700-26-5-deg: linear-gradient(
+    26.57deg,
+    rgba(29, 41, 57, 1) 0%,
+    rgba(52, 64, 84, 1) 100%
+  );
+  --gradient-gray-900-600-45-deg: linear-gradient(
+    45deg,
+    rgba(16, 24, 40, 1) 0%,
+    rgba(71, 84, 103, 1) 100%
+  );
+  --gradient-brand-600-500-90-deg: linear-gradient(
+    90deg,
+    rgba(127, 86, 217, 1) 0%,
+    rgba(158, 119, 237, 1) 100%
+  );
+  --gradient-brand-700-600-45-deg: linear-gradient(
+    45deg,
+    rgba(105, 65, 198, 1) 0%,
+    rgba(127, 86, 217, 1) 100%
+  );
+  --gradient-brand-800-600-45-deg: linear-gradient(
+    45deg,
+    rgba(83, 56, 158, 1) 0%,
+    rgba(127, 86, 217, 1) 100%
+  );
+  --gradient-brand-800-600-90-deg: linear-gradient(
+    63.44deg,
+    rgba(83, 56, 158, 1) 0%,
+    rgba(127, 86, 217, 1) 100%
+  );
+  --gradient-brand-800-700-26-5-deg: linear-gradient(
+    26.57deg,
+    rgba(83, 56, 158, 1) 0%,
+    rgba(105, 65, 198, 1) 100%
+  );
+  --gradient-brand-900-600-45-deg: linear-gradient(
+    45deg,
+    rgba(66, 48, 125, 1) 0%,
+    rgba(127, 86, 217, 1) 100%
+  );
+  --avatarusersquare-olivia-rhye: undefined;
+  --avatarusersquare-olivia-rhye-colorbackground: linear-gradient(
+    to left,
+    #c7b9da,
+    #c7b9da
+  );
+  --avatarusersquare-phoenix-baker: undefined;
+  --avatarusersquare-phoenix-baker-colorbackground: linear-gradient(
+    to left,
+    #aa9c75,
+    #aa9c75
+  );
+  --avatarusersquare-lana-steiner: undefined;
+  --avatarusersquare-lana-steiner-colorbackground: linear-gradient(
+    to left,
+    #d4b5ad,
+    #d4b5ad
+  );
+  --avatarusersquare-demi-wilkinson: undefined;
+  --avatarusersquare-demi-wilkinson-colorbackground: linear-gradient(
+    to left,
+    #bea887,
+    #bea887
+  );
+  --avatarusersquare-candice-wu: undefined;
+  --avatarusersquare-candice-wu-colorbackground: linear-gradient(
+    to left,
+    #a2a8cd,
+    #a2a8cd
+  );
+  --avatarusersquare-natali-craig: undefined;
+  --avatarusersquare-natali-craig-colorbackground: linear-gradient(
+    to left,
+    #d1baa9,
+    #d1baa9
+  );
+  --avatarusersquare-drew-cano: undefined;
+  --avatarusersquare-drew-cano-colorbackground: linear-gradient(
+    to left,
+    #d1dfc3,
+    #d1dfc3
+  );
+  --avatarusersquare-orlando-diggs: undefined;
+  --avatarusersquare-orlando-diggs-colorbackground: linear-gradient(
+    to left,
+    #cfc3a7,
+    #cfc3a7
+  );
+  --avatarusersquare-andi-lane: undefined;
+  --avatarusersquare-andi-lane-colorbackground: linear-gradient(
+    to left,
+    #d2c7ac,
+    #d2c7ac
+  );
+  --avatarusersquare-kate-morrison: undefined;
+  --avatarusersquare-kate-morrison-colorbackground: linear-gradient(
+    to left,
+    #dbc0dd,
+    #dbc0dd
+  );
+  --avatarusersquare-koray-okumus: undefined;
+  --avatarusersquare-koray-okumus-colorbackground: linear-gradient(
+    to left,
+    #d4b2af,
+    #d4b2af
+  );
+  --avatarusersquare-ava-wright: undefined;
+  --avatarusersquare-ava-wright-colorbackground: linear-gradient(
+    to left,
+    #c9ba9c,
+    #c9ba9c
+  );
+  --avatarusersquare-eve-leroy: undefined;
+  --avatarusersquare-eve-leroy-colorbackground: linear-gradient(
+    to left,
+    #dab9bb,
+    #dab9bb
+  );
+  --avatarusersquare-zahir-mays: undefined;
+  --avatarusersquare-zahir-mays-colorbackground: linear-gradient(
+    to left,
+    #c3c7df,
+    #c3c7df
+  );
+  --avatarusersquare-joshua-wilson: undefined;
+  --avatarusersquare-joshua-wilson-colorbackground: linear-gradient(
+    to left,
+    #d2dbbd,
+    #d2dbbd
+  );
+  --avatarusersquare-rene-wells: undefined;
+  --avatarusersquare-rene-wells-colorbackground: linear-gradient(
+    to left,
+    #dfcc9f,
+    #dfcc9f
+  );
+  --avatarusersquare-lori-bryson: undefined;
+  --avatarusersquare-lori-bryson-colorbackground: linear-gradient(
+    to left,
+    #d9b9bb,
+    #d9b9bb
+  );
+  --avatarusersquare-anaiah-whitten: undefined;
+  --avatarusersquare-anaiah-whitten-colorbackground: linear-gradient(
+    to left,
+    #ccc0dd,
+    #ccc0dd
+  );
+  --avatarusersquare-noah-pierre: undefined;
+  --avatarusersquare-noah-pierre-colorbackground: linear-gradient(
+    to left,
+    #d4afbd,
+    #d4afbd
+  );
+  --avatarusersquare-katherine-moss: undefined;
+  --avatarusersquare-katherine-moss-colorbackground: linear-gradient(
+    to left,
+    #a2a8cd,
+    #a2a8cd
+  );
+  --avatarusersquare-mollie-hall: undefined;
+  --avatarusersquare-mollie-hall-colorbackground: linear-gradient(
+    to left,
+    #cb9fa2,
+    #cb9fa2
+  );
+  --avatarusersquare-eduard-franz: undefined;
+  --avatarusersquare-eduard-franze-colorbackground: linear-gradient(
+    to left,
+    #dbd0bd,
+    #dbd0bd
+  );
+  --avatarusersquare-alec-whitten: undefined;
+  --avatarusersquare-alec-whitten-colorbackground: linear-gradient(
+    to left,
+    #abb677,
+    #abb677
+  );
+  --avatarusersquare-eva-bond: undefined;
+  --avatarusersquare-eva-bond-colorbackground: linear-gradient(
+    to left,
+    #dbc0dd,
+    #dbc0dd
+  );
+  --avatarusersquare-sophia-perez: undefined;
+  --avatarusersquare-sophia-perez-colorbackground: linear-gradient(
+    to left,
+    #b6cdd8,
+    #b6cdd8
+  );
+  --avatarusersquare-lyle-kauffman: undefined;
+  --avatarusersquare-lyle-kauffman-colorbackground: linear-gradient(
+    to left,
+    #d2b1ac,
+    #d2b1ac
+  );
+  --avatarusersquare-kelly-williams: undefined;
+  --avatarusersquare-kelly-williams-colorbackground: linear-gradient(
+    to left,
+    #d8c7b6,
+    #d8c7b6
+  );
+  --avatarusersquare-lucy-bond: undefined;
+  --avatarusersquare-lucy-bond-colorbackground: linear-gradient(
+    to left,
+    #dbc0dd,
+    #dbc0dd
+  );
+  --avatarusersquare-alisa-hester: undefined;
+  --avatarusersquare-alisa-hester-colorbackground: linear-gradient(
+    to left,
+    #d4afbd,
+    #d4afbd
+  );
+  --avatarusersquare-rosalee-melvin: undefined;
+  --avatarusersquare-rosalee-melvin-colorbackground: linear-gradient(
+    to left,
+    #dbcabd,
+    #dbcabd
+  );
+  --avatarusersquare-loki-bright: undefined;
+  --avatarusersquare-loki-bright-colorbackground: linear-gradient(
+    to left,
+    #b9cfd0,
+    #b9cfd0
+  );
+  --avatarusersquare-aliah-lane: undefined;
+  --avatarusersquare-aliah-lane-colorbackground: linear-gradient(
+    to left,
+    #d7c0dd,
+    #d7c0dd
+  );
+  --avatarusersquare-anita-cruz: undefined;
+  --avatarusersquare-anita-cruz-colorbackground: linear-gradient(
+    to left,
+    #c2c7b8,
+    #c2c7b8
+  );
+  --avatarusersquare-kari-rasmussen: undefined;
+  --avatarusersquare-kari-rasmussen-colorbackground: linear-gradient(
+    to left,
+    #a9b58d,
+    #a9b58d
+  );
+  --avatarusersquare-nala-goins: undefined;
+  --avatarusersquare-nala-goins-colorbackground: linear-gradient(
+    to left,
+    #c0c6dd,
+    #c0c6dd
+  );
+  --avataruserportrait-alisa-hester: undefined;
+  --avataruserportrait-rich-wilson: undefined;
+  --avataruserportrait-annie-stanley: undefined;
+  --avataruserportrait-johnny-bell: undefined;
+  --avataruserportrait-mia-ward: undefined;
+  --avataruserportrait-archie-young: undefined;
+  --avataruserportrait-amanda-carr: undefined;
+  --avataruserportrait-megan-sims: undefined;
+  --avataruserportrait-ryan-fox: undefined;
+  --avataruserportrait-mason-phillips: undefined;
+  --avataruserportrait-zoe-silva: undefined;
+  --avataruserportrait-amanda-carr: undefined;
+  --avataruserportrait-harley-white: undefined;
+  --avataruserportrait-amelie-cooper: undefined;
+  --avataruserportrait-evelyn-harrison: undefined;
+  --avataruserportrait-abby-smith: undefined;
+  --avataruserportrait-isla-anderson: undefined;
+  --avataruserportrait-alex-holland: undefined;
+  --avataruserportrait-zachary-collins: undefined;
+  --avataruserportrait-nic-davidson: undefined;
+  --avataruserportrait-josh-knight: undefined;
+  --avataruserportrait-kelly-myer: undefined;
+  --avataruserportrait-laura-palmer: undefined;
+  --avataruserportrait-mollie-morgan: undefined;
+  --avataruserportrait-heather-kelly: undefined;
+  --avataruserportrait-james-dunn: undefined;
+  --avataruserportrait-elijah-johnson: undefined;
+  --avataruserportrait-sara-woodman: undefined;
+  --avatarcompanylogo-layers: undefined;
+  --avatarcompanylogo-sisyphus: undefined;
+  --avatarcompanylogo-circooles: undefined;
+  --avatarcompanylogo-catalog: undefined;
+  --avatarcompanylogo-quotient: undefined;
+  --avatarcompanylogo-hourglass: undefined;
+  --avatarcompanylogo-command-r: undefined;
+  --avatarcompanylogo-untitled-ui: undefined;
+
+  /* Fonts */
+  --display-2-xl-regular: 400 72px/90px "Inter-Regular", sans-serif;
+  --display-2-xl-medium: 500 72px/90px "Inter-Medium", sans-serif;
+  --display-2-xl-semibold: 600 72px/90px "Inter-SemiBold", sans-serif;
+  --display-2-xl-bold: 700 72px/90px "Inter-Bold", sans-serif;
+  --displayxl-regular: 400 60px/72px "Inter-Regular", sans-serif;
+  --displayxl-medium: 500 60px/72px "Inter-Medium", sans-serif;
+  --displayxl-semibold: 600 60px/72px "Inter-SemiBold", sans-serif;
+  --displayxl-bold: 700 60px/72px "Inter-Bold", sans-serif;
+  --displaylg-regular: 400 48px/60px "Inter-Regular", sans-serif;
+  --displaylg-medium: 500 48px/60px "Inter-Medium", sans-serif;
+  --displaylg-semibold: 600 48px/60px "Inter-SemiBold", sans-serif;
+  --displaylg-bold: 700 48px/60px "Inter-Bold", sans-serif;
+  --displaymd-regular: 400 36px/44px "Inter-Regular", sans-serif;
+  --displaymd-medium: 500 36px/44px "Inter-Medium", sans-serif;
+  --displaymd-semibold: 600 36px/44px "Inter-SemiBold", sans-serif;
+  --displaymd-bold: 700 36px/44px "Inter-Bold", sans-serif;
+  --displaysm-regular: 400 30px/38px "Inter-Regular", sans-serif;
+  --displaysm-medium: 500 30px/38px "Inter-Medium", sans-serif;
+  --displaysm-semibold: 600 30px/38px "Inter-SemiBold", sans-serif;
+  --displaysm-bold: 700 30px/38px "Inter-Bold", sans-serif;
+  --displaysm-mediumitalic: 500 italic 30px/44px "Inter-MediumItalic",
+    sans-serif;
+  --displayxs-regular: 400 24px/32px "Inter-Regular", sans-serif;
+  --displayxs-medium: 500 24px/32px "Inter-Medium", sans-serif;
+  --displayxs-semibold: 600 24px/32px "Inter-SemiBold", sans-serif;
+  --displayxs-bold: 700 24px/32px "Inter-Bold", sans-serif;
+  --displayxs-mediumitalic: 500 italic 24px/36px "Inter-MediumItalic",
+    sans-serif;
+  --displayxs-semiboldunderlined: 600 24px/32px "Inter-SemiBold", sans-serif;
+  --textxl-regular: 400 20px/30px "Inter-Regular", sans-serif;
+  --textxl-medium: 500 20px/30px "Inter-Medium", sans-serif;
+  --textxl-semibold: 600 20px/30px "Inter-SemiBold", sans-serif;
+  --textxl-bold: 700 20px/30px "Inter-Bold", sans-serif;
+  --textxl-regularitalic: 400 italic 20px/30px "Inter-Italic", sans-serif;
+  --textxl-mediumitalic: 500 italic 20px/30px "Inter-MediumItalic", sans-serif;
+  --textxl-semibolditalic: 600 italic 20px/30px "Inter-SemiBoldItalic",
+    sans-serif;
+  --textxl-bolditalic: 700 italic 20px/30px "Inter-BoldItalic", sans-serif;
+  --textxl-regularunderlined: 400 20px/30px "Inter-Regular", sans-serif;
+  --textxl-mediumunderlined: 500 20px/30px "Inter-Medium", sans-serif;
+  --textlg-regular: 400 18px/28px "Inter-Regular", sans-serif;
+  --textlg-medium: 500 18px/28px "Inter-Medium", sans-serif;
+  --textlg-semibold: 600 18px/28px "Inter-SemiBold", sans-serif;
+  --textlg-bold: 700 18px/28px "Inter-Bold", sans-serif;
+  --textlg-regularitalic: 400 italic 18px/28px "Inter-Italic", sans-serif;
+  --textlg-mediumitalic: 500 italic 18px/28px "Inter-MediumItalic", sans-serif;
+  --textlg-semibolditalic: 600 italic 18px/28px "Inter-SemiBoldItalic",
+    sans-serif;
+  --textlg-bolditalic: 700 italic 18px/28px "Inter-BoldItalic", sans-serif;
+  --textlg-regularunderlined: 400 18px/28px "Inter-Regular", sans-serif;
+  --textlg-mediumunderlined: 500 18px/28px "Inter-Medium", sans-serif;
+  --textmd-regular: 400 16px/24px "Inter-Regular", sans-serif;
+  --textmd-medium: 500 16px/24px "Inter-Medium", sans-serif;
+  --textmd-semibold: 600 16px/24px "Inter-SemiBold", sans-serif;
+  --textmd-bold: 700 16px/24px "Inter-Bold", sans-serif;
+  --textmd-regularitalic: 400 italic 16px/24px "Inter-Italic", sans-serif;
+  --textmd-mediumitalic: 500 italic 16px/24px "Inter-MediumItalic", sans-serif;
+  --textmd-semibolditalic: 600 italic 16px/24px "Inter-SemiBoldItalic",
+    sans-serif;
+  --textmd-bolditalic: 700 italic 16px/24px "Inter-BoldItalic", sans-serif;
+  --textmd-regularunderlined: 400 16px/24px "Inter-Regular", sans-serif;
+  --textsm-regular: 400 14px/20px "Inter-Regular", sans-serif;
+  --textsm-medium: 500 14px/20px "Inter-Medium", sans-serif;
+  --textsm-semibold: 600 14px/20px "Inter-SemiBold", sans-serif;
+  --textsm-bold: 700 14px/20px "Inter-Bold", sans-serif;
+  --textxs-regular: 400 12px/18px "Inter-Regular", sans-serif;
+  --textxs-medium: 500 12px/18px "Inter-Medium", sans-serif;
+  --textxs-semibold: 600 12px/18px "Inter-SemiBold", sans-serif;
+  --textxs-bold: 700 12px/18px "Inter-Bold", sans-serif;
+
+  /* Effects */
+  --focusring-4-pxprimary-100-box-shadow: 0px 0px 0px 4px rgba(244, 235, 255, 1);
+  --focusring-4-pxgray-100-box-shadow: 0px 0px 0px 4px rgba(242, 244, 247, 1);
+  --focusring-4-pxerror-100-box-shadow: 0px 0px 0px 4px rgba(254, 228, 226, 1);
+  --focusring-4-pxgray-600-box-shadow: 0px 0px 0px 4px rgba(71, 84, 103, 1);
+  --focusring-4-pxprimary-600-box-shadow: 0px 0px 0px 4px rgba(127, 86, 217, 1);
+  --shadow-xs-box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+  --shadow-xsfocused-4-pxprimary-100-box-shadow: 0px 0px 0px 4px
+      rgba(244, 235, 255, 1),
+    0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+  --shadow-xsfocused-4-pxgray-100-box-shadow: 0px 0px 0px 4px
+      rgba(242, 244, 247, 1),
+    0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+  --shadow-xsfocused-4-pxerror-100-box-shadow: 0px 0px 0px 4px
+      rgba(254, 228, 226, 1),
+    0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+  --shadow-sm-box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.06),
+    0px 1px 3px 0px rgba(16, 24, 40, 0.1);
+  --shadow-smfocused-4-pxprimary-100-box-shadow: 0px 0px 0px 4px
+      rgba(244, 235, 255, 1),
+    0px 1px 2px 0px rgba(16, 24, 40, 0.06),
+    0px 1px 3px 0px rgba(16, 24, 40, 0.1);
+  --shadow-smfocused-4-pxgray-100-box-shadow: 0px 0px 0px 4px
+      rgba(242, 244, 247, 1),
+    0px 1px 2px 0px rgba(16, 24, 40, 0.06),
+    0px 1px 3px 0px rgba(16, 24, 40, 0.1);
+  --shadow-md-box-shadow: 0px 2px 4px -2px rgba(16, 24, 40, 0.06),
+    0px 4px 8px -2px rgba(16, 24, 40, 0.1);
+  --shadow-lg-box-shadow: 0px 4px 6px -2px rgba(16, 24, 40, 0.03),
+    0px 12px 16px -4px rgba(16, 24, 40, 0.08);
+  --shadow-xl-box-shadow: 0px 8px 8px -4px rgba(16, 24, 40, 0.03),
+    0px 20px 24px -4px rgba(16, 24, 40, 0.08);
+  --shadow-2-xl-box-shadow: 0px 24px 48px -12px rgba(16, 24, 40, 0.18);
+  --shadow-3-xl-box-shadow: 0px 32px 64px -12px rgba(16, 24, 40, 0.14);
+  --shadow-portfoliomockup-maincentremd-box-shadow: 0px 75px 150px 0px
+    rgba(52, 64, 84, 0.14);
+  --shadow-portfoliomockup-maincentrelg-box-shadow: 0px 100px 200px 0px
+    rgba(52, 64, 84, 0.18);
+  --shadow-portfoliomockup-overlayrightlg-box-shadow: -100px 100px 150px 0px
+    rgba(52, 64, 84, 0.12);
+  --shadow-portfoliomockup-overlayleftlg-box-shadow: 100px 100px 150px 0px
+    rgba(52, 64, 84, 0.12);
+  --shadow-portfoliomockup-gridshadowmd-box-shadow: 32px 32px 64px 0px
+    rgba(52, 64, 84, 0.08);
+  --backgroundblur-sm-backdrop-filter: blur(4px);
+  --backgroundblur-md-backdrop-filter: blur(8px);
+  --backgroundblur-lg-backdrop-filter: blur(12px);
+  --backgroundblur-xl-backdrop-filter: blur(20px);
+}
