@@ -586,6 +586,7 @@ namespace Backgammon.Controllers
         {
             var tournament = await _context.Tournaments
         .Include(t => t.Users) // Include users associated with the tournament
+        .Include(t=>t.Tours)
         .FirstOrDefaultAsync(x => x.Id == tournamentId);
 
             var allUsers = await _userService.GetNonAdminUsersAsync();

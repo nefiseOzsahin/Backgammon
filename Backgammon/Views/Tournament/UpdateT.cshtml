@@ -90,7 +90,7 @@
             <div class="frame-7">
                 <form method="post" asp-action="UpdateT">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="@((Model.Tours.Count() == 0) ? "col-md-4" : "col-md-12")">
                             <input asp-for="@Model.Id" type="hidden" />
                             <div class="mb-3">
                                 <label>Turnuva İsmi:</label>
@@ -170,206 +170,211 @@
                                 <button type="button" class="btn btn-success" onclick="saveSelectedUsers()" style="background-color:#7F56D9; border-color:#7F56D9">Kaydet</button>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="text6">Tüm Oyuncuların Listesi</div>
-                            <div class="mb-3">
+                        @if (Model.Tours.Count() == 0)
+                        {
+                            
+                                <div class="col-md-4">
+                                    <div class="text6">Tüm Oyuncuların Listesi</div>
+                                    <div class="mb-3">
 
-                                <input type="text" id="userSearch" class="form-control" placeholder="Ara">
-                            </div>
-                            <table class="table" id="userTable">
-                                <thead>
-                                    <tr class="content8">
-                                        <th>
-                                            <div class="table-cell2">
-                                                <div class="text6"></div>
-                                            </div>
-                                        </th>
-                                        <th>
-                                            <div class="table-cell2">
-                                                <div class="text6">No</div>
-                                            </div>
-                                        </th>
-                                        <th style="padding-left:40px">
-                                            <div class="table-cell2">
-                                                <div class="text6">İsim</div>
-                                            </div>
-                                        </th>
-
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var user in ViewBag.AllUsers)
-                                    {
-                                        <tr class="content8">
-                                            <td class="column">
-                                                <div class="text13" hidden>@user.Name @user.SurName</div>
-                                                <div class="table-cell2">
-                                                    <input type="checkbox" name="selectedUsers" value="@user.Id" />
-                                                </div>
-                                            </td>
-
-                                            <td class="column">
-                                                <div class="table-cell2">
-                                                    <div class="text13">@user.Id</div>
-                                                </div>
-                                            </td>
-                                            <td class="column">
-                                                <div class="table-cell2">
-                                                    <div class="text13">@user.Name</div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex" id="user-pagination-container" style="gap:10px">
-                                                <div class="">
-                                                    <button id="previousPageButton" class="btn btn-sm btn-primary" style="background-color:#7F56D9; border-color:#7F56D9">
-                                                        <div class="">
-                                                            <div class="">Onceki</div>
-                                                        </div>
-                                                    </button>
-                                                    <button class="btn btn-sm btn-primary" id="nextPageButton" style="background-color:#7F56D9; border-color:#7F56D9">
-                                                        <div class="">
-                                                            <div class="">Sonraki</div>
-                                                        </div>
-                                                    </button>
-                                                </div>
-                                                <div class="d-flex align-items-center">
-                                                    
-                                                    <div id="userTotalPages">@(Math.Ceiling((double)ViewBag.AllUsers.Count / 5))</div>
-                                                </div>
-                                            </div>
-                                        </td>
-
-                                    </tr>
-                                </tfoot>
-                            </table>
-
-
-
-                        </div>
-                        <div class="col-md-4">
-                            <div class="text6">Turnuva Oyuncuları</div>
-                            <div class="mb-3">
-
-                                <input type="text" id="tournamentUserSearch" class="form-control" placeholder="Ara">
-                            </div>
-                            <table class="table" id="tournamentUserTable">
-                                <thead>
-                                    <tr class="content8">
-
-                                        <th class="column">
-                                            <div class="table-cell2">
-                                                <div class="text6">No</div>
-                                            </div>
-                                        </th>
-                                        <th class="column">
-                                            <div class="table-cell2">
-                                                <div class="text6">İsim</div>
-                                            </div>
-                                        </th>
-                                        <th class="column">
-                                            <div class="table-cell2">
-                                                <div class="text6">İşlem</div>
-                                            </div>
-                                        </th>
-                                        <!-- Add more columns as needed -->
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var user in ViewBag.UsersInTournament)
-                                    {
-                                        <tr class="content8">
-
-                                            <td class="column">
-                                                <div class="text13" hidden>@user.Name @user.SurName</div>
-                                                <div class="table-cell2">
-                                                    <div class="text13">@user.Id</div>
-                                                </div>
-                                            </td>
-                                            <td class="column">
-                                                <div class="table-cell2">
-                                                    <div class="text13">@user.Name</div>
-                                                </div>
-                                            </td>
-                                            <td class="column">
-                                                <a href="#" data-bs-toggle="modal" data-bs-target="#myModal-@user.Id" class="btn-link">
-
+                                        <input type="text" id="userSearch" class="form-control" placeholder="Ara">
+                                    </div>
+                                    <table class="table" id="userTable">
+                                        <thead>
+                                            <tr class="content8">
+                                                <th>
                                                     <div class="table-cell2">
-                                                        <div class="text13">Sil</div>
+                                                        <div class="text6"></div>
                                                     </div>
-                                                </a>
-                                                <div class="modal" id="myModal-@user.Id">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title">Modal Title</h5>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                @user.Name @user.SurName silinecek. Onaylıyor musunuz?
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
-                                                                <a class="btn btn-primary" asp-action="ExcludeFromTournament" type="submit" asp-route-userId="@user.Id" asp-route-tournamentId="@Model.Id">Sil</a>
-                                                            </div>
+                                                </th>
+                                                <th>
+                                                    <div class="table-cell2">
+                                                        <div class="text6">No</div>
+                                                    </div>
+                                                </th>
+                                                <th style="padding-left:40px">
+                                                    <div class="table-cell2">
+                                                        <div class="text6">İsim</div>
+                                                    </div>
+                                                </th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var user in ViewBag.AllUsers)
+                                            {
+                                                <tr class="content8">
+                                                    <td class="column">
+                                                        <div class="text13" hidden>@user.Name @user.SurName</div>
+                                                        <div class="table-cell2">
+                                                            <input type="checkbox" name="selectedUsers" value="@user.Id" />
+                                                        </div>
+                                                    </td>
+
+                                                    <td class="column">
+                                                        <div class="table-cell2">
+                                                            <div class="text13">@user.Id</div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="column">
+                                                        <div class="table-cell2">
+                                                            <div class="text13">@user.Name</div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex" id="user-pagination-container" style="gap:10px">
+                                                        <div class="">
+                                                            <button id="previousPageButton" class="btn btn-sm btn-primary" style="background-color:#7F56D9; border-color:#7F56D9">
+                                                                <div class="">
+                                                                    <div class="">Onceki</div>
+                                                                </div>
+                                                            </button>
+                                                            <button class="btn btn-sm btn-primary" id="nextPageButton" style="background-color:#7F56D9; border-color:#7F56D9">
+                                                                <div class="">
+                                                                    <div class="">Sonraki</div>
+                                                                </div>
+                                                            </button>
+                                                        </div>
+                                                        <div class="d-flex align-items-center">
+
+                                                            <div id="userTotalPages">@(Math.Ceiling((double)ViewBag.AllUsers.Count / 5))</div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <!-- Modal ends -->
-                                            </td>
-                                            <!-- Add more columns as needed -->
-                                        </tr>
-                                    }
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex" style="gap:10px" id="tournament-user-pagination-container">
-                                                <div >
-                                                    <button id="previousPageButton2" class="btn btn-sm btn-primary" style="background-color:#7F56D9; border-color:#7F56D9">
-                                                        <div class="">
-                                                            <div class="">Onceki</div>
-                                                        </div>
-                                                    </button>
-                                                    <button class="btn btn-sm btn-primary" style="background-color:#7F56D9; border-color:#7F56D9" id="nextPageButton2">
-                                                        <div class="">
-                                                            <div class="">Sonraki</div>
-                                                        </div>
-                                                    </button>
-                                                </div>
-                                                <div class="d-flex align-items-center">
-                                                    
-                                                    <div id="tournamentUserTotalPages">@(Math.Ceiling((double)ViewBag.UsersInTournament.Count / 5))</div>
-                                                </div>
-                                            </div>
-                                        </td>
+                                                </td>
 
-                                    </tr>
-                                </tfoot>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
 
-                            </table>
+
+
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="text6">Turnuva Oyuncuları</div>
+                                    <div class="mb-3">
+
+                                        <input type="text" id="tournamentUserSearch" class="form-control" placeholder="Ara">
+                                    </div>
+                                    <table class="table" id="tournamentUserTable">
+                                        <thead>
+                                            <tr class="content8">
+
+                                                <th class="column">
+                                                    <div class="table-cell2">
+                                                        <div class="text6">No</div>
+                                                    </div>
+                                                </th>
+                                                <th class="column">
+                                                    <div class="table-cell2">
+                                                        <div class="text6">İsim</div>
+                                                    </div>
+                                                </th>
+                                                <th class="column">
+                                                    <div class="table-cell2">
+                                                        <div class="text6">İşlem</div>
+                                                    </div>
+                                                </th>
+                                                <!-- Add more columns as needed -->
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var user in ViewBag.UsersInTournament)
+                                            {
+                                                <tr class="content8">
+
+                                                    <td class="column">
+                                                        <div class="text13" hidden>@user.Name @user.SurName</div>
+                                                        <div class="table-cell2">
+                                                            <div class="text13">@user.Id</div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="column">
+                                                        <div class="table-cell2">
+                                                            <div class="text13">@user.Name</div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="column">
+                                                        <a href="#" data-bs-toggle="modal" data-bs-target="#myModal-@user.Id" class="btn-link">
+
+                                                            <div class="table-cell2">
+                                                                <div class="text13">Sil</div>
+                                                            </div>
+                                                        </a>
+                                                        <div class="modal" id="myModal-@user.Id">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title">Modal Title</h5>
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        @user.Name @user.SurName silinecek. Onaylıyor musunuz?
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                                                                        <a class="btn btn-primary" asp-action="ExcludeFromTournament" type="submit" asp-route-userId="@user.Id" asp-route-tournamentId="@Model.Id">Sil</a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- Modal ends -->
+                                                    </td>
+                                                    <!-- Add more columns as needed -->
+                                                </tr>
+                                            }
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex" style="gap:10px" id="tournament-user-pagination-container">
+                                                        <div>
+                                                            <button id="previousPageButton2" class="btn btn-sm btn-primary" style="background-color:#7F56D9; border-color:#7F56D9">
+                                                                <div class="">
+                                                                    <div class="">Onceki</div>
+                                                                </div>
+                                                            </button>
+                                                            <button class="btn btn-sm btn-primary" style="background-color:#7F56D9; border-color:#7F56D9" id="nextPageButton2">
+                                                                <div class="">
+                                                                    <div class="">Sonraki</div>
+                                                                </div>
+                                                            </button>
+                                                        </div>
+                                                        <div class="d-flex align-items-center">
+
+                                                            <div id="tournamentUserTotalPages">@(Math.Ceiling((double)ViewBag.UsersInTournament.Count / 5))</div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+
+                                            </tr>
+                                        </tfoot>
+
+                                    </table>
+                                </div>
+                            }
+
                         </div>
-                    </div>
+
+                        <div class="text-danger mt-2" asp-validation-summary="ModelOnly"></div>
 
 
-                    <div class="text-danger mt-2" asp-validation-summary="ModelOnly"></div>
-
-
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 
 
 
 
-@section Script{
+
+                            @section Script{
 
     <script>
 
@@ -387,30 +392,30 @@
         }
 
         $(document).ready(function() {
-        @if (TempData["SuccessMessage"] != null)
-        {
-            <text>
-                    toastr.success('@TempData["SuccessMessage"]');
-                //setTimeout(function() {
-                //    window.location.href = '@Url.Action("GetUserList", "User")';
-                //}, 1000);
-            </text>
+                                @if (TempData["SuccessMessage"] != null)
+                                    {
+                                        <text>
+                        toastr.success('@TempData["SuccessMessage"]');
+                    //setTimeout(function() {
+                    //    window.location.href = '@Url.Action("GetUserList", "User")';
+                    //}, 1000);
+                                        </text>
 
-        }
+                                    }
 
 
-                $('#tournamentUserSearch').on('input', function() {
-                    var searchText = $(this).val().toLowerCase();
-                    $('#tournamentUserTable tbody tr').each(function() {
-                        var name = $(this).find('td:first-child').text().toLowerCase();
-                        if (name.includes(searchText)) {
-                            $(this).show();
-                        } else {
-                            $(this).hide();
-                        }
+                    $('#tournamentUserSearch').on('input', function() {
+                        var searchText = $(this).val().toLowerCase();
+                        $('#tournamentUserTable tbody tr').each(function() {
+                            var name = $(this).find('td:first-child').text().toLowerCase();
+                            if (name.includes(searchText)) {
+                                $(this).show();
+                            } else {
+                                $(this).hide();
+                            }
+                        });
                     });
-                });
-        });
-    </script>
+            });
+        </script>
                 }
 
