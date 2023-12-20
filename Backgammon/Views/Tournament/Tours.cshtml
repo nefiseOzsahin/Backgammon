@@ -51,16 +51,16 @@
                                 <div class="supporting-text2">
                                     Turnuva skor kayıt sayfası. Tur skorlarını kayıt edebilir, yeni kuralar çekebilirsiniz.
                                 </div>
-                                 @if (!string.IsNullOrEmpty(UserCount))
-            {
-               
-                  
-                            <div class="alert alert-danger mt-3 w-100">
-                                @TempData["UserCount"]
-                            </div>
-                   
-                
-            }
+                                @if (!string.IsNullOrEmpty(UserCount))
+                                {
+
+
+                                    <div class="alert alert-danger mt-3 w-100">
+                                        @TempData["UserCount"]
+                                    </div>
+
+
+                                }
                             </div>
                             <div class="actions">
                                 <div class="button2">
@@ -100,7 +100,7 @@
                 </div>
 
             </div>
-           
+
             @if (Model.AllPairsHaveZeroScore || Model.SaveScore)
             {
 
@@ -306,8 +306,27 @@
     <script>
         // Function to clear the default value when an input field is clicked
         function clearInput(input) {
-            input.value = "";
+            // Check if the current value is not zero
+            if (input.value == "0") {
+                input.value = "";
+            }
         }
+
+        // Function to set the value to 0 when the user exits the field without entering a value
+        function setDefaultValue(input) {
+            if (input.value === "") {
+                input.value = "0"; // You can also use 0 directly without quotes
+            }
+        }
+
+        // Attach an event listener for the blur event (when the input loses focus)
+        document.addEventListener('blur', function(event) {
+            // Check if the event target is an input element
+            if (event.target.tagName.toLowerCase() === 'input') {
+                // Call the setDefaultValue function when the input loses focus
+                setDefaultValue(event.target);
+            }
+        }, true);
     </script>
 }
 
