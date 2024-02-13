@@ -187,11 +187,11 @@
                                                         <div class="text6"></div>
                                                     </div>
                                                 </th>
-                                                <th>
+                                              @*  <th>
                                                     <div class="table-cell2">
                                                         <div class="text6">No</div>
                                                     </div>
-                                                </th>
+                                                </th>*@
                                                 <th style="padding-left:40px">
                                                     <div class="table-cell2">
                                                         <div class="text6">İsim</div>
@@ -211,14 +211,14 @@
                                                         </div>
                                                     </td>
 
-                                                    <td class="column">
+                                                 @*   <td class="column">
                                                         <div class="table-cell2">
                                                             <div class="text13">@user.Id</div>
                                                         </div>
-                                                    </td>
+                                                    </td>*@
                                                     <td class="column">
                                                         <div class="table-cell2">
-                                                            <div class="text13">@user.Name</div>
+                                                            <div class="text13">@user.Name @user.SurName</div>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -295,7 +295,7 @@
                                                     </td>
                                                     <td class="column">
                                                         <div class="table-cell2">
-                                                            <div class="text13">@user.Name</div>
+                                                            <div class="text13">@user.Name @user.SurName</div>
                                                         </div>
                                                     </td>
                                                     <td class="column">

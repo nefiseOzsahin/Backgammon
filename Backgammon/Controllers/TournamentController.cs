@@ -152,7 +152,7 @@ namespace Backgammon.Controllers
                 pairVms = lastTour.Pairs
                .Select(pair => new PairVM
                {
-                  // Map properties from Pair to PairVM
+                   // Map properties from Pair to PairVM
                    PairId = pair.Id,
                    User1 = _context.Users.FirstOrDefault(user => user.Id == pair.User1Id),
                    User2 = _context.Users.FirstOrDefault(user => user.Id == pair.User2Id),
@@ -306,11 +306,11 @@ namespace Backgammon.Controllers
             }
             if (model.Type == "Kazananlar Eşleşir" || model.Type == "Kaybedenler Eşleşir" || model.Type == "Aynı Haklılar Eşleşir")
             {
-
-                shuffledUsers = shuffledUsers
-               .OrderBy(u => u.TournamentUsers.FirstOrDefault(tu => tu.TournamentId == model.Id)?.LoseCount ?? int.MaxValue)
-               .ThenBy(u => random.Next()) // Use the same Random instance
-               .ToList();
+                if (tournament.Tours.Count() < 4)
+                    shuffledUsers = shuffledUsers
+                   .OrderBy(u => u.TournamentUsers.FirstOrDefault(tu => tu.TournamentId == model.Id)?.LoseCount ?? int.MaxValue)
+                   .ThenBy(u => random.Next()) // Use the same Random instance
+                   .ToList();
 
 
             }
@@ -586,7 +586,7 @@ namespace Backgammon.Controllers
         {
             var tournament = await _context.Tournaments
         .Include(t => t.Users) // Include users associated with the tournament
-        .Include(t=>t.Tours)
+        .Include(t => t.Tours)
         .FirstOrDefaultAsync(x => x.Id == tournamentId);
 
             var allUsers = await _userService.GetNonAdminUsersAsync();
@@ -601,7 +601,7 @@ namespace Backgammon.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> UpdateT(Tournament model, int[] selectedUsers,int pageNum)
+        public async Task<IActionResult> UpdateT(Tournament model, int[] selectedUsers, int pageNum)
         {
             var tournament = await _context.Tournaments
                             .Include(t => t.TournamentUsers)
@@ -613,7 +613,8 @@ namespace Backgammon.Controllers
             }
             //viewden gelen turnuva bilgilerinde bir değişiklik yoksa başlangıç
             bool differentUser = false;
-            if (model.Name == tournament.Name && model.TableStart == tournament.TableStart && model.StartDate == tournament.StartDate && model.Place == tournament.Place && model.System == tournament.System && model.Type == tournament.Type && model.ByeType == tournament.ByeType && model.PlayLife == tournament.PlayLife) {
+            if (model.Name == tournament.Name && model.TableStart == tournament.TableStart && model.StartDate == tournament.StartDate && model.Place == tournament.Place && model.System == tournament.System && model.Type == tournament.Type && model.ByeType == tournament.ByeType && model.PlayLife == tournament.PlayLife)
+            {
                 foreach (var userId in selectedUsers)
                 {
                     var user = await _userManager.FindByIdAsync(userId.ToString());
@@ -621,7 +622,7 @@ namespace Backgammon.Controllers
                     // Add user to AppUserTournament if not already present
                     if (!tournament.Users.Any(u => u.Id == user.Id))
                     {
-                       differentUser = true;
+                        differentUser = true;
                         break;
                     }
 
@@ -727,8 +728,9 @@ namespace Backgammon.Controllers
             var tournamentUsers = await _context.TournamentUsers
                 .Where(tu => tu.TournamentId == tournamentId)
                 .OrderByDescending(tu => tu.WinCount)
+                .ThenBy(tu => tu.LoseCount)
                 .Include(tu => tu.User)
-                .Include(tu=>tu.Tournament)// Eagerly load the User entity
+                .Include(tu => tu.Tournament)// Eagerly load the User entity
                 .ToListAsync();
             return View(tournamentUsers);
         }
