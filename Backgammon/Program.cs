@@ -9,6 +9,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<UserService>();//Business içine yazdýðým UserService sýnýfýný diðer kontrollerlarda dependency Injection yapabilmek için bu satýr eklendi.
+builder.Services.AddScoped(provider =>
+{
+    var userService = provider.GetRequiredService<UserService>();
+    var users = userService.GetUsersAsStringList(); // Get the list of users as strings
+    return new BackgammonPairing(users);
+});
 builder.Services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<BackgammonContext>();
 builder.Services.ConfigureApplicationCookie(options =>
 {

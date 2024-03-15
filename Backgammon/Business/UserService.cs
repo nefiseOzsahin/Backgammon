@@ -62,5 +62,12 @@ namespace Backgammon.Business
 
             return null;
         }
+
+        public List<string> GetUsersAsStringList()
+        {
+            // Retrieve users and convert them to strings
+            var users = _userManager.Users.Select(u => u.UserName).ToList();
+            return users;
+        }
     }
 }
