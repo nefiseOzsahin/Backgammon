@@ -892,6 +892,8 @@ namespace Backgammon.Controllers
                 .Include(tu => tu.User)
                 .Include(tu => tu.Tournament)// Eagerly load the User entity
                 .ToListAsync();
+
+            ViewBag.TournamentId= tournamentId;
             return View(tournamentUsers);
         }
 

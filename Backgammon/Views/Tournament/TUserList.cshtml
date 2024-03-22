@@ -44,6 +44,10 @@
         .text4:hover {
             color: white; /* Change the text color to white on hover */
         }
+
+        .turlar-text {
+    margin-left: auto; /* This pushes the element to the right */
+}
 </style>
 
 
@@ -61,6 +65,9 @@
                                 </div>
                             </div>
                             <div class="actions">
+                                <a class="badge-base4" asp-action="Tours" asp-controller="Tournament" asp-route-tournamentId="@ViewBag.TournamentId">
+                                                    <div class="text6" style="color:#7F56D9">Turlar</div>
+                                </a>
                                 <div class="button2">
                                     <div class="button-base2">
                                         <div class="text6">@userName</div>
@@ -93,15 +100,21 @@
                                     </div>
                                 </div>
                             </div>
+                                                    
                         </div>
+
                     </div>
                 </div>
             </div>
             <div class="frame-7">
-
+               
                 <div class="frame-8">
+                     
                     <table class="table">
+                        
                         <thead class="card-header w-75 align-self-center">
+                            <tr>                             
+                            </tr>
                             <tr class="content7">
                                 <th class=" w-50">İsim</th>
                                 <th class="text-and-supporting-text2">Kazanma</th>
@@ -117,26 +130,24 @@
                                 string alertClass = "success";
                                 switch (@tournamentUser.LoseCount)
                                 {
-                                    case 7:
+                                   
+                                    case 6:
                                         alertClass = "dark";
                                         break;
-                                    case 6:
+                                    case 5:
                                         alertClass = "light";
                                         break;
-                                    case 5:
+                                    case 4:
                                         alertClass = "secondary";
                                         break;
-                                    case 4:
-                                        alertClass = "primary";
-                                        break;
                                     case 3:
-                                        alertClass = "info";
-                                        break;
-                                    case 2:
                                         alertClass = "danger";
                                         break;
-                                    case 1:
+                                    case 2:
                                         alertClass = "warning";
+                                        break;
+                                    case 1:
+                                        alertClass = "info";
                                         break;
                                     case 0:
                                         alertClass = "success";
