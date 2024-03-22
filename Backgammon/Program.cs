@@ -24,7 +24,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddDbContext<BackgammonContext>(opt =>
 {
     //opt.UseSqlServer("Data Source=DESKTOP-75H6AC3\\SQLEXPRESS;Initial Catalog=BackgammonDb;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
-    opt.UseSqlServer("Server=77.245.159.27;Database=chouette_;User Id=nefise;Password=Erkin2019!;Connect Timeout=30;Encrypt=False;");
+    opt.UseSqlServer("Server=77.245.159.27\\MSSQLSERVER2019;Database=chouette_;User Id=nefise;Password=Erkin2019!;Connect Timeout=30;Encrypt=False;");
 
 });
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();

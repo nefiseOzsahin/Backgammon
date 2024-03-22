@@ -290,9 +290,11 @@ namespace Backgammon.Controllers
                 TournamentId = model.Id
             };
             _context.Tours.Add(newTour);
-            await _context.SaveChangesAsync();
-            Random random = new Random();
-            users = users.OrderBy(x => random.Next()).ToList();
+            await _context.SaveChangesAsync();                 
+            users = users.OrderBy(x => Guid.NewGuid()).ToList();
+
+
+
             List<AppUser> shuffledUsers = users;
 
             int minByeCount = 0;
@@ -309,49 +311,84 @@ namespace Backgammon.Controllers
             }
             if (model.Type == "Kazananlar Eşleşir" || model.Type == "Kaybedenler Eşleşir" || model.Type == "Aynı Haklılar Eşleşir")
             {
-               
-                    shuffledUsers = shuffledUsers
-                   .OrderBy(u => u.TournamentUsers.FirstOrDefault(tu => tu.TournamentId == model.Id)?.LoseCount ?? int.MaxValue)
-                   .ThenBy(u => random.Next()) // Use the same Random instance
-                   .ToList();
 
+                shuffledUsers = shuffledUsers
+                .OrderBy(u => u.TournamentUsers.FirstOrDefault(tu => tu.TournamentId == model.Id)?.LoseCount ?? int.MaxValue)
+                .ToList(); // Sorting based on LoseCount
+
+                // Shuffling within groups of users with the same LoseCount
+                var rnd = new Random();
+                shuffledUsers = shuffledUsers
+                    .GroupBy(u => u.TournamentUsers.FirstOrDefault(tu => tu.TournamentId == model.Id)?.LoseCount ?? int.MaxValue)
+                    .SelectMany(grp => grp.OrderBy(x => rnd.Next()))
+                    .ToList();
             }
 
 
 
             List<Pair> pairs = new List<Pair>();
             List<PairVM> pairVMs = new List<PairVM>();
-            /////////////////////////////////////////*******************************
-            var matchupHistory = _pairing.MatchupHistory;
+        
+         
 
-            // Shuffle the users for random pairing
-            shuffledUsers = users.OrderBy(u => Guid.NewGuid()).ToList();
-
-            // Keep track of paired users to avoid duplicate pairings
             var pairedUsers = new HashSet<string>();
+            //var totalUsers = shuffledUsers.Count;
+            //var totalPossiblePairings = totalUsers * (totalUsers - 1) / 2;
+            //var maxIterations = Math.Min(totalUsers / 2, totalPossiblePairings);
+            var maxIterations = 0;
 
-            for (int i = 0; i < shuffledUsers.Count; i += 2)
+            do
             {
+                var allPairs = _context.Pairs.Where(p => p.Tour.TournamentId == model.Id).ToList();
+               
                 // Check if there are at least two users left to pair
-                if (i + 1 < shuffledUsers.Count)
+                if (shuffledUsers.Count >= 2)
                 {
-                    var user1 = shuffledUsers[i];
-                    var user2 = shuffledUsers[i + 1];
+                    var user1 = shuffledUsers.First();
+                    var user2 = shuffledUsers.Skip(1).First();
 
-                    // Check if the pair has not played against each other before
-                    if (!matchupHistory.ContainsKey(user1.Id.ToString()) || !matchupHistory[user1.Id.ToString()].Contains(user2.Id.ToString()))
+
+                    if (maxIterations < 6)
                     {
-                        // Add the pair to the matchup history
-                        if (!matchupHistory.ContainsKey(user1.Id.ToString()))
-                            matchupHistory[user1.Id.ToString()] = new HashSet<string>();
-                        if (!matchupHistory.ContainsKey(user2.Id.ToString()))
-                            matchupHistory[user2.Id.ToString()] = new HashSet<string>();
+                        // Check if the pair already exists in previous tours
+                        var existingPair = allPairs.FirstOrDefault(p =>
+                            (p.User1Id == user1.Id && p.User2Id == user2.Id) ||
+                            (p.User1Id == user2.Id && p.User2Id == user1.Id));
+                        if (existingPair == null)
+                        {
 
-                        matchupHistory[user1.Id.ToString()].Add(user2.Id.ToString());
-                        matchupHistory[user2.Id.ToString()].Add(user1.Id.ToString());
+                            var pair = new Pair { User1Id = user1.Id, User2Id = user2.Id };
 
-                        // Create pair entities and view models
+                            var pairVM = new PairVM { Tour = newTour, User1 = user1, User2 = user2 };
+
+                            // Add the pair to the database
+                            pair.TourId = newTour.Id;
+                            _context.Pairs.Add(pair);
+
+                            // Add the pair view model to the list
+                            pairVMs.Add(pairVM);
+
+                            // Add the tour to the users
+                            user1.Tours.Add(newTour);
+                            user2.Tours.Add(newTour);
+
+                            // Mark users as paired to avoid duplicate pairings
+                            pairedUsers.Add(user1.Id.ToString());
+                            pairedUsers.Add(user2.Id.ToString());
+                            shuffledUsers = shuffledUsers.Skip(2).ToList();
+                            maxIterations += 1;
+                        }
+                        else
+                        {
+                            shuffledUsers = shuffledUsers.OrderBy(x => Guid.NewGuid()).ToList();
+                            maxIterations += 1;
+                            continue;
+                        }
+                    }
+                    else
+                    {
                         var pair = new Pair { User1Id = user1.Id, User2Id = user2.Id };
+
                         var pairVM = new PairVM { Tour = newTour, User1 = user1, User2 = user2 };
 
                         // Add the pair to the database
@@ -368,46 +405,78 @@ namespace Backgammon.Controllers
                         // Mark users as paired to avoid duplicate pairings
                         pairedUsers.Add(user1.Id.ToString());
                         pairedUsers.Add(user2.Id.ToString());
+                        shuffledUsers = shuffledUsers.Skip(2).ToList();
+                        maxIterations += 1;
                     }
-                }
-            }
 
-            // Handle case for odd number of players
-            if (shuffledUsers.Count % 2 != 0)
+                  
+
+                }
+
+                await _context.SaveChangesAsync();
+
+                // Retrieve the saved pairs for the new tour
+                var savedPairs = _context.Pairs.Where(p => p.TourId == newTour.Id).ToList();
+            } while (shuffledUsers.Any()/*&& pairedUsers.Count < maxIterations*/);
+            if (users.Count() % 2 != 0)
             {
-                var byeUser = shuffledUsers.LastOrDefault();
-                if (byeUser != null)
-                {
-                    // Ensure the bye user is not already paired
-                    if (!pairedUsers.Contains(byeUser.Id.ToString()))
-                    {
-                        var pair = new Pair { User1Id = byeUser.Id, User2Id = 0 };
-                        var pairVM = new PairVM { Tour = newTour, User1 = byeUser, User2 = null };
+                var pair = new Pair { User1Id = lastone.Id, User2Id = 0 };
+                var pairVM = new PairVM { Tour = newTour, User1 = lastone, User2 = null };
 
-                        // Add the pair to the database
-                        pair.TourId = newTour.Id;
-                        _context.Pairs.Add(pair);
+                // Add the pair to the database
+                pair.TourId = newTour.Id;
+                _context.Pairs.Add(pair);
 
-                        // Add the pair view model to the list
-                        pairVMs.Add(pairVM);
+                // Add the pair view model to the list
+                pairVMs.Add(pairVM);
 
-                        // Add the tour to the user
-                        byeUser.Tours.Add(newTour);
+                // Add the tour to the user
+                lastone.Tours.Add(newTour);
 
-                        // Update bye count
-                        UpdateByeCount(byeUser.Id, model.Id);
+                // Update bye count
+                UpdateByeCount(lastone.Id, model.Id);
 
-                        // Mark the bye user as paired
-                        pairedUsers.Add(byeUser.Id.ToString());
-                    }
-                }
+                // Mark the bye user as paired
+                pairedUsers.Add(lastone.Id.ToString());
+                await _context.SaveChangesAsync();
+
             }
+            // Handle case for odd number of players
+            //if (shuffledUsers.Count % 2 != 0)
+            //{
+            //    var byeUser = shuffledUsers.LastOrDefault();
+            //    if (byeUser != null)
+            //    {
+            //        // Ensure the bye user is not already paired
+            //        if (!pairedUsers.Contains(byeUser.Id.ToString()))
+            //        {
+            //            var pair = new Pair { User1Id = byeUser.Id, User2Id = 0 };
+            //            var pairVM = new PairVM { Tour = newTour, User1 = byeUser, User2 = null };
+
+            //            // Add the pair to the database
+            //            pair.TourId = newTour.Id;
+            //            _context.Pairs.Add(pair);
+
+            //            // Add the pair view model to the list
+            //            pairVMs.Add(pairVM);
+
+            //            // Add the tour to the user
+            //            byeUser.Tours.Add(newTour);
+
+            //            // Update bye count
+            //            UpdateByeCount(byeUser.Id, model.Id);
+
+            //            // Mark the bye user as paired
+            //            pairedUsers.Add(byeUser.Id.ToString());
+            //        }
+            //    }
+            //}
 
             // Save changes to the database
-            await _context.SaveChangesAsync();
+            //await _context.SaveChangesAsync();
 
-            // Retrieve the saved pairs for the new tour
-            var savedPairs = _context.Pairs.Where(p => p.TourId == newTour.Id).ToList();
+            //// Retrieve the saved pairs for the new tour
+            //var savedPairs = _context.Pairs.Where(p => p.TourId == newTour.Id).ToList();
 
             /////////////////////////////////////////*******************************
 
