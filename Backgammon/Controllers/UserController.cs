@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 using System.Text.Json;
 
 
@@ -163,16 +164,22 @@ namespace Backgammon.Controllers
 
             if (ModelState.IsValid)
             {
+                // Capitalize the first letter of Name and SurName
+                string capitalizedFirstName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(model.Name.ToLower());
+                string capitalizedSurName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(model.Surname.ToLower());
+                // Capitalize the first letter of each word in Club
+                string[] clubWords = model.Club.Split(' ');
+                string capitalizedClub = string.Join(" ", clubWords.Select(w => CultureInfo.CurrentCulture.TextInfo.ToTitleCase(w.ToLower())));
                 AppUser user = new()
                 {
-                    UserName= model.Email,
-                    Name = model.Name,
-                    SurName = model.Surname,
+                    UserName= model.Email.ToLower(),
+                    Name = capitalizedFirstName,
+                    SurName = capitalizedSurName,
                     Gender = model.Gender,
-                    Email = model.Email,
+                    Email = model.Email.ToLower(),
                     PhoneNumber=model.Phone,
                     ImagePath = model.ImagePath,
-                    Club=model.Club,
+                    Club= capitalizedClub,
                     Country=model.Country,
                     City=model.City,
                     IsActive=model.IsActive,
@@ -291,14 +298,14 @@ namespace Backgammon.Controllers
             }
             await _userManager.UpdateSecurityStampAsync(user);
 
-            user.UserName = model.Email;
-            user.Name = model.Name ?? "";
-            user.SurName = model.SurName ?? "";
-            user.Email = model.Email;
+            user.UserName = model.Email.ToLower();
+            user.Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase((model.Name ?? "").ToLower());
+            user.SurName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase((model.SurName ?? "").ToLower());
+            user.Email = model.Email.ToLower();
             user.Gender = model.Gender;
             user.PhoneNumber = model.PhoneNumber;       
             user.ImagePath = model.ImagePath;
-            user.Club=model.Club;
+            user.Club = CultureInfo.CurrentCulture.TextInfo.ToTitleCase((model.Club ?? "").ToLower());
             user.Country = model.Country;
             user.City = model.City;
             user.IsActive = model.IsActive;

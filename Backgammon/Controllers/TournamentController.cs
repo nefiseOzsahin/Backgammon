@@ -5,6 +5,7 @@ using Backgammon.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 using System.Linq;
 
 namespace Backgammon.Controllers
@@ -45,6 +46,11 @@ namespace Backgammon.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Capitalize the first letter of each word in the Tournament name
+                model.Tournament.Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(model.Tournament.Name.ToLower());
+                // Capitalize the first letter of each word in the Tournament name
+                model.Tournament.Place = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(model.Tournament.Place.ToLower());
+
                 // Save or update Season
                 if (model.Tournament.Id == 0)
                 {
@@ -804,9 +810,9 @@ namespace Backgammon.Controllers
                 }
             }
             //viewden gelen turnuva bilgilerinde bir değişiklik yoksa bitiş
-            tournament.Name = model.Name ?? "";
+            tournament.Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase((model.Name ?? "").ToLower());
             tournament.StartDate = model.StartDate;
-            tournament.Place = model.Place;
+            tournament.Place = CultureInfo.CurrentCulture.TextInfo.ToTitleCase((model.Place ?? "").ToLower());
             tournament.System = model.System;
             tournament.Type = model.Type;
             tournament.PlayLife = model.PlayLife;
