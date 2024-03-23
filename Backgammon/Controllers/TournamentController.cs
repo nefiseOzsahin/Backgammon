@@ -335,12 +335,12 @@ namespace Backgammon.Controllers
             //var totalUsers = shuffledUsers.Count;
             //var totalPossiblePairings = totalUsers * (totalUsers - 1) / 2;
             //var maxIterations = Math.Min(totalUsers / 2, totalPossiblePairings);
-            var maxIterations = 0;
+            var triedUsers = new List<AppUser>();
 
             do
             {
                 var allPairs = _context.Pairs.Where(p => p.Tour.TournamentId == model.Id).ToList();
-               
+            
                 // Check if there are at least two users left to pair
                 if (shuffledUsers.Count >= 2)
                 {
@@ -348,8 +348,7 @@ namespace Backgammon.Controllers
                     var user2 = shuffledUsers.Skip(1).First();
 
 
-                    if (maxIterations < 6)
-                    {
+                   
                         // Check if the pair already exists in previous tours
                         var existingPair = allPairs.FirstOrDefault(p =>
                             (p.User1Id == user1.Id && p.User2Id == user2.Id) ||
@@ -375,23 +374,29 @@ namespace Backgammon.Controllers
                             // Mark users as paired to avoid duplicate pairings
                             pairedUsers.Add(user1.Id.ToString());
                             pairedUsers.Add(user2.Id.ToString());
-                            shuffledUsers = shuffledUsers.Skip(2).ToList();
-                            maxIterations += 1;
+                            shuffledUsers = shuffledUsers.Skip(2).ToList();                       
+                          
                         }
                         else
                         {
-                            shuffledUsers = shuffledUsers.OrderBy(x => Guid.NewGuid()).ToList();
-                            maxIterations += 1;
-                            continue;
-                        }
-                    }
-                    else
+                        //shuffledUsers = shuffledUsers.OrderBy(x => Guid.NewGuid()).ToList();
+                        shuffledUsers = shuffledUsers.Where(u => u != user2).ToList();
+                        triedUsers.Add(user2);
+                        continue;
+                        }              
+                  
+
+                  
+
+                }else if (shuffledUsers.Count() == 1)
+                {
+                    if (triedUsers != null)
                     {
+                        triedUsers = triedUsers.OrderBy(x => Guid.NewGuid()).ToList();
+                        var user1 = shuffledUsers.First();
+                        var user2 = triedUsers.First();
                         var pair = new Pair { User1Id = user1.Id, User2Id = user2.Id };
-
                         var pairVM = new PairVM { Tour = newTour, User1 = user1, User2 = user2 };
-
-                        // Add the pair to the database
                         pair.TourId = newTour.Id;
                         _context.Pairs.Add(pair);
 
@@ -405,11 +410,15 @@ namespace Backgammon.Controllers
                         // Mark users as paired to avoid duplicate pairings
                         pairedUsers.Add(user1.Id.ToString());
                         pairedUsers.Add(user2.Id.ToString());
-                        shuffledUsers = shuffledUsers.Skip(2).ToList();
-                        maxIterations += 1;
+                        shuffledUsers = shuffledUsers.Skip(1).ToList();
+                        triedUsers = triedUsers.Skip(1).ToList();
                     }
-
-                  
+                   
+                }else if(shuffledUsers.Count() == 0 && triedUsers.Count() >= 2)
+                {
+                    shuffledUsers = triedUsers;
+                    triedUsers = new List<AppUser>();
+                    continue;
 
                 }
 
@@ -417,7 +426,7 @@ namespace Backgammon.Controllers
 
                 // Retrieve the saved pairs for the new tour
                 var savedPairs = _context.Pairs.Where(p => p.TourId == newTour.Id).ToList();
-            } while (shuffledUsers.Any()/*&& pairedUsers.Count < maxIterations*/);
+            } while (shuffledUsers.Any() || triedUsers.Any()/*&& pairedUsers.Count < maxIterations*/);
             if (users.Count() % 2 != 0)
             {
                 var pair = new Pair { User1Id = lastone.Id, User2Id = 0 };
