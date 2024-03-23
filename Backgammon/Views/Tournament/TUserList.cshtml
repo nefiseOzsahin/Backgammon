@@ -116,6 +116,7 @@
                             <tr>                             
                             </tr>
                             <tr class="content7">
+                                <th>#</th>
                                 <th class=" w-50">İsim</th>
                                 <th class="text-and-supporting-text2">Kazanma</th>
                                 <th class="text-and-supporting-text2">Yenilgi</th>
@@ -123,6 +124,7 @@
                             </tr>
                         </thead>
                         <tbody class="w-75 align-self-center ">
+                            @{ var index = 1; }
                             @foreach (var tournamentUser in Model)
                             {
 
@@ -156,6 +158,13 @@
 
 
                                 <tr class="content7 alert alert-@alertClass w-100" style="height:15px">
+                                      <td class="text-and-supporting-text2 align-self-center">
+                                        <div class="badge">
+                                            <div class="badge-base4">
+                                                <div class="text18">@index</div>
+                                            </div>
+                                        </div>
+                                    </td>
                                     <td class="w-50 align-self-center">@tournamentUser.User.Name @tournamentUser.User.SurName</td>
                                     <td class="text-and-supporting-text2 align-self-center">
                                         <div class="badge">
@@ -181,7 +190,7 @@
                                 </tr>
 
 
-
+                                index++; 
 
                             }
                         </tbody>
