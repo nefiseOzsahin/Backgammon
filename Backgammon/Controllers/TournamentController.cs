@@ -973,9 +973,127 @@ namespace Backgammon.Controllers
 
             //    // Redirect to another action or return a view
             return RedirectToAction("Index");
-        }    
-       
+        }
 
+        [HttpPost]
+        public IActionResult SMSSendT(int tournamentId)
+        {
+            string message = Request.Form["message"];
+            //Retrieve scores JSON string from session
+            var users = _context.Users.Where(u => u.Tournaments.Any(t => t.Id == tournamentId)).ToList();
+
+            if (users != null || users.Any())           
+            {
+                // Deserialize scores JSON string back to List<ScoreViewModel>
+                
+
+                var tarih = new DateTime();
+                var client = new RestClient("https://api.vatansms.net/api/v1/NtoN");
+
+                client.Timeout = -1;
+
+                var request = new RestRequest(Method.POST);
+
+                request.AddHeader("Content-Type", "application/json");
+
+                // Assuming 'scores' is your list of ScoreViewModel objects
+                List<object> phoneMessages = new List<object>();
+
+                for (int i = 0; i < users.Count(); i++)
+                {
+                   
+                        phoneMessages.Add(new
+                        {
+                            phone = users[i].PhoneNumber,
+                            message = $"{message}"
+                        });
+                    
+                                 
+                }
+
+                string jsonBody = JsonConvert.SerializeObject(new
+                {
+                    api_id = "5d4219e62fe4475a4585ddea",
+                    api_key = "e0e87e74a44009c74bf6f4b5",
+                    sender = "08507063025",
+                    message_type = "turkce",
+                    message_content_type = "bilgi",
+                    phones = phoneMessages
+                });
+
+                request.AddParameter("application/json", jsonBody, ParameterType.RequestBody);
+
+                RestResponse response = (RestResponse)client.Execute(request);
+
+                return RedirectToAction("Index", "Home");
+
+            }
+
+
+            //    // Redirect to another action or return a view
+            return RedirectToAction("Index","Home");
+        }
+
+
+        public IActionResult SMSSendG()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SMSSendGPostAsync()
+        {
+            string message = Request.Form["message"];
+            var users = await _userService.GetNonAdminUsersAsync();
+
+            if (users != null || users.Any())
+            {
+                // Deserialize scores JSON string back to List<ScoreViewModel>
+
+
+                var tarih = new DateTime();
+                var client = new RestClient("https://api.vatansms.net/api/v1/NtoN");
+
+                client.Timeout = -1;
+
+                var request = new RestRequest(Method.POST);
+
+                request.AddHeader("Content-Type", "application/json");
+
+                // Assuming 'scores' is your list of ScoreViewModel objects
+                List<object> phoneMessages = new List<object>();
+
+                for (int i = 0; i < users.Count(); i++)
+                {
+
+                    phoneMessages.Add(new
+                    {
+                        phone = users[i].PhoneNumber,
+                        message = $"{message}"
+                    });
+
+
+                }
+
+                string jsonBody = JsonConvert.SerializeObject(new
+                {
+                    api_id = "5d4219e62fe4475a4585ddea",
+                    api_key = "e0e87e74a44009c74bf6f4b5",
+                    sender = "08507063025",
+                    message_type = "turkce",
+                    message_content_type = "bilgi",
+                    phones = phoneMessages
+                });
+
+                request.AddParameter("application/json", jsonBody, ParameterType.RequestBody);
+
+                RestResponse response = (RestResponse)client.Execute(request);
+
+                return RedirectToAction("Index", "Home");
+
+            }
+            return RedirectToAction("Index", "Home");
+        }
     }
 }
 

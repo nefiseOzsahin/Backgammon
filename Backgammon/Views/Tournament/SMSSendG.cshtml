@@ -1,0 +1,57 @@
+﻿
+@{
+    ViewData["Title"] = "SMSSendG";
+    Layout = "~/Views/Shared/_Layout1.cshtml";
+}
+
+<style>
+    .div-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .container {
+        width: 50%; /* Adjust the width as needed */
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+  
+
+   textarea {
+    width: 100%; /* Set width to 100% */
+    resize: vertical; /* Allow vertical resizing */
+}
+
+    .btn-primary {
+        background-color: #7F56D9; /* Blue color */
+        border-color: #7F56D9; /* Blue color */
+    }
+
+    .btn-primary:hover {
+        background-color: #7F56D9; /* Darker blue color */
+        border-color: #7F56D9; /* Darker blue color */
+    }
+    h5{
+        color:#7F56D9;
+    }
+</style>
+
+<div class="div-wrapper">
+    <div class="container">
+        <form asp-action="SMSSendGPost" asp-controller="Tournament" method="post">
+            <div class="form-group">
+                <h5>Aşağıdaki mesaj sistemde kayıtlı olan tüm kullanıcılara gider.</h5>
+                <label>Mesajınız:</label>
+                <textarea class="form-control" id="messageBox" name="message" rows="5"></textarea>
+            </div>
+            <div class="form-group">               
+                <button type="submit" class="btn btn-primary">Gönder</button>
+            </div>
+        </form>
+    </div>
+</div>

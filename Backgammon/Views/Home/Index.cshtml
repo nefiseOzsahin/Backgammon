@@ -293,6 +293,10 @@
                                                     <div class="text18" style="color:#7F56D9">Sil</div>
                                                 </a>
 
+                                                <a href="#" class="badge-base4" data-bs-toggle="modal" data-bs-target="#myModalSms-@item.Id">
+                                                    <div class="text18" style="color:#7F56D9">Turnuva Mesajı</div>
+                                                </a>
+
                                             }
 
 
@@ -312,6 +316,31 @@
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
                                                     <a class="btn btn-primary" asp-action="DeleteT" asp-controller="Tournament" asp-route-tournamentId="@item.Id">Sil</a>
                                                 </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Modal ends -->
+                                     <div class="modal" id="myModalSms-@item.Id">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                  <form asp-action="SMSSendT" asp-controller="Tournament" method="post">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Turnuva Mesajı</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="form-group">
+                                                        <label for="messageBox">Mesajınız:</label>
+                                                        <textarea class="form-control" id="messageBox" name="message" rows="5"></textarea>
+                                                    </div>
+                                                    
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <input type="hidden" name="tournamentId" value="@item.Id" />
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                                                    <button type="submit" class="btn btn-primary">Gönder</button>
+                                                </div>
+                                            </form>
                                             </div>
                                         </div>
                                     </div>
