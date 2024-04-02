@@ -2,6 +2,7 @@
 using Backgammon.Context;
 using Backgammon.Entities;
 using Backgammon.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,7 @@ using System.Linq;
 namespace Backgammon.Controllers
 {
 
+    [Authorize(Roles = "Admin")]
     public class TournamentController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
@@ -32,7 +34,7 @@ namespace Backgammon.Controllers
             _context = context;
           
         }
-
+       
         public async Task<IActionResult> CreateT()
         {
             var nonAdminUsers = await _userService.GetNonAdminUsersAsync();

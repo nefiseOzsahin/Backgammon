@@ -2,6 +2,12 @@
 @{
     ViewData["Title"] = "SMSSendG";
     Layout = "~/Views/Shared/_Layout1.cshtml";
+       string userName = User.Identity.Name;
+
+    if (!string.IsNullOrEmpty(userName) && char.IsLower(userName[0]))
+    {
+        userName = char.ToUpper(userName[0]) + userName.Substring(1);
+    }
 }
 
 <style>
@@ -43,9 +49,53 @@
 
 <div class="div-wrapper">
     <div class="container">
+         <div class="page-header">
+            <div class="div-4">
+                <div class="text-and-supporting">
+                    <div class="text-4">
+                        Hoşgeldin, @userName
+                    </div>
+                    @if (User != null && User.IsInRole("Admin"))
+                    {
+                        <p>Aşağıdaki mesaj sistemde kayıtlı olan tüm kullanıcılara gider.</p>
+                    }
+                    else
+                    {
+                        <p>Aşağıdaki mesaj sistemde kayıtlı olan tüm kullanıcılara gider.</p>
+                    }
+                </div>
+                <div class="div-2">
+                    <button class="button-base-wrapper">
+                        <div class="button-base-2"><div class="text-5">@userName</div></div>
+                    </button>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <button class="button-2">
+                            <div class="button-base-3">
+                                <img class="img" src="~/home/log-out-2.svg" />
+
+                                <a class="btn btn-primary w-100" asp-action="SignOut" asp-controller="User" style="background-color:#7F56D9; border-color:#7F56D9">Çıkış</a>
+                            </div>
+                        </button>
+
+
+                    }
+                    else
+                    {
+                        <button class="button-2">
+                            <div class="button-base-3">
+                                <img class="img" src="~/home/log-out-2.svg" />
+
+                                <a class="btn btn-primary w-100" asp-action="SignIn" asp-controller="User" style="background-color:#7F56D9; border-color:#7F56D9">Giriş</a>
+                            </div>
+                        </button>
+                    }
+                </div>
+            </div>
+        </div>
         <form asp-action="SMSSendGPost" asp-controller="Tournament" method="post">
-            <div class="form-group">
-                <h5>Aşağıdaki mesaj sistemde kayıtlı olan tüm kullanıcılara gider.</h5>
+            <div class="form-group">   
+ 
                 <label>Mesajınız:</label>
                 <textarea class="form-control" id="messageBox" name="message" rows="5"></textarea>
             </div>

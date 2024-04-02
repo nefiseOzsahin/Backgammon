@@ -12,6 +12,7 @@ using System.Text.Json;
 namespace Backgammon.Controllers
 {
     [AutoValidateAntiforgeryToken]
+    [Authorize(Roles = "Admin")]
     public class UserController : Controller
     {
         private readonly IHttpClientFactory _clientFactory;
@@ -36,6 +37,8 @@ namespace Backgammon.Controllers
             return View();
         }
 
+        [AutoValidateAntiforgeryToken]
+        [AllowAnonymous]
         public async Task<IActionResult> SignOut()
         {
 
@@ -43,11 +46,14 @@ namespace Backgammon.Controllers
             return RedirectToAction("Index","Home");
         }
 
+        [AutoValidateAntiforgeryToken]
+        [AllowAnonymous]
         public IActionResult SignIn()
         {
             return View(new AdminSignInModel());
         }
-
+        [AutoValidateAntiforgeryToken]
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> SignIn(AdminSignInModel model)
         {
