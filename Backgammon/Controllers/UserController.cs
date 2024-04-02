@@ -303,7 +303,15 @@ namespace Backgammon.Controllers
             user.SurName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase((model.SurName ?? "").ToLower());
             user.Email = model.Email.ToLower();
             user.Gender = model.Gender;
-            user.PhoneNumber = model.PhoneNumber;       
+            if (!string.IsNullOrEmpty(model.PhoneNumber) && model.PhoneNumber.StartsWith("0"))
+            {
+                // Extracting phone number without leading zero
+                user.PhoneNumber = model.PhoneNumber.Substring(1);
+            }
+            else
+            {
+                user.PhoneNumber = model.PhoneNumber;
+            }
             user.ImagePath = model.ImagePath;
             user.Club = CultureInfo.CurrentCulture.TextInfo.ToTitleCase((model.Club ?? "").ToLower());
             user.Country = model.Country;

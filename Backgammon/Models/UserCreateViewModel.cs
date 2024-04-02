@@ -16,6 +16,7 @@ namespace Backgammon.Models
         [Required(ErrorMessage = "Mail gereklidir.")]
         public string Email { get; set; }
         [Required(ErrorMessage = "Telefon gereklidir.")]
+        [RegularExpression(@"^\d{10}$", ErrorMessage = "Telefon numarası başında sıfır olmadan 10 rakamdan oluşmalıdır.")]
         public string Phone { get; set; }
         public string? ImagePath { get; set; }
         public string? Club { get; set; }

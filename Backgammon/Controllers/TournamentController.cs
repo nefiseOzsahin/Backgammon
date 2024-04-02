@@ -5,8 +5,11 @@ using Backgammon.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using RestSharp;
 using System.Globalization;
 using System.Linq;
+
 
 namespace Backgammon.Controllers
 {
@@ -595,6 +598,12 @@ namespace Backgammon.Controllers
             return user != null ? $"{user.Name} {user.SurName}" : "Bye";
         }
 
+        private string GetUserPhoneNumber(int userId)
+        {
+            var user = _context.Users.Find(userId);
+            return user != null ? $"{user.PhoneNumber}" : "Bye";
+        }
+
         private List<ScoreViewModel> InitializeScores(Tour tour)
         {
             return tour.Pairs.Select(pair => new ScoreViewModel
@@ -605,33 +614,21 @@ namespace Backgammon.Controllers
                 User2Score = pair.User2Score,  // Fetch from the database
                 User1Name = GetUserDisplayName(pair.User1Id),
                 User2Name = GetUserDisplayName(pair.User2Id),
+                User1PhoneNumber = GetUserPhoneNumber(pair.User1Id),
+                User2PhoneNumber = GetUserPhoneNumber(pair.User2Id),
                 TourId = tour.Id
             }).ToList();
         }
 
 
         [HttpPost]
-        public IActionResult SaveScores(List<ScoreViewModel> scores)
+        public IActionResult SaveScores(List<ScoreViewModel> scores, string actionSource)
         {
-            if (ModelState.IsValid)
-            {
-
-                //foreach (var score in scores)
-                //{
-                //    // Retrieve the pair from the database
-
-                //    var pairOfScore = _context.Pairs.Where(x => x.Id == score.PairId).FirstOrDefault();
 
 
-                //    if (pairOfScore.User1Id != 0 && pairOfScore.User2Id != 0)
-                //    {
-                //        if (score.User1Score == 0 && score.User2Score == 0)
-                //        {
-                //            return RedirectToAction("Tours", new { tournamentId = score.TournamentId }); // Replace with your actual view name and view model
-                //        }
-
-                //    }
-                //}
+           
+                if (actionSource == null)
+                {
 
                 using (var transaction = _context.Database.BeginTransaction())
                 {
@@ -684,20 +681,17 @@ namespace Backgammon.Controllers
                         ModelState.AddModelError(string.Empty, "An error occurred while saving scores.");
                     }
                 }
-            }
-            else
-            {
-
-                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-                {
-                    ModelState.AddModelError("", error.ErrorMessage);
                 }
+                else
+                {
+                // Serialize scores to JSON string
+                string scoresJson = JsonConvert.SerializeObject(scores);
 
-
-                var TournamentId = scores.FirstOrDefault().TournamentId;
-
-                return RedirectToAction("Tours", new { tournamentId = TournamentId });
-            }
+                // Store scores JSON string in session
+                HttpContext.Session.SetString("ScoresData", scoresJson);
+               
+                return RedirectToAction("SMSSend");
+                }            
 
             // If ModelState is not valid, return to the form with validation errors
             return View("Tours", new ToursVM
@@ -921,6 +915,67 @@ namespace Backgammon.Controllers
             return RedirectToAction("GetListT");
 
         }
+ 
+        public IActionResult SMSSend()
+        {
+            //Retrieve scores JSON string from session
+           var scoresJson = HttpContext.Session.GetString("ScoresData");
+
+            if (!string.IsNullOrEmpty(scoresJson))
+            {
+                // Deserialize scores JSON string back to List<ScoreViewModel>
+                var scores = JsonConvert.DeserializeObject<List<ScoreViewModel>>(scoresJson);
+
+                var tarih = new DateTime();
+                var client = new RestClient("https://api.vatansms.net/api/v1/NtoN");
+
+                client.Timeout = -1;
+
+                var request = new RestRequest(Method.POST);
+
+                request.AddHeader("Content-Type", "application/json");
+
+                // Assuming 'scores' is your list of ScoreViewModel objects
+                List<object> phoneMessages = new List<object>();
+
+                for (int i = 0; i<scores.Count() ;i++)
+                {
+                    phoneMessages.Add(new
+                    {
+                        phone = scores[i].User1PhoneNumber,
+                        message = $"Maç başlıyor. Rakibiniz:{scores[i].User2Name}. MasaNo:{i+1}. İyi oyunlar."
+                    });
+                    phoneMessages.Add(new
+                    {
+                        phone = scores[i].User2PhoneNumber,
+                        message = $"Maç başlıyor. Rakibiniz:{scores[i].User1Name}. MasaNo:{i + 1}. İyi oyunlar."
+                    });
+                }
+
+                string jsonBody = JsonConvert.SerializeObject(new
+                {
+                    api_id = "5d4219e62fe4475a4585ddea",
+                    api_key = "e0e87e74a44009c74bf6f4b5",
+                    sender = "08507063025",
+                    message_type = "turkce",
+                    message_content_type = "bilgi",
+                    phones = phoneMessages
+                });
+
+                request.AddParameter("application/json", jsonBody, ParameterType.RequestBody);
+
+                RestResponse response = (RestResponse)client.Execute(request);
+
+                return RedirectToAction("Tours", new { tournamentId = scores[0].TournamentId });
+
+            }
+           
+
+            //    // Redirect to another action or return a view
+            return RedirectToAction("Index");
+        }    
+       
+
     }
 }
 

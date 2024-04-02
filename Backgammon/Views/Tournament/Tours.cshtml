@@ -73,6 +73,7 @@
 
 </style>
 <link href="~/turnuvalar/style.css" rel="stylesheet" />
+
 <div class="main-wrap">
     <div class="main">
         <div class="main2">
@@ -142,12 +143,11 @@
                             <div class="text18" style="color:#7F56D9">Sıralama</div>
                         </a>
                     </div>
+                    @*<form asp-controller="Tournament" asp-action="SaveScores" method="post">
+                         <input type="hidden" name="ActionSource" value="SendMessageButton" />
+                        <button type="submit" class="btn btn-primary">Mesaj Gönder</button>
+                    </form>*@
                 </div>
-
-
-
-
-
             </div>
 
             @if (Model.AllPairsHaveZeroScore || Model.SaveScore)
@@ -212,6 +212,11 @@
                                                         var score = scoresForCurrentTour[i];
                                                         <input type="hidden" name="Scores[@i].PairId" value="@score.PairId" />
                                                         <input type="hidden" name="Scores[@i].TournamentId" value="@Model.Tournament.Id" />
+                                                         <input type="hidden" value="@Model.PairVMs[i].User1?.PhoneNumber" name="Scores[@i].User1PhoneNumber"  />
+                                                         <input type="hidden" value="@Model.PairVMs[i].User2?.PhoneNumber"  name="Scores[@i].User2PhoneNumber"  />
+                                                         <input type="hidden" value="@($"{Model.PairVMs[i].User1?.Name} {Model.PairVMs[i].User1?.SurName}")" name="Scores[@i].User1Name"  />
+                                                         <input type="hidden" value="@($"{Model.PairVMs[i].User2?.Name} {Model.PairVMs[i].User2?.SurName}")"   name="Scores[@i].User2Name"  />
+                                                        <td>@(i + 1)</td>
                                                         <td>@Model.PairVMs[i].User1.Name @Model.PairVMs[i].User1.SurName</td>
 
                                                         @if (Model.PairVMs[i].User2 != null)
@@ -238,8 +243,14 @@
                                         }
                                     </tbody>
                                 </table>
-                                <button type="button" class="btn btn-primary" style="background-color:#7F56D9; border-color:#7F56D9" data-bs-toggle="modal" data-bs-target="#myModalSkor">Skorları Kaydet</button>
-                                 <div id="loader" class="loader">Kaydediliyor</div>
+                                  <!-- Hidden input field for actionSource -->
+                                  <input type="hidden" id="actionSource" name="actionSource" value="" />
+                                <div class="d-flex justify-content-between">
+                                     <button type="button" class="btn btn-primary" style="background-color:#7F56D9; border-color:#7F56D9" data-bs-toggle="modal" data-bs-target="#myModalSkor">Skorları Kaydet</button>
+                                 <button type="submit" class="btn btn-outline-secondary"  onclick="setActionSource('mesajGonder')" >Mesaj Gönder</button>
+                                  </div>
+                                
+                                 <div id="loader" class="loader">Bekleyiniz</div>
                                 <!-- Modal starts -->
                                 <div class="modal" id="myModalSkor">
                                     <div class="modal-dialog">
@@ -354,6 +365,17 @@
 </div>
 @section Script{
     <script>
+        document.addEventListener("DOMContentLoaded", function() {
+        var saveScoresButton = document.querySelector('button[data-bs-target="#myModalSkor"]');
+        saveScoresButton.addEventListener("click", function() {
+            document.getElementById('actionSource').value = null; // Set actionSource to null when "Skorları Kaydet" is clicked
+        });
+        });
+          function setActionSource(value) {
+        // Set the value of actionSource
+        document.getElementById('actionSource').value = value;
+        }
+       
         // Function to clear the default value when an input field is clicked
         function clearInput(input) {
             // Check if the current value is not zero

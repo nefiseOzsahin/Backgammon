@@ -1088,3 +1088,4 @@ C:\Users\ozsah\source\repos\Backgammon\Backgammon\obj\Debug\net6.0\refint\Backga
 C:\Users\ozsah\source\repos\Backgammon\Backgammon\obj\Debug\net6.0\Backgammon.pdb
 C:\Users\ozsah\source\repos\Backgammon\Backgammon\obj\Debug\net6.0\Backgammon.genruntimeconfig.cache
 C:\Users\ozsah\source\repos\Backgammon\Backgammon\obj\Debug\net6.0\ref\Backgammon.dll
+C:\Users\ozsah\source\repos\Backgammon\Backgammon\bin\Debug\net6.0\RestSharp.dll

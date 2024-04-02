@@ -15,6 +15,12 @@ builder.Services.AddScoped(provider =>
     var users = userService.GetUsersAsStringList(); // Get the list of users as strings
     return new BackgammonPairing(users);
 });
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Adjust timeout as needed
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 builder.Services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<BackgammonContext>();
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -43,7 +49,7 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
+app.UseSession();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 

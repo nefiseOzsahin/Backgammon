@@ -69,6 +69,10 @@
             "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
               "target": "Package",
               "version": "[6.0.16, )"
+            },
+            "RestSharp": {
+              "target": "Package",
+              "version": "[106.0.0, )"
             }
           },
           "imports": [
