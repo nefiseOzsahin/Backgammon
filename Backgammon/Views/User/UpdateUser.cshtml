@@ -4,9 +4,6 @@
     ViewData["Title"] = "UpdateUserAsync";
     Layout = "_Layout1";
 }
-
-<h1>UpdateUserAsync</h1>
-
 <div class="container shadow p-2">
 
     <h4>Kullanıcı Güncelle</h4>
@@ -76,6 +73,7 @@
 
         <div class="form-group">
             <button type="submit" class="btn btn-primary mt-3">Kaydet</button>
+            <a asp-action="GetUserList" asp-controller="User" class="btn btn-success mt-3">Geri</a>
         </div>
 
         <div class="text-danger mt-2" asp-validation-summary="ModelOnly"></div>
