@@ -607,16 +607,13 @@ namespace Backgammon.Controllers
 
             //var savedPairs = _context.Pairs.Where(p => p.TourId == newTour.Id).ToList();
             var isDuplicate = checkForDublication(tournament);
-            if (!isDuplicate)
+            if (isDuplicate)
             {
 
-
-
-            }
-            else
-            {
                 return RedirectToAction("Duplication", new { tournamentId = model.Id });
+
             }
+           
             List<ScoreViewModel> scoresForTour = new List<ScoreViewModel>();
             var toursWithPairs = _context.Tours
             .Include(tour => tour.Pairs)
@@ -644,38 +641,48 @@ namespace Backgammon.Controllers
 
             return View("Tours", vm);
         }
+
         private bool checkForDublication(Tournament tournament)
         {
-            // Turnuvanın son turunu alın
-            var lastTour = tournament.Tours.LastOrDefault();
+            // Turnuvanın tüm turlarının ID'lerini toplayacak bir liste oluşturun
+            var tourIds = tournament.Tours.Select(t => t.Id).ToList();
 
-            // Son tur var mı kontrol edin
-            if (lastTour != null)
+            // Son turun çiftlerini alacak bir liste oluşturun
+            var lastTourId = tourIds.Last();
+            var lastTourPairs = tournament.Tours.Single(t => t.Id == lastTourId).Pairs.ToList();
+
+            // Tüm turlardaki çiftleri toplamak için bir liste oluşturun
+            var allPairs = new List<Pair>();
+
+            foreach (var tour in tournament.Tours)
             {
-                // Tüm eşleşmeleri toplayacak bir liste oluşturun
-                var allMatches = new List<Match>();
-
-                // Her çift için eşleşmeleri alın
-                foreach (var pair in lastTour.Pairs)
-                {
-                    // Çiftin eşleşmelerini almak için çiftin Id'sini kullanarak
-                    // Turun içindeki tüm eşleşmeleri filtreleyin
-                    var matchesForPair = lastTour.Matches.Where(match => match.PairId == pair.Id);
-
-                    // Çiftin eşleşmelerini toplayın
-                    allMatches.AddRange(matchesForPair);
-                }
-
-                // Her eşleşme için kullanılan oyuncuları toplayın
-                var allPlayers = allMatches.SelectMany(match => new[] { match.Player1Id, match.Player2Id });
-
-                // Tüm oyuncuların sayısını ve benzersiz oyuncuların sayısını kontrol edin
-                return allPlayers.Count() != allPlayers.Distinct().Count();
+                // Her turdaki çiftleri allPairs listesine ekleyin
+                allPairs.AddRange(tour.Pairs);
             }
 
-            // Eğer son tur yoksa, tekrar yoktur.
+            // Karşılaştırma yapmak için tüm çiftleri dolaşın
+            foreach (var pair in allPairs)
+            {
+                // Son turdaki çiftleri karşılaştırmamaya dikkat edin
+                if (pair.TourId != lastTourId)
+                {
+                    // Gerekli karşılaştırma yapılır, eğer eşleşme bulunursa true döndürülür
+                    if ((lastTourPairs.Any(p => p.User1Id == pair.User1Id && p.User2Id == pair.User2Id) ||
+                         lastTourPairs.Any(p => p.User1Id == pair.User2Id && p.User2Id == pair.User1Id)))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            // Hiçbir tekrarlanma bulunmadıysa false döndürün
             return false;
         }
+
+
+
+
+
 
 
         private string GetUserDisplayName(int userId)
