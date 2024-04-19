@@ -48,7 +48,7 @@ namespace Backgammon.Controllers
         }
 
 
-        public async Task<IActionResult> Duplication(int tournamentId)
+        public async Task<IActionResult> Duplication(int tournamentId,int lastUserId)
         {
 
             ToursVM vm = new()
@@ -64,6 +64,8 @@ namespace Backgammon.Controllers
                 //Scores = scoresForTour,
                 //SaveScore = true
             };
+
+            ViewBag.lastUserId = lastUserId;
 
             return View("Duplication", vm);
 
@@ -250,7 +252,7 @@ namespace Backgammon.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DrawLot(Tournament model, string source)
+        public async Task<IActionResult> DrawLot(Tournament model, string source,int lastUserId)
         {
          
 
@@ -269,6 +271,10 @@ namespace Backgammon.Controllers
                     // Son tur varsa, bu turu kaldırabilirsiniz.
                     _context.Tours.Remove(lastTour);
                     await _context.SaveChangesAsync();
+                    if (lastUserId != 0)
+                    {
+                        DecreaseByeCount(model.Id,lastUserId);
+                    }
                 }
             }
             //-------------------------------------------------------------
@@ -610,7 +616,7 @@ namespace Backgammon.Controllers
             if (isDuplicate)
             {
 
-                return RedirectToAction("Duplication", new { tournamentId = model.Id });
+                return RedirectToAction("Duplication", new { tournamentId = model.Id, lastUserId=lastone.Id });
 
             }
            
@@ -830,6 +836,16 @@ namespace Backgammon.Controllers
             }
         }
 
+        private void DecreaseByeCount(int tournamentId,int userId)
+        {
+            var tournamentUser = _context.TournamentUsers.FirstOrDefault(tu => tu.UserId == userId && tu.TournamentId == tournamentId);
+            if (tournamentUser != null)
+            {
+                tournamentUser.ByeCount--;
+                _context.TournamentUsers.Update(tournamentUser);
+            }
+
+        }
 
         public IActionResult GetListT()
         {

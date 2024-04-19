@@ -1,6 +1,6 @@
 ﻿@model ToursVM
 @{
-    Layout = "_Layout1";
+   
     string userName = User.Identity.Name;
 
     if (!string.IsNullOrEmpty(userName) && char.IsLower(userName[0]))
@@ -69,14 +69,7 @@
                                                   stroke-linejoin="round" />
                                         </svg>
 
-                                        @if (User.Identity.IsAuthenticated)
-                                        {
-                                            <a class="text4" asp-action="SignOut" asp-controller="User">Çıkış yap</a>
-                                        }
-                                        else
-                                        {
-                                            <a class="text4" asp-action="SignIn" asp-controller="User">Giriş</a>
-                                        }
+                                      
 
                                     </div>
                                 </div>
@@ -95,8 +88,12 @@
                     <input type="hidden" name="PlayLife" value="@Model.Tournament.PlayLife" />
                     <input type="hidden" name="Type" value="@Model.Tournament.Type" />
                     <input type="hidden" name="source" value="EvetButton" />
-                    <input type="submit" class="form-control"  name="decision" value="Evet" formaction="@Url.Action("DrawLot", "Tournament")" />
-                    <input type="submit" class="form-control" name="decision" value="Hayır" formaction="@Url.Action("Tours", "Tournament")" />
+                    <input type="hidden" name="lastUserId" value="@ViewBag.lastUserId" />
+                    <div class="d-flex g-4">
+                          <input type="submit" class="form-control btn btn-warning d-block" style="margin-right:10px"  name="decision" value="Evet" formaction="@Url.Action("DrawLot", "Tournament")" />
+                          <input type="submit" class="form-control btn btn-success d-block" name="decision" value="Hayır" formaction="@Url.Action("Tours", "Tournament")" />
+                    </div>
+                  
                     <!-- Add other form elements or submit button here -->
                 </form>
              
