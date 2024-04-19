@@ -5,17 +5,18 @@ using Backgammon.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Differencing;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using RestSharp;
 using System.Globalization;
 using System.Linq;
-
+using System.Text.RegularExpressions;
 
 namespace Backgammon.Controllers
 {
 
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class TournamentController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
@@ -43,6 +44,28 @@ namespace Backgammon.Controllers
                 Users = nonAdminUsers
             };
             return View(vm);
+
+        }
+
+
+        public async Task<IActionResult> Duplication(int tournamentId)
+        {
+
+            ToursVM vm = new()
+            {
+                Tournament = await _context.Tournaments
+                  .Include(t => t.Users) // Include the Users for the Tournament
+                  .Include(t => t.Tours)
+                      .ThenInclude(tour => tour.Users) // Include the Users for each Tour
+                  .Include(t => t.Tours)
+                      .ThenInclude(tour => tour.Pairs)
+                  .FirstOrDefaultAsync(x => x.Id == tournamentId)//,
+                //PairVMs = pairVMs,
+                //Scores = scoresForTour,
+                //SaveScore = true
+            };
+
+            return View("Duplication", vm);
 
         }
 
@@ -227,15 +250,28 @@ namespace Backgammon.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DrawLot(Tournament model, int id)
+        public async Task<IActionResult> DrawLot(Tournament model, string source)
         {
+         
 
             var tournament = await _context.Tournaments
                 .Include(t => t.Users)
                 .Include(t => t.Tours).ThenInclude(tour => tour.Users)
                 .Include(t => t.Tours).ThenInclude(tour => tour.Pairs)
                 .FirstOrDefaultAsync(x => x.Id == model.Id);
-
+            //Son turda duplication olduğu tespit edilmiş, kullanıcıya bu turu tekrar çekmek istermisiniz
+            //diye sorulmuş, kullanıcıda Evet butonuna basarak son turu silip yeniden tur oluşturmak istemiştir.
+            if (source == "EvetButton")
+            {
+                var lastTour = tournament.Tours.LastOrDefault();
+                if (lastTour != null)
+                {
+                    // Son tur varsa, bu turu kaldırabilirsiniz.
+                    _context.Tours.Remove(lastTour);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            //-------------------------------------------------------------
             if (tournament.Tours.Count() != 0)
             {
                 var pai = tournament.Tours.LastOrDefault().Pairs;
@@ -323,16 +359,20 @@ namespace Backgammon.Controllers
             if (model.Type == "Kazananlar Eşleşir" || model.Type == "Kaybedenler Eşleşir" || model.Type == "Aynı Haklılar Eşleşir")
             {
 
-                shuffledUsers = shuffledUsers
-                .OrderBy(u => u.TournamentUsers.FirstOrDefault(tu => tu.TournamentId == model.Id)?.LoseCount ?? int.MaxValue)
-                .ToList(); // Sorting based on LoseCount
+           
 
                 // Shuffling within groups of users with the same LoseCount
                 var rnd = new Random();
+                //shuffledUsers = shuffledUsers
+                //.GroupBy(u => (
+                //    loseCount: u.TournamentUsers.FirstOrDefault(tu => tu.TournamentId == model.Id)?.LoseCount ?? int.MinValue,
+                //    winCount: u.TournamentUsers.FirstOrDefault(tu => tu.TournamentId == model.Id)?.WinCount ?? int.MaxValue))
+                //.SelectMany(grp => grp.OrderBy(x => rnd.Next()))
+                //.ToList();
                 shuffledUsers = shuffledUsers
-                    .GroupBy(u => u.TournamentUsers.FirstOrDefault(tu => tu.TournamentId == model.Id)?.LoseCount ?? int.MaxValue)
-                    .SelectMany(grp => grp.OrderBy(x => rnd.Next()))
-                    .ToList();
+                .OrderByDescending(u => u.TournamentUsers.FirstOrDefault(tu => tu.TournamentId == model.Id)?.WinCount)
+                .ThenBy(u => u.TournamentUsers.FirstOrDefault(tu => tu.TournamentId == model.Id)?.LoseCount)
+                .ToList();
             }
 
 
@@ -432,12 +472,13 @@ namespace Backgammon.Controllers
                     continue;
 
                 }
-
                 await _context.SaveChangesAsync();
-
                 // Retrieve the saved pairs for the new tour
-                var savedPairs = _context.Pairs.Where(p => p.TourId == newTour.Id).ToList();
+                var savedPairs = _context.Pairs.Where(p => p.TourId == newTour.Id).ToList();              
+
+               
             } while (shuffledUsers.Any() || triedUsers.Any()/*&& pairedUsers.Count < maxIterations*/);
+           
             if (users.Count() % 2 != 0)
             {
                 var pair = new Pair { User1Id = lastone.Id, User2Id = 0 };
@@ -565,7 +606,17 @@ namespace Backgammon.Controllers
             //await _context.SaveChangesAsync();
 
             //var savedPairs = _context.Pairs.Where(p => p.TourId == newTour.Id).ToList();
+            var isDuplicate = checkForDublication(tournament);
+            if (!isDuplicate)
+            {
 
+
+
+            }
+            else
+            {
+                return RedirectToAction("Duplication", new { tournamentId = model.Id });
+            }
             List<ScoreViewModel> scoresForTour = new List<ScoreViewModel>();
             var toursWithPairs = _context.Tours
             .Include(tour => tour.Pairs)
@@ -593,6 +644,39 @@ namespace Backgammon.Controllers
 
             return View("Tours", vm);
         }
+        private bool checkForDublication(Tournament tournament)
+        {
+            // Turnuvanın son turunu alın
+            var lastTour = tournament.Tours.LastOrDefault();
+
+            // Son tur var mı kontrol edin
+            if (lastTour != null)
+            {
+                // Tüm eşleşmeleri toplayacak bir liste oluşturun
+                var allMatches = new List<Match>();
+
+                // Her çift için eşleşmeleri alın
+                foreach (var pair in lastTour.Pairs)
+                {
+                    // Çiftin eşleşmelerini almak için çiftin Id'sini kullanarak
+                    // Turun içindeki tüm eşleşmeleri filtreleyin
+                    var matchesForPair = lastTour.Matches.Where(match => match.PairId == pair.Id);
+
+                    // Çiftin eşleşmelerini toplayın
+                    allMatches.AddRange(matchesForPair);
+                }
+
+                // Her eşleşme için kullanılan oyuncuları toplayın
+                var allPlayers = allMatches.SelectMany(match => new[] { match.Player1Id, match.Player2Id });
+
+                // Tüm oyuncuların sayısını ve benzersiz oyuncuların sayısını kontrol edin
+                return allPlayers.Count() != allPlayers.Distinct().Count();
+            }
+
+            // Eğer son tur yoksa, tekrar yoktur.
+            return false;
+        }
+
 
         private string GetUserDisplayName(int userId)
         {
@@ -958,7 +1042,7 @@ namespace Backgammon.Controllers
                 {
                     api_id = "5d4219e62fe4475a4585ddea",
                     api_key = "e0e87e74a44009c74bf6f4b5",
-                    sender = "08507063025",
+                    sender = "NEFISEVURUR",
                     message_type = "turkce",
                     message_content_type = "bilgi",
                     phones = phoneMessages
@@ -1017,7 +1101,7 @@ namespace Backgammon.Controllers
                 {
                     api_id = "5d4219e62fe4475a4585ddea",
                     api_key = "e0e87e74a44009c74bf6f4b5",
-                    sender = "08507063025",
+                    sender = "NEFISEVURUR",
                     message_type = "turkce",
                     message_content_type = "bilgi",
                     phones = phoneMessages
@@ -1081,7 +1165,7 @@ namespace Backgammon.Controllers
                 {
                     api_id = "5d4219e62fe4475a4585ddea",
                     api_key = "e0e87e74a44009c74bf6f4b5",
-                    sender = "08507063025",
+                    sender = "NEFISEVURUR",
                     message_type = "turkce",
                     message_content_type = "bilgi",
                     phones = phoneMessages

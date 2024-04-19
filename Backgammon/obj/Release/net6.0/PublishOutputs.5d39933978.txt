@@ -355,6 +355,7 @@ C:\Users\ozsah\source\repos\Backgammon\Backgammon\obj\Release\net6.0\PubTmp\Out\
 C:\Users\ozsah\source\repos\Backgammon\Backgammon\obj\Release\net6.0\PubTmp\Out\NuGet.ProjectModel.dll
 C:\Users\ozsah\source\repos\Backgammon\Backgammon\obj\Release\net6.0\PubTmp\Out\NuGet.Protocol.dll
 C:\Users\ozsah\source\repos\Backgammon\Backgammon\obj\Release\net6.0\PubTmp\Out\NuGet.Versioning.dll
+C:\Users\ozsah\source\repos\Backgammon\Backgammon\obj\Release\net6.0\PubTmp\Out\RestSharp.dll
 C:\Users\ozsah\source\repos\Backgammon\Backgammon\obj\Release\net6.0\PubTmp\Out\System.Composition.AttributedModel.dll
 C:\Users\ozsah\source\repos\Backgammon\Backgammon\obj\Release\net6.0\PubTmp\Out\System.Composition.Convention.dll
 C:\Users\ozsah\source\repos\Backgammon\Backgammon\obj\Release\net6.0\PubTmp\Out\System.Composition.Hosting.dll
