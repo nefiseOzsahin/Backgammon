@@ -16,7 +16,7 @@ using System.Text.RegularExpressions;
 namespace Backgammon.Controllers
 {
 
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class TournamentController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
@@ -217,27 +217,27 @@ namespace Backgammon.Controllers
 
 
 
-            if (!allNonZeroScores)
-            {
-                foreach (var pair in lastTour.Pairs)
-                {
+            //if (!allNonZeroScores)
+            //{
+            //    foreach (var pair in lastTour.Pairs)
+            //    {
 
 
-                    //Determine the loser and update the loseCount for the current tournament
-                    if (pair.User1Score < pair.User2Score)
-                    {
-                        UpdateLoseCount(pair.User1Id, tournamentId, lastTour.Id);
-                        UpdateWinCount(pair.User2Id, tournamentId, lastTour.Id);
-                    }
-                    else if (pair.User1Score > pair.User2Score)
-                    {
-                        UpdateLoseCount(pair.User2Id, tournamentId, lastTour.Id);
-                        UpdateWinCount(pair.User1Id, tournamentId, lastTour.Id);
-                    }
+            //        //Determine the loser and update the loseCount for the current tournament
+            //        if (pair.User1Score < pair.User2Score)
+            //        {
+            //            UpdateLoseCount(pair.User1Id, tournamentId, lastTour.Id);
+            //            UpdateWinCount(pair.User2Id, tournamentId, lastTour.Id);
+            //        }
+            //        else if (pair.User1Score > pair.User2Score)
+            //        {
+            //            UpdateLoseCount(pair.User2Id, tournamentId, lastTour.Id);
+            //            UpdateWinCount(pair.User1Id, tournamentId, lastTour.Id);
+            //        }
 
 
-                }
-            }
+            //    }
+            //}
             _context.SaveChanges();
 
             var champion = _context.TournamentChampions.Where(x => x.TournamentId == tournamentId).ToList();
@@ -724,9 +724,14 @@ namespace Backgammon.Controllers
         public IActionResult SaveScores(List<ScoreViewModel> scores, string actionSource)
         {
 
+            var toursWithPairs = _context.Tours         
+          .Where(t => t.TournamentId == scores.FirstOrDefault().TournamentId)
+          .ToList();
 
-           
-                if (actionSource == null)
+            var lastTour = toursWithPairs.Last().Id;
+
+
+            if (actionSource == null)
                 {
 
                 using (var transaction = _context.Database.BeginTransaction())
@@ -749,13 +754,13 @@ namespace Backgammon.Controllers
                                 //Determine the loser and update the loseCount for the current tournament
                                 if (pair.User1Score < pair.User2Score)
                                 {
-                                    //UpdateLoseCount(pair.User1Id, score.TournamentId);
-                                    //UpdateWinCount(pair.User2Id, score.TournamentId);
+                                    UpdateLoseCount(pair.User1Id, score.TournamentId,lastTour);
+                                    UpdateWinCount(pair.User2Id, score.TournamentId,lastTour);
                                 }
                                 else if (pair.User1Score > pair.User2Score)
                                 {
-                                    //UpdateLoseCount(pair.User2Id, score.TournamentId);
-                                    //UpdateWinCount(pair.User1Id, score.TournamentId);
+                                    UpdateLoseCount(pair.User2Id, score.TournamentId, lastTour);
+                                    UpdateWinCount(pair.User1Id, score.TournamentId, lastTour);
                                 }
 
                                 // Update the pair in the database
