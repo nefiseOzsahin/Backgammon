@@ -1,4 +1,6 @@
-﻿namespace Backgammon.Entities
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Backgammon.Entities
 {
     public class TournamentUser
     {
