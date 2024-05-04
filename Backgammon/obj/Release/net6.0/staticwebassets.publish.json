@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "CsPsAPZfqlJ6ISLdUF+dNSn3A8ZhnwYjcbRJT9rgCbQ=",
+  "Hash": "3NKEpJP28JweNOm1LaJmoRbfO+zyQgsxb7v5z1WptRg=",
   "Source": "Backgammon",
   "BasePath": "_content/Backgammon",
   "Mode": "Default",
@@ -661,6 +661,40 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\i18n\\tr.json"
+    },
+    {
+      "Identity": "C:\\Users\\ozsah\\source\\repos\\Backgammon\\Backgammon\\wwwroot\\imgs\\resim1.jpg",
+      "SourceId": "Backgammon",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\ozsah\\source\\repos\\Backgammon\\Backgammon\\wwwroot\\",
+      "BasePath": "_content/Backgammon",
+      "RelativePath": "imgs/resim1.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\imgs\\resim1.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\ozsah\\source\\repos\\Backgammon\\Backgammon\\wwwroot\\imgs\\resim2.jpg",
+      "SourceId": "Backgammon",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\ozsah\\source\\repos\\Backgammon\\Backgammon\\wwwroot\\",
+      "BasePath": "_content/Backgammon",
+      "RelativePath": "imgs/resim2.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\imgs\\resim2.jpg"
     },
     {
       "Identity": "C:\\Users\\ozsah\\source\\repos\\Backgammon\\Backgammon\\wwwroot\\js\\jquery.dataTables.js",

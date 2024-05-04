@@ -103,6 +103,7 @@ namespace Backgammon.Controllers
 
                         // Add the TournamentUser to the context
                         _context.TournamentUsers.Add(tournamentUser);
+                        SMSSendTournamentRegister(user, model.Tournament.Name);
                     }
 
 
@@ -255,12 +256,14 @@ namespace Backgammon.Controllers
         public async Task<IActionResult> DrawLot(Tournament model, string source,int lastUserId)
         {
          
+         
 
             var tournament = await _context.Tournaments
                 .Include(t => t.Users)
                 .Include(t => t.Tours).ThenInclude(tour => tour.Users)
                 .Include(t => t.Tours).ThenInclude(tour => tour.Pairs)
                 .FirstOrDefaultAsync(x => x.Id == model.Id);
+            UpdateIsSMSSendFalse(tournament.Id);
             //Son turda duplication olduğu tespit edilmiş, kullanıcıya bu turu tekrar çekmek istermisiniz
             //diye sorulmuş, kullanıcıda Evet butonuna basarak son turu silip yeniden tur oluşturmak istemiştir.
             if (source == "EvetButton")
@@ -273,7 +276,7 @@ namespace Backgammon.Controllers
                     await _context.SaveChangesAsync();
                     if (lastUserId != 0)
                     {
-                        DecreaseByeCount(model.Id,lastUserId);
+                        DecreaseByeCount(model.Id,lastUserId, lastTour.Id);
                     }
                 }
             }
@@ -501,7 +504,7 @@ namespace Backgammon.Controllers
                 lastone.Tours.Add(newTour);
 
                 // Update bye count
-                UpdateByeCount(lastone.Id, model.Id);
+                UpdateByeCountAsync(lastone.Id, model.Id,tournament);
 
                 // Mark the bye user as paired
                 pairedUsers.Add(lastone.Id.ToString());
@@ -750,6 +753,8 @@ namespace Backgammon.Controllers
                                 pair.User1Score = score.User1Score;
                                 pair.User2Score = score.User2Score;
 
+                        
+
 
                                 //Determine the loser and update the loseCount for the current tournament
                                 if (pair.User1Score < pair.User2Score)
@@ -763,8 +768,19 @@ namespace Backgammon.Controllers
                                     UpdateWinCount(pair.User1Id, score.TournamentId, lastTour);
                                 }
 
+                                if(!(pair.User1Score==0 && pair.User2Score == 0))
+                                {
+                                    UpdateIsSMSSend(score.TournamentId, pair, lastTour - 1);
+                                }
+                               
+                        
+
+                               
                                 // Update the pair in the database
                                 _context.Pairs.Update(pair);
+
+                               
+                              
                             }
                         }
 
@@ -831,24 +847,80 @@ namespace Backgammon.Controllers
                 }
             }
         }
-        private void UpdateByeCount(int userId, int tournamentId)
+        private void UpdateByeCountAsync(int userId, int tournamentId,Tournament tournament)
         {
             var tournamentUser = _context.TournamentUsers.FirstOrDefault(tu => tu.UserId == userId && tu.TournamentId == tournamentId);
             if (tournamentUser != null)
             {
-                tournamentUser.ByeCount++;
-                _context.TournamentUsers.Update(tournamentUser);
+               
+                var lastTour = tournament.Tours.LastOrDefault();
+                if (tournamentUser.TourId != lastTour.Id)
+                {
+                    tournamentUser.ByeCount++;
+                    tournamentUser.TourId = lastTour.Id;
+                    _context.TournamentUsers.Update(tournamentUser);
+                }
             }
         }
 
-        private void DecreaseByeCount(int tournamentId,int userId)
+
+       
+
+        private void DecreaseByeCount(int tournamentId,int userId,int lastTourId)
         {
             var tournamentUser = _context.TournamentUsers.FirstOrDefault(tu => tu.UserId == userId && tu.TournamentId == tournamentId);
             if (tournamentUser != null)
             {
-                tournamentUser.ByeCount--;
-                _context.TournamentUsers.Update(tournamentUser);
+                if (tournamentUser.TourId != lastTourId)
+                {
+                    tournamentUser.ByeCount--;
+                    tournamentUser.TourId = lastTourId;
+                    _context.TournamentUsers.Update(tournamentUser);
+                }
             }
+
+        }
+
+        private void UpdateIsSMSSend(int tournamentId, Pair pair, int lastTourId)
+        {
+            var tournamentUser = _context.TournamentUsers.FirstOrDefault(tu => tu.UserId == pair.User1Id && tu.TournamentId == tournamentId);
+            var tournamentUser2 = _context.TournamentUsers.FirstOrDefault(tu => tu.UserId == pair.User2Id && tu.TournamentId == tournamentId);
+          
+                if (tournamentUser != null)
+                {
+                    if (!tournamentUser.IsSMSSend)
+                    {
+                        SMSSendSaveScore(pair,tournamentId);
+                            if (tournamentUser.TourId != lastTourId)
+                            {
+                                tournamentUser.IsSMSSend = true;
+                             
+                                if(tournamentUser2 != null)
+                                {
+                                    tournamentUser2.IsSMSSend = true;
+                            
+                                }
+                                
+                        _context.TournamentUsers.Update(tournamentUser);
+                            }
+                    }
+                }
+        }
+
+        
+
+        private void UpdateIsSMSSendFalse(int tournamentId)
+        {
+
+            var tournamentUsers = _context.TournamentUsers
+                                   .Where(tu => tu.TournamentId == tournamentId);
+
+            foreach (var user in tournamentUsers)
+            {
+                user.IsSMSSend = false;
+            }
+
+            _context.SaveChanges();
 
         }
 
@@ -950,6 +1022,7 @@ namespace Backgammon.Controllers
                     };
 
                     _context.TournamentUsers.Add(tournamentUser);
+                    SMSSendTournamentRegister(user, model.Name);
                 }
             }
 
@@ -1029,7 +1102,110 @@ namespace Backgammon.Controllers
             return RedirectToAction("GetListT");
 
         }
- 
+
+        public void SMSSendTournamentRegister(AppUser user,String tournamentName)
+        {
+            var tarih = new DateTime();
+            var client = new RestClient("https://api.vatansms.net/api/v1/NtoN");
+
+            client.Timeout = -1;
+
+            var request = new RestRequest(Method.POST);
+
+            request.AddHeader("Content-Type", "application/json");
+            string tName = "";
+            string str = tournamentName;
+            string[] words = str.Split(' '); // String'i boşluklardan böler ve kelimeleri bir diziye atar
+            string lastWord = words[words.Length - 1]; // Dizinin son elemanını alır
+
+            if (lastWord.Contains("turnuva", StringComparison.OrdinalIgnoreCase))
+            {
+                tName = tournamentName;
+            }
+            else
+            {
+                tName = tournamentName + " Turnuvası";
+            }
+
+            // Assuming 'scores' is your list of ScoreViewModel objects
+            List<object> phoneMessages = new List<object>();
+
+
+            phoneMessages.Add(new
+            {
+                phone = user.PhoneNumber,
+                message = $"Sayın {user.Name} {user.SurName}, {tName}'na kaydınız yapılmıştır."
+            });
+
+
+
+            string jsonBody = JsonConvert.SerializeObject(new
+            {
+                api_id = "5d4219e62fe4475a4585ddea",
+                api_key = "e0e87e74a44009c74bf6f4b5",
+                sender = "NEFISEVURUR",
+                message_type = "turkce",
+                message_content_type = "bilgi",
+                phones = phoneMessages
+            });
+
+            request.AddParameter("application/json", jsonBody, ParameterType.RequestBody);
+
+            RestResponse response = (RestResponse)client.Execute(request);
+
+        }
+
+
+        public void SMSSendSaveScore(Pair pair,int tournamentId)
+        {
+            var tarih = new DateTime();
+            var client = new RestClient("https://api.vatansms.net/api/v1/NtoN");
+
+            client.Timeout = -1;
+
+            var request = new RestRequest(Method.POST);
+
+            request.AddHeader("Content-Type", "application/json");
+           
+
+            // Assuming 'scores' is your list of ScoreViewModel objects
+            List<object> phoneMessages = new List<object>();
+            var user1 = _context.Users.Where(u => u.Id == pair.User1Id && u.Tournaments.Any(t => t.Id == tournamentId)).FirstOrDefault();           
+            var user2 = _context.Users.Where(u => u.Id == pair.User2Id && u.Tournaments.Any(t => t.Id == tournamentId)).FirstOrDefault(); ;
+            int tourCount = _context.Tournaments
+                        .Where(t => t.Id == tournamentId)
+                        .Select(t => t.Tours.Count)
+                        .FirstOrDefault();
+            phoneMessages.Add(new
+            {
+                phone = user1.PhoneNumber,
+                message = $"Tur {tourCount}. {user1.Name} {user1.SurName}: {pair.User1Score} - {pair.User2Score}:{user2.Name} {user2.SurName}"
+            });
+            phoneMessages.Add(new
+            {
+                phone = user2.PhoneNumber,
+                message = $"Tur {tourCount}. {user1.Name} {user1.SurName}: {pair.User1Score} - {pair.User2Score}:{user2.Name} {user2.SurName}"
+            });
+
+
+            string jsonBody = JsonConvert.SerializeObject(new
+            {
+                api_id = "5d4219e62fe4475a4585ddea",
+                api_key = "e0e87e74a44009c74bf6f4b5",
+                sender = "NEFISEVURUR",
+                message_type = "turkce",
+                message_content_type = "bilgi",
+                phones = phoneMessages
+            });
+
+            request.AddParameter("application/json", jsonBody, ParameterType.RequestBody);
+
+            RestResponse response = (RestResponse)client.Execute(request);
+
+        }
+
+
+
         public IActionResult SMSSend()
         {
             //Retrieve scores JSON string from session

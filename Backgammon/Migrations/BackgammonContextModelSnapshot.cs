@@ -315,6 +315,9 @@ namespace Backgammon.Migrations
                     b.Property<int>("ByeCount")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsSMSSend")
+                        .HasColumnType("bit");
+
                     b.Property<int>("LifeCount")
                         .HasColumnType("int");
 
@@ -322,8 +325,7 @@ namespace Backgammon.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("TourId")
-                        .HasColumnType("int")
-                        .HasColumnName("TourId");
+                        .HasColumnType("int");
 
                     b.Property<int>("TournamentId")
                         .HasColumnType("int");

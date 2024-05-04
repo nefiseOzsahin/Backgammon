@@ -21,5 +21,7 @@ namespace Backgammon.Entities
 
         public int TourId { get; set; }
 
+        public bool IsSMSSend { get; set; }
+
     }
 }
