@@ -871,7 +871,7 @@ namespace Backgammon.Controllers
             var tournamentUser = _context.TournamentUsers.FirstOrDefault(tu => tu.UserId == userId && tu.TournamentId == tournamentId);
             if (tournamentUser != null)
             {
-                if (tournamentUser.TourId != lastTourId)
+                if (tournamentUser.TourId == lastTourId)
                 {
                     tournamentUser.ByeCount--;
                     tournamentUser.TourId = lastTourId;
@@ -1233,12 +1233,12 @@ namespace Backgammon.Controllers
                     phoneMessages.Add(new
                     {
                         phone = scores[i].User1PhoneNumber,
-                        message = $"Maç başlıyor. Rakibiniz:{scores[i].User2Name}. MasaNo:{i+1}. İyi oyunlar."
+                        message = $"Maç başlıyor. {scores[i].User1Name} - {scores[i].User2Name}. MasaNo:{i+1}. İyi oyunlar."
                     });
                     phoneMessages.Add(new
                     {
                         phone = scores[i].User2PhoneNumber,
-                        message = $"Maç başlıyor. Rakibiniz:{scores[i].User1Name}. MasaNo:{i + 1}. İyi oyunlar."
+                        message = $"Maç başlıyor. {scores[i].User1Name} - {scores[i].User2Name}. MasaNo:{i + 1}. İyi oyunlar."
                     });
                 }
 

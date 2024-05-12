@@ -15,6 +15,49 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Include="wwwroot\assets\js\breakpoints.min.js" />
+	  <None Include="wwwroot\assets\js\browser.min.js" />
+	  <None Include="wwwroot\assets\js\jquery.min.js" />
+	  <None Include="wwwroot\assets\js\main.js" />
+	  <None Include="wwwroot\assets\js\util.js" />
+	  <None Include="wwwroot\assets\sass\base\_page.scss" />
+	  <None Include="wwwroot\assets\sass\base\_reset.scss" />
+	  <None Include="wwwroot\assets\sass\base\_typography.scss" />
+	  <None Include="wwwroot\assets\sass\components\_actions.scss" />
+	  <None Include="wwwroot\assets\sass\components\_box.scss" />
+	  <None Include="wwwroot\assets\sass\components\_button.scss" />
+	  <None Include="wwwroot\assets\sass\components\_form.scss" />
+	  <None Include="wwwroot\assets\sass\components\_icon.scss" />
+	  <None Include="wwwroot\assets\sass\components\_icons.scss" />
+	  <None Include="wwwroot\assets\sass\components\_image.scss" />
+	  <None Include="wwwroot\assets\sass\components\_list.scss" />
+	  <None Include="wwwroot\assets\sass\components\_row.scss" />
+	  <None Include="wwwroot\assets\sass\components\_section.scss" />
+	  <None Include="wwwroot\assets\sass\components\_table.scss" />
+	  <None Include="wwwroot\assets\sass\components\_tiles.scss" />
+	  <None Include="wwwroot\assets\sass\layout\_footer.scss" />
+	  <None Include="wwwroot\assets\sass\layout\_header.scss" />
+	  <None Include="wwwroot\assets\sass\layout\_main.scss" />
+	  <None Include="wwwroot\assets\sass\layout\_menu.scss" />
+	  <None Include="wwwroot\assets\sass\layout\_wrapper.scss" />
+	  <None Include="wwwroot\assets\sass\libs\_breakpoints.scss" />
+	  <None Include="wwwroot\assets\sass\libs\_functions.scss" />
+	  <None Include="wwwroot\assets\sass\libs\_html-grid.scss" />
+	  <None Include="wwwroot\assets\sass\libs\_mixins.scss" />
+	  <None Include="wwwroot\assets\sass\libs\_vars.scss" />
+	  <None Include="wwwroot\assets\sass\libs\_vendor.scss" />
+	  <None Include="wwwroot\assets\sass\main.scss" />
+	  <None Include="wwwroot\assets\sass\noscript.scss" />
+	  <None Include="wwwroot\assets\webfonts\fa-brands-400.svg" />
+	  <None Include="wwwroot\assets\webfonts\fa-brands-400.woff2" />
+	  <None Include="wwwroot\assets\webfonts\fa-regular-400.svg" />
+	  <None Include="wwwroot\assets\webfonts\fa-regular-400.woff2" />
+	  <None Include="wwwroot\assets\webfonts\fa-solid-900.svg" />
+	  <None Include="wwwroot\assets\webfonts\fa-solid-900.woff2" />
+	  <None Include="wwwroot\images\logo.svg" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="12.0.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.24" />

@@ -1,50 +1,125 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <title>Carousel Example</title>
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css"/>
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css"/>
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-        }
-        .carousel-container {
-            height: 95vh;
-            background-color: #f2f2f2;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .carousel-slide {
-            text-align: center;
-            padding: 50px;
-        }
-    </style>
-</head>
-<body>
-    <div class="carousel-container">
-        <div class="carousel">
-            <div class="carousel-slide"><img src="imgs/resim1.jpg" alt="Slide 1"></div>
-            <div class="carousel-slide"><img src="imgs/resim2.jpg" alt="Slide 2"></div>
-            <div class="carousel-slide"><img src="imgs/resim1.jpg" alt="Slide 3"></div>
-        </div>
-    </div>
+﻿@model List<Backgammon.Entities.Tournament>;
+<!DOCTYPE HTML>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
-    <script>
-        $(document).ready(function(){
-            $('.carousel').slick({
-                slidesToShow: 1,
-                slidesToScroll: 1,
-                autoplay: true,
-                autoplaySpeed: 2000,
-                arrows: false,
-                dots: true
-            });
-        });
-    </script>
-</body>
+<html>
+	<head>
+		<title>ATAK</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="~/assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="~/assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<div class="inner">
+
+							<!-- Logo -->
+								<a href="index.html" class="logo">
+									<span class="symbol"><img src="~/images/dice.png" alt="" style="width:4.5rem;height:4.5rem" /></span><span class="title">ATAK</span>
+								</a>
+
+							<!-- Nav -->
+								<nav>
+									<ul>
+										<li><a href="#menu">Menu</a></li>
+									</ul>
+								</nav>
+
+						</div>
+					</header>
+
+				<!-- Menu -->
+					<nav id="menu">
+						<h2>Menu</h2>
+						<ul>
+							<li><a href="index.html">Anasayfa</a></li>
+							
+						</ul>
+					</nav>
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+							<header>
+								<h1>ANKARA TAVLA KULÜBÜ<a href="http://html5up.net"></a>.</h1>
+								<p>Düzenlenmiş turnuvalar aşağıda listelenmiştir.</p>
+							</header>
+							<section class="tiles">
+								    @foreach (var item in Model)
+									{
+								<article class="style1">
+									<span class="image">
+										<img src="~/images/pic01.jpg" alt="" />
+									</span>
+									<a asp-action="TUserList" asp-controller="Web" asp-route-tournamentId="@item.Id">										
+                                           
+										<h2>@item.Name</h2>
+										<div class="content">
+											<p>DETAYLAR</p>
+										</div>
+									</a>
+								</article>
+							
+									}
+							
+							
+							</section>
+						</div>
+					</div>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<div class="inner">
+							<section>
+								<h2>İLETİŞİM</h2>
+								<form method="post" action="#">
+									<div class="fields">
+										<div class="field half">
+											<input type="text" name="name" id="name" placeholder="İsim Soyisim" />
+										</div>
+										<div class="field half">
+											<input type="email" name="email" id="email" placeholder="Email" />
+										</div>
+										<div class="field">
+											<textarea name="message" id="message" placeholder="Mesaj"></textarea>
+										</div>
+									</div>
+									<ul class="actions">
+										<li><input type="submit" value="Gönder" class="primary" /></li>
+									</ul>
+								</form>
+							</section>
+							<section>
+								<h2></h2>
+								<ul class="icons">
+									<li><a href="#" class="icon brands style2 fa-twitter"><span class="label">Twitter</span></a></li>
+									<li><a href="#" class="icon brands style2 fa-facebook-f"><span class="label">Facebook</span></a></li>
+									<li><a href="#" class="icon brands style2 fa-instagram"><span class="label">Instagram</span></a></li>
+									<li><a href="#" class="icon brands style2 fa-dribbble"><span class="label">Dribbble</span></a></li>
+									<li><a href="#" class="icon brands style2 fa-github"><span class="label">GitHub</span></a></li>
+									<li><a href="#" class="icon brands style2 fa-500px"><span class="label">500px</span></a></li>
+									<li><a href="#" class="icon solid style2 fa-phone"><span class="label">Phone</span></a></li>
+									<li><a href="#" class="icon solid style2 fa-envelope"><span class="label">Email</span></a></li>
+								</ul>
+							</section>
+							<ul class="copyright">
+								<li>&copy; Untitled. All rights reserved</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+							</ul>
+						</div>
+					</footer>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="~/assets/js/jquery.min.js"></script>
+			<script src="~/assets/js/browser.min.js"></script>
+			<script src="~/assets/js/breakpoints.min.js"></script>
+			<script src="~/assets/js/util.js"></script>
+			<script src="~/assets/js/main.js"></script>
+
+	</body>
 </html>

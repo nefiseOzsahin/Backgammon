@@ -901,6 +901,7 @@ C:\Users\ozsah\source\repos\Backgammon\Backgammon\bin\Debug\net6.0\NuGet.Packagi
 C:\Users\ozsah\source\repos\Backgammon\Backgammon\bin\Debug\net6.0\NuGet.ProjectModel.dll
 C:\Users\ozsah\source\repos\Backgammon\Backgammon\bin\Debug\net6.0\NuGet.Protocol.dll
 C:\Users\ozsah\source\repos\Backgammon\Backgammon\bin\Debug\net6.0\NuGet.Versioning.dll
+C:\Users\ozsah\source\repos\Backgammon\Backgammon\bin\Debug\net6.0\RestSharp.dll
 C:\Users\ozsah\source\repos\Backgammon\Backgammon\bin\Debug\net6.0\System.CodeDom.dll
 C:\Users\ozsah\source\repos\Backgammon\Backgammon\bin\Debug\net6.0\System.Composition.AttributedModel.dll
 C:\Users\ozsah\source\repos\Backgammon\Backgammon\bin\Debug\net6.0\System.Composition.Convention.dll
@@ -1088,4 +1089,3 @@ C:\Users\ozsah\source\repos\Backgammon\Backgammon\obj\Debug\net6.0\refint\Backga
 C:\Users\ozsah\source\repos\Backgammon\Backgammon\obj\Debug\net6.0\Backgammon.pdb
 C:\Users\ozsah\source\repos\Backgammon\Backgammon\obj\Debug\net6.0\Backgammon.genruntimeconfig.cache
 C:\Users\ozsah\source\repos\Backgammon\Backgammon\obj\Debug\net6.0\ref\Backgammon.dll
-C:\Users\ozsah\source\repos\Backgammon\Backgammon\bin\Debug\net6.0\RestSharp.dll
