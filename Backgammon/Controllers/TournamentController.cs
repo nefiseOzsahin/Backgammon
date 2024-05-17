@@ -1230,15 +1230,16 @@ namespace Backgammon.Controllers
 
                 for (int i = 0; i<scores.Count() ;i++)
                 {
+                    string opponentName = scores[i].User2Name ?? "bye";
                     phoneMessages.Add(new
                     {
                         phone = scores[i].User1PhoneNumber,
-                        message = $"Maç başlıyor. {scores[i].User1Name} - {scores[i].User2Name}. MasaNo:{i+1}. İyi oyunlar."
+                        message = $"Maç başlıyor. {scores[i].User1Name} - {opponentName}. MasaNo:{i+1}. İyi oyunlar."
                     });
                     phoneMessages.Add(new
                     {
                         phone = scores[i].User2PhoneNumber,
-                        message = $"Maç başlıyor. {scores[i].User1Name} - {scores[i].User2Name}. MasaNo:{i + 1}. İyi oyunlar."
+                        message = $"Maç başlıyor. {scores[i].User1Name} - {opponentName}. MasaNo:{i + 1}. İyi oyunlar."
                     });
                 }
 
