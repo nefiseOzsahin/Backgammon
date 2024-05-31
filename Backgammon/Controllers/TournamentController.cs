@@ -810,7 +810,7 @@ namespace Backgammon.Controllers
                 // Store scores JSON string in session
                 HttpContext.Session.SetString("ScoresData", scoresJson);
                
-                return RedirectToAction("SMSSend");
+                return RedirectToAction("SMSSend", new { tourCount = toursWithPairs.Count() });
                 }            
 
             // If ModelState is not valid, return to the form with validation errors
@@ -1206,7 +1206,7 @@ namespace Backgammon.Controllers
 
 
 
-        public IActionResult SMSSend()
+        public IActionResult SMSSend(int tourCount)
         {
             //Retrieve scores JSON string from session
            var scoresJson = HttpContext.Session.GetString("ScoresData");
@@ -1234,12 +1234,12 @@ namespace Backgammon.Controllers
                     phoneMessages.Add(new
                     {
                         phone = scores[i].User1PhoneNumber,
-                        message = $"Maç başlıyor. {scores[i].User1Name} - {opponentName}. MasaNo:{i+1}. İyi oyunlar."
+                        message = $"{tourCount}.Tur başlıyor. {scores[i].User1Name} - {opponentName}. MasaNo:{i+1}. İyi oyunlar."
                     });
                     phoneMessages.Add(new
                     {
                         phone = scores[i].User2PhoneNumber,
-                        message = $"Maç başlıyor. {scores[i].User1Name} - {opponentName}. MasaNo:{i + 1}. İyi oyunlar."
+                        message = $"{tourCount}.Tur başlıyor. {scores[i].User1Name} - {opponentName}. MasaNo:{i + 1}. İyi oyunlar."
                     });
                 }
 

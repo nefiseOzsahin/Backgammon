@@ -85,13 +85,37 @@
 							</tr>
 							  index++; 
 							}
-  </tbody>
-</table>
-						</div>
-					</div>
+							  </tbody>
+							</table>
+								 <div class="container">
+										<h1>Select Tour</h1>
+										<div class="results">
+											<select class="form-select" aria-label="Default select example" id="tourSelect">
+												<option selected>Seçiniz</option>
+												@if (ViewBag.tours != null)
+												{
+													@foreach (var item in ViewBag.tours)
+													{
+														<option value="@item.Id">@item.Name</option>
+													}
+												}
+												else
+												{
+													<p>Tur yok</p>
+												}
+											</select>
+										</div>
+
+									
+										<div id="pairs-container" class="mt-4"></div>
+									</div>
+
+							
+								</div>
+				
 
 				<!-- Footer -->
-									<footer id="footer">
+					<footer id="footer">
 						<div class="inner">
 							<section>
 								<h2>İLETİŞİM</h2>
@@ -139,6 +163,72 @@
 			<script src="~/assets/js/breakpoints.min.js"></script>
 			<script src="~/assets/js/util.js"></script>
 			<script src="~/assets/js/main.js"></script>
+	<script>
+        function handleSelection() {
+            var selectBox = document.getElementById('tourSelect');
+            var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+
+            if (selectedValue) {
+                console.log('Selected tour ID:', selectedValue);
+                sendSelectionToServer(selectedValue);
+            }
+        }
+
+        function sendSelectionToServer(selectedValue) {
+            $.ajax({
+                type: "POST",
+                url: "/Web/GetPairs", // Adjust the URL to match your controller action
+                data: { selectedValue: selectedValue },
+                success: function(response) {
+				
+					$('#pairs-container').empty();
+
+					// Check if the response object has a "pairs" property and if it is an array
+					if (response && response.pairs && Array.isArray(response.pairs)) {
+						const pairs = response.pairs; // Get the "pairs" array from the response object
+						console.log(pairs); // Log the "pairs" array
+
+						// Iterate over the "pairs" array and log or manipulate each pair object
+						pairs.forEach(pair => {
+							// Log the entire pair object
+							console.log("p"+pair);
+
+							// Access individual pair properties here and do something with them
+							console.log(pair.user1Name);
+							console.log(pair.user1Score);
+							console.log(pair.user2Name);
+							console.log(pair.user2Score);
+
+							// Example: Construct HTML for each pair
+							const pairHtml = `
+								<div class="form-group d-flex">
+									${pair.user1Name}:${pair.user1Score} -
+									${pair.user2Score}:${pair.user2Name}
+								</div>
+							`;
+							// Append the HTML to some container
+							$('#pairs-container').append(pairHtml);
+						});
+
+						// Continue with your code to update the UI with the pairs data
+					} else {
+						// Handle the case where there are no pairs in the response or the structure is invalid
+						console.log("No valid 'pairs' array found in the response");
+					}
+				},
+
+                error: function(xhr, status, error) {
+                    console.error("AJAX error: ", status, error);
+                    alert("An error occurred while fetching pairs.");
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            $('#tourSelect').on('change', handleSelection);
+        });
+    </script>
+		
 
 	</body>
 </html>
