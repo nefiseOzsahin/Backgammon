@@ -180,7 +180,7 @@
                         @foreach (var p in Model.Tournament.Tours)
                         {
                             <div class="tab-pane fade" id="@p.Name-pane" role="tabpanel" aria-labelledby="@p.Name-tab" tabindex="0">
-                                @foreach (var item in p.Pairs)
+                                @foreach (var item in p.Pairs.OrderBy(x => x.Id))
                                 {
                                     if (item.TourId == p.Id) // Assuming there's a property like TourId in your pair model
                                     {
@@ -301,7 +301,7 @@
                         @foreach (var p in Model.Tournament.Tours)
                         {
                             <div class="tab-pane fade" id="@p.Name-pane" role="tabpanel" aria-labelledby="@p.Name-tab" tabindex="0">
-                                @foreach (var item in p.Pairs)
+                                @foreach (var item in p.Pairs.OrderBy(x => x.Id))
                                 {
                                     if (item.TourId == p.Id) // Assuming there's a property like TourId in your pair model
                                     {

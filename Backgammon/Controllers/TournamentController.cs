@@ -193,6 +193,7 @@ namespace Backgammon.Controllers
 
 
                 pairVms = lastTour.Pairs
+                    .OrderBy(pair => pair.Id)
                .Select(pair => new PairVM
                {
                    // Map properties from Pair to PairVM
