@@ -34,6 +34,8 @@ namespace Backgammon.Controllers
                 .Where(tu => tu.TournamentId == tournamentId)
                 .OrderByDescending(tu => tu.WinCount)
                 .ThenBy(tu => tu.LoseCount)
+                .ThenBy(tu => tu.User.Name)
+                .ThenBy(tu => tu.User.SurName)
                 .Include(tu => tu.User)
                 .Include(tu => tu.Tournament)// Eagerly load the User entity
                 .ToListAsync();
