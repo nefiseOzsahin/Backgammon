@@ -180,7 +180,7 @@
                         @foreach (var p in Model.Tournament.Tours)
                         {
                             <div class="tab-pane fade" id="@p.Name-pane" role="tabpanel" aria-labelledby="@p.Name-tab" tabindex="0">
-                                @foreach (var item in p.Pairs.OrderBy(x => x.Id))
+                                @foreach (var item in p.Pairs)
                                 {
                                     if (item.TourId == p.Id) // Assuming there's a property like TourId in your pair model
                                     {
@@ -223,7 +223,7 @@
                                                          <input type="hidden" value="@Model.PairVMs[i].User2?.PhoneNumber"  name="Scores[@i].User2PhoneNumber"  />
                                                          <input type="hidden" value="@($"{Model.PairVMs[i].User1?.Name} {Model.PairVMs[i].User1?.SurName}")" name="Scores[@i].User1Name"  />
                                                          <input type="hidden" value="@($"{Model.PairVMs[i].User2?.Name} {Model.PairVMs[i].User2?.SurName}")"   name="Scores[@i].User2Name"  />
-                                                        <td>@(i + 1)</td>
+                                                        <td>@(i + 1)</td> 
                                                         <td>@Model.PairVMs[i].User1.Name @Model.PairVMs[i].User1.SurName</td>
 
                                                         @if (Model.PairVMs[i].User2 != null)
@@ -301,7 +301,7 @@
                         @foreach (var p in Model.Tournament.Tours)
                         {
                             <div class="tab-pane fade" id="@p.Name-pane" role="tabpanel" aria-labelledby="@p.Name-tab" tabindex="0">
-                                @foreach (var item in p.Pairs.OrderBy(x => x.Id))
+                                @foreach (var item in p.Pairs)
                                 {
                                     if (item.TourId == p.Id) // Assuming there's a property like TourId in your pair model
                                     {
@@ -413,6 +413,12 @@
           function setActionSource(value) {
         // Set the value of actionSource
         document.getElementById('actionSource').value = value;
+        var rows = document.querySelectorAll('table tr'); // Tablodaki tüm satırları alın
+
+        // Tablodaki her satırın sıralı halini koruyabilirsiniz
+        rows.forEach(function(row, index) {
+            row.querySelector('td:first-child').innerText = index + 1; // İlk sütunları sıralı tutar
+        });
         }
        
         // Function to clear the default value when an input field is clicked

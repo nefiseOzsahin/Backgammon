@@ -192,8 +192,7 @@ namespace Backgammon.Controllers
                 }
 
 
-                pairVms = lastTour.Pairs
-                    .OrderBy(pair => pair.Id)
+                pairVms = lastTour.Pairs                  
                .Select(pair => new PairVM
                {
                    // Map properties from Pair to PairVM
@@ -362,7 +361,11 @@ namespace Backgammon.Controllers
                   .OrderByDescending(u => u.TournamentUsers.FirstOrDefault(tu => tu.TournamentId == model.Id)?.ByeCount ?? int.MaxValue)
                   .ToList();
 
-                lastone = shuffledUsers.LastOrDefault();
+                //lastone = shuffledUsers.LastOrDefault();
+                lastone = shuffledUsers
+    .OrderBy(u => u.TournamentUsers.FirstOrDefault(tu => tu.TournamentId == model.Id)?.ByeCount ?? int.MaxValue)
+    .ThenBy(u => u.TournamentUsers.FirstOrDefault(tu => tu.TournamentId == model.Id)?.WinCount ?? int.MaxValue)
+    .FirstOrDefault();
 
                 shuffledUsers = shuffledUsers.Except(new List<AppUser> { lastone }).ToList();
             }
@@ -1235,7 +1238,8 @@ namespace Backgammon.Controllers
                     phoneMessages.Add(new
                     {
                         phone = scores[i].User1PhoneNumber,
-                        message = $"{tourCount}.Tur başlıyor. {scores[i].User1Name} - {scores[i].User2Name??"bye"}. MasaNo:{i+1}. İyi oyunlar."
+                        message = $"{tourCount}.Tur başlıyor. {scores[i].User1Name} - {scores[i].User2Name??"bye"}." + (scores[i].User2Name != null ? $"MasaNo: {i + 1}. " : "")
+               + "İyi oyunlar."
                     });
                     phoneMessages.Add(new
                     {

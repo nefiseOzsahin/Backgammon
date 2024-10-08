@@ -191,6 +191,9 @@ namespace Backgammon.Migrations
                     b.Property<bool>("IsBye")
                         .HasColumnType("bit");
 
+                    b.Property<int>("TableNo")
+                        .HasColumnType("int");
+
                     b.Property<int>("TourId")
                         .HasColumnType("int");
 
