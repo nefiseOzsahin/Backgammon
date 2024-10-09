@@ -11,6 +11,8 @@ using Newtonsoft.Json;
 using RestSharp;
 using System.Globalization;
 using System.Linq;
+using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Backgammon.Controllers
@@ -1107,16 +1109,19 @@ namespace Backgammon.Controllers
 
         }
 
-        public void SMSSendTournamentRegister(AppUser user,String tournamentName)
+        public void SMSSendTournamentRegister(AppUser user, String tournamentName)
         {
-            var tarih = new DateTime();
-            var client = new RestClient("https://api.vatansms.net/api/v1/NtoN");
+            // Use your credentials here
+            string kno = "45201"; // Müşteri numarası
+            string kad = "905054476411"; // Kullanıcı adı
+            string ksifre = "11IU0Z64"; // Şifre
+            string orjinator = "8506931825"; // Onaylı gönderici
 
-            client.Timeout = -1;
+            // Select message type
+            string tur = "Normal";
+            tur = "Turkce";
 
-            var request = new RestRequest(Method.POST);
-
-            request.AddHeader("Content-Type", "application/json");
+            //tName
             string tName = "";
             string str = tournamentName;
             string[] words = str.Split(' '); // String'i boşluklardan böler ve kelimeleri bir diziye atar
@@ -1130,81 +1135,73 @@ namespace Backgammon.Controllers
             {
                 tName = tournamentName + " Turnuvası";
             }
-
-            // Assuming 'scores' is your list of ScoreViewModel objects
-            List<object> phoneMessages = new List<object>();
-
-
-            phoneMessages.Add(new
-            {
-                phone = user.PhoneNumber,
-                message = $"Sayın {user.Name} {user.SurName}, {tName}'na kaydınız yapılmıştır."
-            });
+            //tName
 
 
 
-            string jsonBody = JsonConvert.SerializeObject(new
-            {
-                api_id = "5d4219e62fe4475a4585ddea",
-                api_key = "e0e87e74a44009c74bf6f4b5",
-                sender = "NEFISEVURUR",
-                message_type = "turkce",
-                message_content_type = "bilgi",
-                phones = phoneMessages
-            });
+            string smsNN = "data=<sms><kno>" + kno + "</kno><kulad>" + kad + "</kulad><sifre>" + ksifre + "</sifre>" +
+              "<gonderen>" + orjinator + "</gonderen>" +
+              "<telmesajlar>";
 
-            request.AddParameter("application/json", jsonBody, ParameterType.RequestBody);
 
-            RestResponse response = (RestResponse)client.Execute(request);
+            smsNN += "<telmesaj><tel>" + user.PhoneNumber + "</tel><mesaj>" +
+                     $"Sayın {user.Name} {user.SurName}, {tName}'na kaydınız yapılmıştır." +
+                     "</mesaj></telmesaj>";
+
+
+
+
+            smsNN += "</telmesajlar><tur>" + tur + "</tur></sms>";
+
+            XmlPost("http://panel.vatansms.com/panel/smsgonderNNpost.php", smsNN);
+
+
 
         }
 
-
-        public void SMSSendSaveScore(Pair pair,int tournamentId)
+        public void SMSSendSaveScore(Pair pair, int tournamentId)
         {
-            var tarih = new DateTime();
-            var client = new RestClient("https://api.vatansms.net/api/v1/NtoN");
 
-            client.Timeout = -1;
+            // Use your credentials here
+            string kno = "45201"; // Müşteri numarası
+            string kad = "905054476411"; // Kullanıcı adı
+            string ksifre = "11IU0Z64"; // Şifre
+            string orjinator = "8506931825"; // Onaylı gönderici
 
-            var request = new RestRequest(Method.POST);
+            // Select message type
+            string tur = "Normal";
+            tur = "Turkce";
 
-            request.AddHeader("Content-Type", "application/json");
-           
-
-            // Assuming 'scores' is your list of ScoreViewModel objects
-            List<object> phoneMessages = new List<object>();
-            var user1 = _context.Users.Where(u => u.Id == pair.User1Id && u.Tournaments.Any(t => t.Id == tournamentId)).FirstOrDefault();           
+            var user1 = _context.Users.Where(u => u.Id == pair.User1Id && u.Tournaments.Any(t => t.Id == tournamentId)).FirstOrDefault();
             var user2 = _context.Users.Where(u => u.Id == pair.User2Id && u.Tournaments.Any(t => t.Id == tournamentId)).FirstOrDefault(); ;
             int tourCount = _context.Tournaments
                         .Where(t => t.Id == tournamentId)
                         .Select(t => t.Tours.Count)
                         .FirstOrDefault();
-            phoneMessages.Add(new
-            {
-                phone = user1.PhoneNumber,
-                message = $"Tur {tourCount}. {user1.Name} {user1.SurName}: {pair.User1Score} - {pair.User2Score}:{user2.Name} {user2.SurName}"
-            });
-            phoneMessages.Add(new
-            {
-                phone = user2.PhoneNumber,
-                message = $"Tur {tourCount}. {user1.Name} {user1.SurName}: {pair.User1Score} - {pair.User2Score}:{user2.Name} {user2.SurName}"
-            });
 
 
-            string jsonBody = JsonConvert.SerializeObject(new
-            {
-                api_id = "5d4219e62fe4475a4585ddea",
-                api_key = "e0e87e74a44009c74bf6f4b5",
-                sender = "NEFISEVURUR",
-                message_type = "turkce",
-                message_content_type = "bilgi",
-                phones = phoneMessages
-            });
 
-            request.AddParameter("application/json", jsonBody, ParameterType.RequestBody);
+            string smsNN = "data=<sms><kno>" + kno + "</kno><kulad>" + kad + "</kulad><sifre>" + ksifre + "</sifre>" +
+              "<gonderen>" + orjinator + "</gonderen>" +
+              "<telmesajlar>";
 
-            RestResponse response = (RestResponse)client.Execute(request);
+
+            smsNN += "<telmesaj><tel>" + user1.PhoneNumber + "</tel><mesaj>" +
+                     $"{tourCount}. Tur Skoru: {user1.Name} {user1.SurName}: {pair.User1Score} - {pair.User2Score}:{user2.Name} {user2.SurName}"
+                     +
+                     "</mesaj></telmesaj>";
+
+            smsNN += "<telmesaj><tel>" + user2.PhoneNumber + "</tel><mesaj>" +
+                     $"{tourCount}. Tur Skoru: {user1.Name} {user1.SurName}: {pair.User1Score} - {pair.User2Score}:{user2.Name} {user2.SurName}"
+                     +
+                     "</mesaj></telmesaj>";
+
+
+
+
+            smsNN += "</telmesajlar><tur>" + tur + "</tur></sms>";
+
+            XmlPost("http://panel.vatansms.com/panel/smsgonderNNpost.php", smsNN);
 
         }
 
@@ -1212,123 +1209,119 @@ namespace Backgammon.Controllers
 
         public IActionResult SMSSend(int tourCount)
         {
-            //Retrieve scores JSON string from session
-           var scoresJson = HttpContext.Session.GetString("ScoresData");
+            // Use your credentials here
+            string kno = "45201"; // Müşteri numarası
+            string kad = "905054476411"; // Kullanıcı adı
+            string ksifre = "11IU0Z64"; // Şifre
+            string orjinator = "8506931825"; // Onaylı gönderici
 
+            // Select message type
+            string tur = "Normal";
+            tur = "Turkce";
+
+            // Assuming 'scores' is your list of ScoreViewModel objects
+            var scoresJson = HttpContext.Session.GetString("ScoresData");
             if (!string.IsNullOrEmpty(scoresJson))
             {
                 // Deserialize scores JSON string back to List<ScoreViewModel>
                 var scores = JsonConvert.DeserializeObject<List<ScoreViewModel>>(scoresJson);
+            
+                
 
-                var tarih = new DateTime();
-                var client = new RestClient("https://api.vatansms.net/api/v1/NtoN");
+            // Construct dynamic XML data for sending SMS
+            string smsNN = "data=<sms><kno>" + kno + "</kno><kulad>" + kad + "</kulad><sifre>" + ksifre + "</sifre>" +
+            "<gonderen>" + orjinator + "</gonderen>" +
+            "<telmesajlar>";
 
-                client.Timeout = -1;
-
-                var request = new RestRequest(Method.POST);
-
-                request.AddHeader("Content-Type", "application/json");
-
-                // Assuming 'scores' is your list of ScoreViewModel objects
-                List<object> phoneMessages = new List<object>();
-
-                for (int i = 0; i<scores.Count() ;i++)
+                for (int i = 0; i < scores.Count(); i++)
                 {
-                   
-                    phoneMessages.Add(new
-                    {
-                        phone = scores[i].User1PhoneNumber,
-                        message = $"{tourCount}.Tur başlıyor. {scores[i].User1Name} - {scores[i].User2Name??"bye"}." + (scores[i].User2Name != null ? $"MasaNo: {i + 1}. " : "")
-               + "İyi oyunlar."
-                    });
-                    phoneMessages.Add(new
-                    {
-                        phone = scores[i].User2PhoneNumber,
-                        message = $"{tourCount}.Tur başlıyor. {scores[i].User1Name} - {scores[i].User2Name??"bye"}. MasaNo:{i + 1}. İyi oyunlar."
-                    });
+                smsNN += "<telmesaj><tel>" + scores[i].User1PhoneNumber + "</tel><mesaj>" +
+                         $"{tourCount}.Tur başlıyor. {scores[i].User1Name} - {scores[i].User2Name ?? "bye"} ." + (scores[i].User2Name != null ? $"MasaNo: {i + 1}. " : "")
+               + "İyi oyunlar." +
+                         "</mesaj></telmesaj>";
+
+                if (scores[i].User2PhoneNumber != null)
+                {
+                    smsNN += "<telmesaj><tel>" + scores[i].User2PhoneNumber + "</tel><mesaj>" +
+                             $"{tourCount}.Tur başlıyor.  {scores[i].User1Name} - {scores[i].User2Name ?? "bye"} ." + (scores[i].User2Name != null ? $"MasaNo: {i + 1}. " : "")
+                             + "İyi oyunlar." +
+                             "</mesaj></telmesaj>";
                 }
-
-                string jsonBody = JsonConvert.SerializeObject(new
-                {
-                    api_id = "5d4219e62fe4475a4585ddea",
-                    api_key = "e0e87e74a44009c74bf6f4b5",
-                    sender = "NEFISEVURUR",
-                    message_type = "turkce",
-                    message_content_type = "bilgi",
-                    phones = phoneMessages
-                });
-
-                request.AddParameter("application/json", jsonBody, ParameterType.RequestBody);
-
-                RestResponse response = (RestResponse)client.Execute(request);
-
-                return RedirectToAction("Tours", new { tournamentId = scores[0].TournamentId });
-
             }
-           
 
-            //    // Redirect to another action or return a view
+            smsNN += "</telmesajlar><tur>" + tur + "</tur></sms>";
+
+            // Post the data to VATAN SMS service
+            XmlPost("http://panel.vatansms.com/panel/smsgonderNNpost.php", smsNN);
+                return RedirectToAction("Tours", new { tournamentId = scores[0].TournamentId });
+            }
             return RedirectToAction("Index");
         }
+
+        private string XmlPost(string PostAddress, string xmlData)
+        {
+            using (WebClient wUpload = new WebClient())
+            {
+                wUpload.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
+                Byte[] bPostArray = Encoding.UTF8.GetBytes(xmlData);
+                Byte[] bResponse = wUpload.UploadData(PostAddress, "POST", bPostArray);
+                Char[] sReturnChars = Encoding.UTF8.GetChars(bResponse);
+                string sWebPage = new string(sReturnChars);
+                return sWebPage;
+            }
+        }
+
 
         [HttpPost]
         public IActionResult SMSSendT(int tournamentId)
         {
+
+            // Use your credentials here
+            string kno = "45201"; // Müşteri numarası
+            string kad = "905054476411"; // Kullanıcı adı
+            string ksifre = "11IU0Z64"; // Şifre
+            string orjinator = "8506931825"; // Onaylı gönderici
+
+            // Select message type
+            string tur = "Normal";
+            tur = "Turkce";
+
+
+
             string message = Request.Form["message"];
             //Retrieve scores JSON string from session
             var users = _context.Users.Where(u => u.Tournaments.Any(t => t.Id == tournamentId)).ToList();
 
-            if (users != null || users.Any())           
+            if (users != null || users.Any())
             {
-                // Deserialize scores JSON string back to List<ScoreViewModel>
-                
 
-                var tarih = new DateTime();
-                var client = new RestClient("https://api.vatansms.net/api/v1/NtoN");
-
-                client.Timeout = -1;
-
-                var request = new RestRequest(Method.POST);
-
-                request.AddHeader("Content-Type", "application/json");
-
-                // Assuming 'scores' is your list of ScoreViewModel objects
-                List<object> phoneMessages = new List<object>();
+                // Construct dynamic XML data for sending SMS
+                string smsNN = "data=<sms><kno>" + kno + "</kno><kulad>" + kad + "</kulad><sifre>" + ksifre + "</sifre>" +
+                "<gonderen>" + orjinator + "</gonderen>" +
+                "<telmesajlar>";
 
                 for (int i = 0; i < users.Count(); i++)
                 {
-                   
-                        phoneMessages.Add(new
-                        {
-                            phone = users[i].PhoneNumber,
-                            message = $"{message}"
-                        });
-                    
-                                 
+                    smsNN += "<telmesaj><tel>" + users[i].PhoneNumber + "</tel><mesaj>" +
+                            $"{message}"
+                             +
+                             "</mesaj></telmesaj>";
+
                 }
 
-                string jsonBody = JsonConvert.SerializeObject(new
-                {
-                    api_id = "5d4219e62fe4475a4585ddea",
-                    api_key = "e0e87e74a44009c74bf6f4b5",
-                    sender = "NEFISEVURUR",
-                    message_type = "turkce",
-                    message_content_type = "bilgi",
-                    phones = phoneMessages
-                });
+                smsNN += "</telmesajlar><tur>" + tur + "</tur></sms>";
 
-                request.AddParameter("application/json", jsonBody, ParameterType.RequestBody);
-
-                RestResponse response = (RestResponse)client.Execute(request);
-
+                // Post the data to VATAN SMS service
+                XmlPost("http://panel.vatansms.com/panel/smsgonderNNpost.php", smsNN);
                 return RedirectToAction("Index", "Home");
 
             }
 
 
             //    // Redirect to another action or return a view
-            return RedirectToAction("Index","Home");
+            return RedirectToAction("Index", "Home");
         }
+
 
 
         public IActionResult SMSSendG()
@@ -1339,53 +1332,42 @@ namespace Backgammon.Controllers
         [HttpPost]
         public async Task<IActionResult> SMSSendGPostAsync()
         {
+
+            // Use your credentials here
+            string kno = "45201"; // Müşteri numarası
+            string kad = "905054476411"; // Kullanıcı adı
+            string ksifre = "11IU0Z64"; // Şifre
+            string orjinator = "8506931825"; // Onaylı gönderici
+
+            // Select message type
+            string tur = "Normal";
+            tur = "Turkce";
             string message = Request.Form["message"];
             var users = await _userService.GetNonAdminUsersAsync();
 
             if (users != null || users.Any())
             {
-                // Deserialize scores JSON string back to List<ScoreViewModel>
 
-
-                var tarih = new DateTime();
-                var client = new RestClient("https://api.vatansms.net/api/v1/NtoN");
-
-                client.Timeout = -1;
-
-                var request = new RestRequest(Method.POST);
-
-                request.AddHeader("Content-Type", "application/json");
-
-                // Assuming 'scores' is your list of ScoreViewModel objects
-                List<object> phoneMessages = new List<object>();
-
+                string smsNN = "data=<sms><kno>" + kno + "</kno><kulad>" + kad + "</kulad><sifre>" + ksifre + "</sifre>" +
+                "<gonderen>" + orjinator + "</gonderen>" +
+                "<telmesajlar>";
                 for (int i = 0; i < users.Count(); i++)
                 {
-
-                    phoneMessages.Add(new
-                    {
-                        phone = users[i].PhoneNumber,
-                        message = $"{message}"
-                    });
-
+                    smsNN += "<telmesaj><tel>" + users[i].PhoneNumber + "</tel><mesaj>" +
+                            $"{message}"
+                             +
+                             "</mesaj></telmesaj>";
 
                 }
 
-                string jsonBody = JsonConvert.SerializeObject(new
-                {
-                    api_id = "5d4219e62fe4475a4585ddea",
-                    api_key = "e0e87e74a44009c74bf6f4b5",
-                    sender = "NEFISEVURUR",
-                    message_type = "turkce",
-                    message_content_type = "bilgi",
-                    phones = phoneMessages
-                });
+                smsNN += "</telmesajlar><tur>" + tur + "</tur></sms>";
 
-                request.AddParameter("application/json", jsonBody, ParameterType.RequestBody);
-
-                RestResponse response = (RestResponse)client.Execute(request);
+                // Post the data to VATAN SMS service
+                XmlPost("http://panel.vatansms.com/panel/smsgonderNNpost.php", smsNN);
 
                 return RedirectToAction("Index", "Home");
+
+
 
             }
             return RedirectToAction("Index", "Home");
