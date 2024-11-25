@@ -283,7 +283,8 @@ namespace Backgammon.Controllers
         public async Task<IActionResult> GetUserListAsync()
         {
             var nonAdminUsers = await _userService.GetNonAdminUsersAsync();
-            return View(nonAdminUsers);
+            var nonAdminUsersinOrder = nonAdminUsers.OrderBy(x => x.Name).ThenBy(x => x.SurName).ToList();
+            return View(nonAdminUsersinOrder);
         }
 
         public async Task<IActionResult> UpdateUserAsync(int userId)
@@ -359,7 +360,7 @@ namespace Backgammon.Controllers
                 }
             }
 
-            return View("Index");
+            return RedirectToAction("GetUserList");
         }
 
     }

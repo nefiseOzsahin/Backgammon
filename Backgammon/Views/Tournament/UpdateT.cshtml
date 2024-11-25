@@ -156,6 +156,7 @@
                                 <select class="form-control" asp-for="@Model.ByeType">
                                     <option>Seçiniz</option>
                                     <option>Rastgele</option>
+                                    <option>Kaybedenler Öncelikli</option>
                                 </select>
                             </div>
                             <div class="mb-3">
@@ -242,7 +243,7 @@
                                                         </div>
                                                         <div class="d-flex align-items-center">
 
-                                                            <div id="userTotalPages">@(Math.Ceiling((double)ViewBag.AllUsers.Count / 5))</div>
+                                                            <div id="userTotalPages">@ViewBag.TotalGroups</div>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -346,7 +347,7 @@
                                                         </div>
                                                         <div class="d-flex align-items-center">
 
-                                                            <div id="tournamentUserTotalPages">@(Math.Ceiling((double)ViewBag.UsersInTournament.Count / 5))</div>
+                                                            <div id="tournamentUserTotalPages">@ViewBag.TournamentGroups</div>
                                                         </div>
                                                     </div>
                                                 </td>

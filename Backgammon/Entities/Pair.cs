@@ -11,7 +11,9 @@
         public bool IsBye { get; set; }
 
         public int TourId { get; set; }
-        public Tour Tour { get; set; }  
+        public Tour Tour { get; set; }
+
+        public int TableNo { get; set; }
 
     }
 }

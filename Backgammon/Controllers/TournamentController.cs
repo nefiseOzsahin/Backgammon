@@ -43,8 +43,8 @@ namespace Backgammon.Controllers
             var nonAdminUsers = await _userService.GetNonAdminUsersAsync();
             TournamentCreateVM vm = new()
             {
-                Users = nonAdminUsers
-            };
+                Users = nonAdminUsers.OrderBy(x=>x.Name).ThenBy(x => x.SurName).ToList()
+        };
             return View(vm);
 
         }
@@ -201,19 +201,21 @@ namespace Backgammon.Controllers
                    PairId = pair.Id,
                    User1 = _context.Users.FirstOrDefault(user => user.Id == pair.User1Id),
                    User2 = _context.Users.FirstOrDefault(user => user.Id == pair.User2Id),
-                   Tour = pair.Tour
+                   Tour = pair.Tour,
+                   TableNo=pair.TableNo
 
                })
                .ToList();
 
             }
 
+            var sortedPairVms = pairVms.OrderBy(p => p.TableNo).ToList();
 
             var vm = new ToursVM
             {
                 Tournament = tournament,
                 Scores = scoresForTour,
-                PairVMs = pairVms,
+                PairVMs = sortedPairVms,
                 AllPairsHaveZeroScore = allPairsHaveZeroScore
             };
 
@@ -364,10 +366,16 @@ namespace Backgammon.Controllers
                   .ToList();
 
                 //lastone = shuffledUsers.LastOrDefault();
-                lastone = shuffledUsers
+                if (model.Type == "Kaybedenler Öncelikli") {
+                    lastone = shuffledUsers
     .OrderBy(u => u.TournamentUsers.FirstOrDefault(tu => tu.TournamentId == model.Id)?.ByeCount ?? int.MaxValue)
     .ThenBy(u => u.TournamentUsers.FirstOrDefault(tu => tu.TournamentId == model.Id)?.WinCount ?? int.MaxValue)
     .FirstOrDefault();
+                }
+                else
+                {
+                    lastone = shuffledUsers.LastOrDefault();
+                }
 
                 shuffledUsers = shuffledUsers.Except(new List<AppUser> { lastone }).ToList();
             }
@@ -424,14 +432,18 @@ namespace Backgammon.Controllers
 
                             var pair = new Pair { User1Id = user1.Id, User2Id = user2.Id };
 
-                            var pairVM = new PairVM { Tour = newTour, User1 = user1, User2 = user2 };
+                            
 
                             // Add the pair to the database
                             pair.TourId = newTour.Id;
-                            _context.Pairs.Add(pair);
+                            int count = await _context.Pairs
+     .CountAsync(p => p.TourId == tournament.Tours.LastOrDefault().Id);
+                        pair.TableNo = count + 1;
+                        _context.Pairs.Add(pair);
+                        var pairVM = new PairVM { Tour = newTour, User1 = user1, User2 = user2, TableNo = pair.TableNo  };
 
-                            // Add the pair view model to the list
-                            pairVMs.Add(pairVM);
+                        // Add the pair view model to the list
+                        pairVMs.Add(pairVM);
 
                             // Add the tour to the users
                             user1.Tours.Add(newTour);
@@ -462,10 +474,13 @@ namespace Backgammon.Controllers
                         var user1 = shuffledUsers.First();
                         var user2 = triedUsers.First();
                         var pair = new Pair { User1Id = user1.Id, User2Id = user2.Id };
-                        var pairVM = new PairVM { Tour = newTour, User1 = user1, User2 = user2 };
+                        
                         pair.TourId = newTour.Id;
+                        int count = await _context.Pairs
+     .CountAsync(p => p.TourId == tournament.Tours.LastOrDefault().Id);
+                        pair.TableNo = count + 1;
                         _context.Pairs.Add(pair);
-
+                        var pairVM = new PairVM { Tour = newTour, User1 = user1, User2 = user2 ,TableNo=pair.TableNo};
                         // Add the pair view model to the list
                         pairVMs.Add(pairVM);
 
@@ -497,12 +512,15 @@ namespace Backgammon.Controllers
             if (users.Count() % 2 != 0)
             {
                 var pair = new Pair { User1Id = lastone.Id, User2Id = 0 };
-                var pairVM = new PairVM { Tour = newTour, User1 = lastone, User2 = null };
+                
 
                 // Add the pair to the database
                 pair.TourId = newTour.Id;
+                int count = await _context.Pairs
+     .CountAsync(p => p.TourId == tournament.Tours.LastOrDefault().Id);
+                pair.TableNo = count + 1;
                 _context.Pairs.Add(pair);
-
+                var pairVM = new PairVM { Tour = newTour, User1 = lastone, User2 = null ,TableNo=pair.TableNo};
                 // Add the pair view model to the list
                 pairVMs.Add(pairVM);
 
@@ -639,6 +657,7 @@ namespace Backgammon.Controllers
                 var scoresForCurrentTour = InitializeScores(tour);
                 scoresForTour.AddRange(scoresForCurrentTour);
             }
+            var sortedPairVms = pairVMs.OrderBy(p => p.TableNo).ToList();
 
             ToursVM vm = new()
             {
@@ -649,7 +668,7 @@ namespace Backgammon.Controllers
                     .Include(t => t.Tours)
                         .ThenInclude(tour => tour.Pairs)
                     .FirstOrDefaultAsync(x => x.Id == model.Id),
-                PairVMs = pairVMs,
+                PairVMs = sortedPairVms,
                 Scores = scoresForTour,
                 SaveScore = true
             };
@@ -955,8 +974,10 @@ namespace Backgammon.Controllers
             // Filter users who are already associated with the tournament
             var usersInTournament = allUsers.Where(user => tournament.Users.Any(tUser => tUser.Id == user.Id)).ToList();
 
-            ViewBag.AllUsers = allUsers;
-            ViewBag.UsersInTournament = usersInTournament;
+            ViewBag.AllUsers = allUsers.OrderBy(x=>x.Name).ThenBy(x=>x.SurName);
+            ViewBag.UsersInTournament = usersInTournament.OrderBy(x => x.Name).ThenBy(x => x.SurName);
+            ViewBag.TournamentGroups = (int)Math.Ceiling((double)usersInTournament.Count / 5);
+            ViewBag.TotalGroups = (int)Math.Ceiling((double)allUsers.Count / 5);
 
             return View(tournament);
 
@@ -1235,15 +1256,19 @@ namespace Backgammon.Controllers
 
                 for (int i = 0; i < scores.Count(); i++)
                 {
-                smsNN += "<telmesaj><tel>" + scores[i].User1PhoneNumber + "</tel><mesaj>" +
-                         $"{tourCount}.Tur başlıyor. {scores[i].User1Name} - {scores[i].User2Name ?? "bye"} ." + (scores[i].User2Name != null ? $"MasaNo: {i + 1}. " : "")
+                    var tableNo = _context.Pairs
+                    .Where(p => p.Id == scores[i].PairId)
+                    .Select(p => p.TableNo)
+                    .FirstOrDefault();
+                    smsNN += "<telmesaj><tel>" + scores[i].User1PhoneNumber + "</tel><mesaj>" +
+                         $"{tourCount}.Tur başlıyor. {scores[i].User1Name} - {scores[i].User2Name ?? "bye"} ." + (scores[i].User2Name != null ? $"MasaNo: {tableNo}. " : "")
                + "İyi oyunlar." +
                          "</mesaj></telmesaj>";
 
                 if (scores[i].User2PhoneNumber != null)
                 {
                     smsNN += "<telmesaj><tel>" + scores[i].User2PhoneNumber + "</tel><mesaj>" +
-                             $"{tourCount}.Tur başlıyor.  {scores[i].User1Name} - {scores[i].User2Name ?? "bye"} ." + (scores[i].User2Name != null ? $"MasaNo: {i + 1}. " : "")
+                             $"{tourCount}.Tur başlıyor.  {scores[i].User1Name} - {scores[i].User2Name ?? "bye"} ." + (scores[i].User2Name != null ? $"MasaNo: {tableNo}. " : "")
                              + "İyi oyunlar." +
                              "</mesaj></telmesaj>";
                 }
