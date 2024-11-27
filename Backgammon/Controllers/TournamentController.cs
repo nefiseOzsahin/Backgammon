@@ -366,7 +366,7 @@ namespace Backgammon.Controllers
                   .ToList();
 
                 //lastone = shuffledUsers.LastOrDefault();
-                if (model.Type == "Kaybedenler Öncelikli") {
+                if (model.ByeType == "Kaybedenler Öncelikli") {
                     lastone = shuffledUsers
     .OrderBy(u => u.TournamentUsers.FirstOrDefault(tu => tu.TournamentId == model.Id)?.ByeCount ?? int.MaxValue)
     .ThenBy(u => u.TournamentUsers.FirstOrDefault(tu => tu.TournamentId == model.Id)?.WinCount ?? int.MaxValue)
